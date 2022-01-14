@@ -101,15 +101,9 @@ As:
 - Customizing the **Order List Profile** with **PowerOrder** functionality
 - Defaulting to the **Order Profile** view.
 
-## API In Action [Under Construction]
-
-Add order's one at a time (or via a loop):
+## API In Action: Create and Send Orders to MOEW
 
 ```js
-const fcjs = require('fluent-cerner-js');
-const MPageOrder = fcjs.MPageOrder;
-const MPageOrderEvent = fcjs.MPageOrderEvent;
-
 // Make a new order from an existing order which serves as a template for copy.
 const order1 = new MPageOrder();
 order1.willCopyExistingOrder(12345);
@@ -144,7 +138,7 @@ event
 event.send();
 ```
 
-You can also invoke the "toString()" override method to confirm your order string is correct.
+You can also invoke the `toString()` override method to confirm your order string is correct.
 
 ```js
 console.log(`MPage Event String:\n${mpageEvent}\n`);
@@ -154,4 +148,57 @@ Result:
 
 ```sh
 1231251|812388|{REPEAT|12345}{ORDER|1343|1|0|0|0}{ORDER|3428|0|3|14|1}|24|{2|127}|16|0
+```
+
+## API in Action: Make a CCL call to pull data into you MPage
+
+```js
+const cclOpts = {
+  prg: 'MP_GET_ORDER_LIST',
+  params: [
+    { type: 'number', param: 12345 },
+    { type: 'string', param: 'joe' },
+  ],
+};
+
+let result = undefined;
+
+makeCclRequest(cclOpts)
+  .then(data => (result = data))
+  .catch(console.error);
+```
+
+## TypeScript Support
+
+This library was developedin typescript and all relevant types are exported.
+
+```tsx
+import { makeCclRequest, CclCallParam } from 'fluent-cerner-js';
+import { MyCustomResponse } from '../types';
+// Other imports omitted in this example for clarity
+
+const MyComponent = ({ user }) => {
+  const [data, setData] = useState<MyCustomResponse>({});
+
+  const handleButtonClick = () => {
+    const userPidParam: CclCallParam = { type: 'number', param: user.pid };
+
+    const opts: CclOpts = {
+      prg: 'MY_CUSTOM_PRG_FILENAME',
+      params: [userPidParam],
+    };
+
+    makeCclRequest<MyCustomResponse>(opts)
+      .then(data => setData(data))
+      .catch(error => addErrorToast(error));
+  };
+
+  return (
+    <div>
+      <h2>My Custom Component</h2>
+      <p>Welcome, {user.name}</p>
+      <button onClick={handleButtonClick}>Click Me to Get Data</button>
+    </div>
+  );
+};
 ```
