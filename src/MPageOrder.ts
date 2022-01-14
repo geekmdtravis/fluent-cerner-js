@@ -1,4 +1,4 @@
-import { NewOrderOpts } from "./types";
+import { NewOrderOpts } from './types';
 
 export class MPageOrder {
   private _orderAction: string = '';

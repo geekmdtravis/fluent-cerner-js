@@ -1,5 +1,4 @@
-import { MPageOrder, MPageOrderEvent } from '../src/';
-import type {NewOrderOpts} from "../src/types"
+import { MPageOrder, MPageOrderEvent, NewOrderOpts } from '../src/';
 
 describe('MPageOrderEvent', () => {
   it('sets "personId" when the "forPerson" method is invoked.', () => {

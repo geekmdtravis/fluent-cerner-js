@@ -22,7 +22,7 @@ export function makeCclRequest<T>(opts: CclOpts): Promise<T> {
       request.open('GET', `${prg}`);
       request.send(paramsList);
       request.onreadystatechange = function() {
-        if (request.readyState == 4 && request.status == 200) {
+        if (request.readyState === 4 && request.status === 200) {
           const data: T = JSON.parse(request.responseText);
           resolve(data);
         } else {
