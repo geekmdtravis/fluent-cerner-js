@@ -1,5 +1,4 @@
-import { MPageOrder, MPageOrderEvent } from '../src/';
-import type {NewOrderOpts} from "../src/"
+import { MPageOrder, MPageOrderEvent, NewOrderOpts } from '../src/';
 
 describe('MPageOrderEvent', () => {
   it('sets "personId" when the "forPerson" method is invoked.', () => {
@@ -87,14 +86,15 @@ describe('MPageOrderEvent', () => {
       isSatelliteOrder: false,
       orderSentenceId: 4321,
       nomenclatureId: 5678,
-      skipInteractionCheckUntilSign: true
-    }
-    const plannedOrder = new MPageOrder()
-    plannedOrder.willMakeNewOrder(1234, opts)
+      skipInteractionCheckUntilSign: true,
+    };
+    const plannedOrder = new MPageOrder();
+    plannedOrder.willMakeNewOrder(1234, opts);
 
-    const plannedEvent = new MPageOrderEvent()
-    
-    plannedEvent.forPerson(2468)
+    const plannedEvent = new MPageOrderEvent();
+
+    plannedEvent
+      .forPerson(2468)
       .forEncounter(1357)
       .addOrders(plannedOrder)
       .enablePowerPlans()
