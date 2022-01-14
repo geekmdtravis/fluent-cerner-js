@@ -1,6 +1,10 @@
+/************************************************
+ * Create and send a set of orders to the server
+ ************************************************/
 const fcjs = require('./dist/');
 const MPageOrder = fcjs.MPageOrder;
 const MPageOrderEvent = fcjs.MPageOrderEvent;
+const makeCclRequest = fcjs.makeCclRequest;
 
 // Make a new order from an existing order which serves as a template for copy.
 const order1 = new MPageOrder();
@@ -34,3 +38,21 @@ event
 
 // Send the MPage event to the server.
 event.send();
+
+/********************************************************
+ * Make a CCL request to the server and retrieve the data
+ ********************************************************/
+
+const cclOpts = {
+  prg: 'MP_GET_ORDER_LIST',
+  params: [
+    { type: 'number', param: 12345 },
+    { type: 'string', param: 'joe' },
+  ],
+};
+
+let result = undefined;
+
+makeCclRequest(cclOpts)
+  .then(data => (result = data))
+  .catch(console.error);

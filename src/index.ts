@@ -1,4 +1,6 @@
 import { MPageOrderEvent } from './MPageOrderEvent';
-import { MPageOrder, NewOrderOpts } from './MPageOrder';
+import { MPageOrder } from './MPageOrder';
+import {makeCclRequest} from "./utils"
+import type {NewOrderOpts, CclOpts, CclCallParam} from "./types"
 
-export { MPageOrderEvent, MPageOrder, NewOrderOpts };
+export { CclCallParam, CclOpts, NewOrderOpts, MPageOrderEvent, MPageOrder, makeCclRequest };
