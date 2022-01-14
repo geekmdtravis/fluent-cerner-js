@@ -1,4 +1,5 @@
 import { MPageOrder, MPageOrderEvent } from '../src/';
+import type {NewOrderOpts} from "../src/"
 
 describe('MPageOrderEvent', () => {
   it('sets "personId" when the "forPerson" method is invoked.', () => {
@@ -81,19 +82,28 @@ describe('MPageOrderEvent', () => {
   });
 
   it('has a properly constructed toString override.', () => {
-    const e = new MPageOrderEvent()
-      .forPerson(2468)
+    const opts: NewOrderOpts = {
+      isRxOrder: true,
+      isSatelliteOrder: false,
+      orderSentenceId: 4321,
+      nomenclatureId: 5678,
+      skipInteractionCheckUntilSign: true
+    }
+    const plannedOrder = new MPageOrder()
+    plannedOrder.willMakeNewOrder(1234, opts)
+
+    const plannedEvent = new MPageOrderEvent()
+    
+    plannedEvent.forPerson(2468)
       .forEncounter(1357)
-      .addOrders([
-        new MPageOrder().willMakeNewOrder(1234, true, false, 4321, 5678, true),
-      ])
+      .addOrders(plannedOrder)
       .enablePowerPlans()
       .customizeOrderListProfile()
       .enablePowerOrders()
       .launchOrderProfile()
       .signSilently();
 
-    expect(e.toString()).toBe(
+    expect(plannedEvent.toString()).toBe(
       '2468|1357|{ORDER|1234|1|4321|5678|1}|24|{2|127}|16|1'
     );
   });

@@ -1,4 +1,4 @@
-import { MPageOrder } from '../src/';
+import { MPageOrder, NewOrderOpts } from '../src/';
 
 describe('MPageOrder', () => {
   // Check orderAction
@@ -39,7 +39,7 @@ describe('MPageOrder', () => {
   });
   it('sets "orderAction" to "ORDER" when the "willMakeNewOrder" method is called.', () => {
     const o = new MPageOrder();
-    o.willMakeNewOrder(0, false, false, 0, 0, false);
+    o.willMakeNewOrder(0);
     expect(o.getOrderAction()).toBe('ORDER');
   });
   it('sets "orderAction" to "RENEW" when the "willRenewNonPrescription" method is called.', () => {
@@ -130,17 +130,28 @@ describe('MPageOrder', () => {
   });
 
   it('"willMakeNewOrder" sets "all properties" appropriately and generates the correct string.', () => {
+    const opts: NewOrderOpts = {
+      isRxOrder: true,
+      orderSentenceId: 4321,
+      nomenclatureId: 5678,
+      skipInteractionCheckUntilSign: true,
+    };
     const o = new MPageOrder();
-    o.willMakeNewOrder(1234, true, false, 4321, 5678, true);
+    o.willMakeNewOrder(1234, opts);
     const expected = `{ORDER|1234|1|4321|5678|1}`;
     expect(o.toString()).toBe(expected);
   });
 
   it('"willMakeNewOrder" throw error when both isRxOrder and isSatelliteOrder are set to true.', () => {
+    const opts: NewOrderOpts = {
+      isRxOrder: true,
+      isSatelliteOrder: true,
+      orderSentenceId: 4321,
+      nomenclatureId: 5678,
+      skipInteractionCheckUntilSign: true,
+    };
     const o = new MPageOrder();
-    expect(() =>
-      o.willMakeNewOrder(1234, true, true, 4321, 5678, true)
-    ).toThrow(Error);
+    expect(() => o.willMakeNewOrder(1234, opts)).toThrow(Error);
   });
 
   it('"willMakeNewOrder" sets the order origination field to 0 when neither isRxOrder or isSatelliteOrder is set to true', () => {
@@ -151,22 +162,31 @@ describe('MPageOrder', () => {
   });
 
   it('"willMakeNewOrder" sets the order origination field to 1 when isRxOrder is set to true', () => {
+    const opts: NewOrderOpts = {
+      isRxOrder: true,
+    };
     const o = new MPageOrder();
-    o.willMakeNewOrder(1234, true);
+    o.willMakeNewOrder(1234, opts);
     const expected = `{ORDER|1234|1|0|0|0}`;
     expect(o.toString()).toBe(expected);
   });
 
   it('"willMakeNewOrder" sets the order origination field to 5 when isSatelliteOrder is set to true', () => {
+    const opts: NewOrderOpts = {
+      isSatelliteOrder: true,
+    };
     const o = new MPageOrder();
-    o.willMakeNewOrder(1234, false, true);
+    o.willMakeNewOrder(1234, opts);
     const expected = `{ORDER|1234|5|0|0|0}`;
     expect(o.toString()).toBe(expected);
   });
 
   it('"toString" generates a proper string for ORDER type', () => {
+    const opts: NewOrderOpts = {
+      isSatelliteOrder: true,
+    };
     const o = new MPageOrder();
-    o.willMakeNewOrder(1234, false, true);
+    o.willMakeNewOrder(1234, opts);
     const expected = `{ORDER|1234|5|0|0|0}`;
     expect(o.toString()).toBe(expected);
   });

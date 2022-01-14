@@ -106,11 +106,32 @@ As:
 Add order's one at a time (or via a loop):
 
 ```js
-const order1 = new MPageOrder().willCopyExistingOrder(12345);
-const order2 = new MPageOrder().willMakeNewOrder(1343, true);
-const order3 = new MPageOrder().willMakeNewOrder(3428, false, 3, 14, true);
+const fcjs = require('fluent-cerner-js');
+const MPageOrder = fcjs.MPageOrder;
+const MPageOrderEvent = fcjs.MPageOrderEvent;
 
-const e = new MPageEvent()
+// Make a new order from an existing order which serves as a template for copy.
+const order1 = new MPageOrder();
+order1.willCopyExistingOrder(12345);
+
+// Make a new order from scratch, declare that it's a prescription order.
+const order2 = new MPageOrder();
+order2.willMakeNewOrder(1343, { isRxOrder: true });
+
+// Make a new order from scratch, declare that it's a non-prescription order,
+// reference an order sentence id and a nomenclature id in addition to requesting
+// skip interaction checks until sign.
+const opts = {
+  orderSentenceId: 3,
+  nomenclatureId: 14,
+  skipInteractionCheckUntilSign: true,
+};
+const order3 = new MPageOrder();
+order3.willMakeNewOrder(3428, opts);
+
+// Prepare the MPage event for person 1231251 on encounter 812388.
+const event = new MPageOrderEvent();
+event
   .forPerson(1231251)
   .forEncounter(812388)
   .addOrders([order1, order2, order3])
@@ -119,17 +140,18 @@ const e = new MPageEvent()
   .enablePowerOrders()
   .launchOrderProfile();
 
-e.send();
+// Send the MPage event to the server.
+event.send();
 ```
 
 You can also invoke the "toString()" override method to confirm your order string is correct.
 
-```
-console.log(`MPage Event String:\n${mpageEvent}\n`)
+```js
+console.log(`MPage Event String:\n${mpageEvent}\n`);
 ```
 
 Result:
 
 ```sh
-1231251|812388|{REPEAT|12345}{ORDER|1343|1|0|0|0}{ORDER|3428|5|3|14|1}|24|{2|127}|16
+1231251|812388|{REPEAT|12345}{ORDER|1343|1|0|0|0}{ORDER|3428|0|3|14|1}|24|{2|127}|16|0
 ```

@@ -48,7 +48,10 @@ class MPageOrderEvent {
     return this;
   }
 
-  addOrders(orders: Array<MPageOrder>) {
+  addOrders(orders: Array<MPageOrder> | MPageOrder) {
+    if (!Array.isArray(orders)) {
+      orders = [orders];
+    }
     this._orders = this._orders.concat(orders);
     return this;
   }
@@ -94,8 +97,18 @@ class MPageOrderEvent {
   }
 
   send() {
-    // @ts-ignore
-    window.MPAGES_EVENT('ORDERS', this.toString());
+    try {
+      // @ts-ignore
+      w.MPAGES_EVENT('ORDERS', this.toString());
+    } catch (e) {
+      if (e instanceof ReferenceError) {
+        console.warn(
+          `We're likely not inside PowerChart. The output would be an MPAGES_EVENT: ${this.toString()}`
+        );
+      } else {
+        throw e;
+      }
+    }
   }
 
   toString(): string {

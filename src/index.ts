@@ -1,4 +1,4 @@
 import { MPageOrderEvent } from './MPageOrderEvent';
-import { MPageOrder } from './MPageOrder';
+import { MPageOrder, NewOrderOpts } from './MPageOrder';
 
-export { MPageOrderEvent, MPageOrder };
+export { MPageOrderEvent, MPageOrder, NewOrderOpts };

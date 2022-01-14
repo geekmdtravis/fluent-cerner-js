@@ -1,4 +1,26 @@
-class MPageOrder {
+/**
+ * Options for a new order
+ * @param {boolean} isRxOrder Marks the order order as a prescription. Is mutually exclusive from
+ * isSatelliteOrder. Field will be set to false if left undefined; this resolves to 0 when built.
+ * @param {boolean} isSatelliteOrder Moarks the order origination as satellite. Is mutually
+ * exclusive from isRxOrder. Field will be set to false if left undefined; this resolves to 0 when built.
+ * @param {number} orderSentenceId The optional Cerner order_sentence_id to be associated with
+ * the new order. Field will be set to 0 if undefined.
+ * @param {number} nomenclatureId The optional Cerner nomenclature_id to be associated with the
+ * new order. Field will be set to 0 if undefined.
+ * @param {boolean} skipInteractionCheckUntilSign Determines cerner sign-time interaction
+ * checking. A value of true skips checking for interactions until orders are signed, false
+ * will not. Field will be set to false if left undefined; this resolves to 0 when built.
+ */
+export type NewOrderOpts = {
+  isRxOrder?: boolean;
+  isSatelliteOrder?: boolean;
+  orderSentenceId?: number;
+  nomenclatureId?: number;
+  skipInteractionCheckUntilSign?: boolean;
+};
+
+export class MPageOrder {
   private _orderAction: string = '';
   getOrderAction = () => this._orderAction;
 
@@ -110,12 +132,8 @@ class MPageOrder {
    *
    * @since 0.1.0
    * @category MPage Events - Orders
-   * @param {number} synonymId The Cerner synonym_id to be associated with the new order.
-   * @param {boolean} isRxOrder Marks the order order as a prescription. Is mutually exclusive from isSatelliteOrder.
-   * @param {boolean} isSatelliteOrder Moarks the order origination as satellite. Is mutually exclusive from isRxOrder.
-   * @param {number} orderSentenceId The optional Cerner order_sentence_id to be associated with the new order.
-   * @param {number} nomenclatureId The optional Cerner nomenclature_id to be associated with the new order.
-   * @param {boolean} skipInteractionCheckUntilSign Determines cerner sign-time interaction checking. A value of true skips checking for interactions until orders are signed, false will not.
+   * @param {number} synonymId The Cerner synonym_id to be associated with the new order. Must be set.
+   * @param {NewOrderOpts} options required when making a new order
    * @returns {this} Returns itself to continue chaining method calls.
    * default to a normal order type.
    * @throws Error if `isRxOrder` and `isSatelliteOrder` are both set to true. These two are mutually exclusive and setting
@@ -124,20 +142,21 @@ class MPageOrder {
    * m.willMakeNewOrder(34, true, 13, 42, true).toString() => "{'ORDER'|34|5|1342|1}"
    */
 
-  willMakeNewOrder(
-    synonymId: number,
-    isRxOrder: boolean = false, // optional
-    isSatelliteOrder: boolean = false, // optional
-    orderSentenceId: number = 0, // optional
-    nomenclatureId: number = 0, // optional
-    skipInteractionCheckUntilSign: boolean = false // optional
-  ) {
+  willMakeNewOrder(synonymId: number, opts?: NewOrderOpts) {
+    const {
+      isRxOrder,
+      isSatelliteOrder,
+      orderSentenceId,
+      nomenclatureId,
+      skipInteractionCheckUntilSign,
+    } = opts || {};
+
     if (isRxOrder && isSatelliteOrder)
-      throw new Error('Only select either isRxOrder or isSatelliteOrder.');
+      throw new Error('must select either isRxOrder or isSatelliteOrder');
     this._orderAction = 'ORDER';
     this._synonymId = synonymId;
-    this._orderSentenceId = orderSentenceId;
-    this._nomenclatureId = nomenclatureId;
+    this._orderSentenceId = orderSentenceId || 0;
+    this._nomenclatureId = nomenclatureId || 0;
     this._signTimeInteraction = skipInteractionCheckUntilSign ? 1 : 0;
     this._orderOrigination = isSatelliteOrder ? 5 : isRxOrder ? 1 : 0;
 
@@ -217,5 +236,3 @@ class MPageOrder {
       : `{${this._orderAction}|${this._orderId}}`;
   }
 }
-
-export { MPageOrder };
