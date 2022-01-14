@@ -173,7 +173,7 @@ makeCclRequest(cclOpts)
 This library was developedin typescript and all relevant types are exported.
 
 ```tsx
-import { makeCclRequest, CclCallParam } from 'fluent-cerner-js';
+import { makeCclRequest, CclCallParam, CclOpts } from 'fluent-cerner-js';
 import { MyCustomResponse } from '../types';
 // Other imports omitted in this example for clarity
 
