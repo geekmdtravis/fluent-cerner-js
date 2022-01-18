@@ -99,7 +99,7 @@ class MPageOrderEvent {
   send() {
     try {
       // @ts-ignore
-      w.MPAGES_EVENT('ORDERS', this.toString());
+      window.MPAGES_EVENT('ORDERS', this.toString());
     } catch (e) {
       if (e instanceof ReferenceError) {
         console.warn(
