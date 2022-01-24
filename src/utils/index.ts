@@ -22,12 +22,15 @@ export function makeCclRequest<T>(opts: CclOpts): Promise<T> {
       request.open('GET', `${prg}`);
       request.send(paramsList);
       request.onreadystatechange = function() {
+        const data: T = JSON.parse(request.responseText);
         if (request.readyState === 4 && request.status === 200) {
-          const data: T = JSON.parse(request.responseText);
           resolve(data);
         } else {
           reject(
-            `error with status ${request.status} and readyState ${request.readyState} on ${prg} with params ${paramsList}`
+            `error with status ${request.status} and readyState ${
+              request.readyState
+            } on ${prg} with params ${paramsList} returning response text: ${request.responseText ||
+              'no response text'}`
           );
         }
       };
