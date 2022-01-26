@@ -1,12 +1,12 @@
-import { CclOpts, CclRequestResponse } from '../types';
+import { CclOpts, CclRequestResponse, XmlCclStatus } from '../types';
 
-const statusCodeMap: Map<number, string> = new Map();
-statusCodeMap.set(200, 'XMLCclRequest: Success');
-statusCodeMap.set(405, 'XMLCclRequest: Method Not Allowed');
-statusCodeMap.set(409, 'XMLCclRequest: Invalid State');
-statusCodeMap.set(492, 'XMLCclRequest: Non-Fatal Error');
-statusCodeMap.set(493, 'XMLCclRequest: Memory Error');
-statusCodeMap.set(500, 'XMLCclRequest: Internal Server Exception');
+const statusCodeMap: Map<number, XmlCclStatus> = new Map();
+statusCodeMap.set(200, 'success');
+statusCodeMap.set(405, 'method not allowed');
+statusCodeMap.set(409, 'invalid state');
+statusCodeMap.set(492, 'non-fatal error');
+statusCodeMap.set(493, 'memory error');
+statusCodeMap.set(500, 'internal server exception');
 
 /**
  * A generic wrapper function for `XMLCclRequest` which simplifies it's use.
@@ -44,7 +44,8 @@ export function makeCclRequest<T>(
             responseText: request.responseText,
             status: request.status,
             statusText:
-              statusCodeMap.get(request.status) || 'XMLCclRequest: Unknown',
+              statusCodeMap.get(request.status) ||
+              'status refers to unknown error',
           },
           data:
             request.responseText === ''

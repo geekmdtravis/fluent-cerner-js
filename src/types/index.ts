@@ -29,6 +29,19 @@ export type CclOpts = {
 };
 
 /**
+ * A type functioning as a convience wrapper for several status
+ * codes, respresented as strings, that are returned by XMLCclRequest.
+ */
+export type XmlCclStatus =
+  | 'success'
+  | 'method not allowed'
+  | 'invalid state'
+  | 'non-fatal error'
+  | 'memory error'
+  | 'internal server exception'
+  | 'status refers to unknown error';
+
+/**
  * A type which represents the full set of data returned from an XmlCclRequest and important, formatted
  * metadata to help with debugging and error management. This is a generic type and data will represent
  * the type `T` which is the type or interface which represents the resolved data from the CCL request.
@@ -37,7 +50,7 @@ export type CclRequestResponse<T> = {
   meta: {
     responseText: string;
     status: number;
-    statusText: string;
+    statusText: XmlCclStatus;
   };
   data: T | undefined;
 };
