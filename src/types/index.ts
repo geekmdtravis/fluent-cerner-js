@@ -29,6 +29,20 @@ export type CclOpts = {
 };
 
 /**
+ * A type which represents the full set of data returned from an XmlCclRequest and important, formatted
+ * metadata to help with debugging and error management. This is a generic type and data will represent
+ * the type `T` which is the type or interface which represents the resolved data from the CCL request.
+ */
+export type CclRequestResponse<T> = {
+  meta: {
+    responseText: string;
+    status: number;
+    statusText: string;
+  };
+  data: T | undefined;
+};
+
+/**
  * Options for a new order
  * @param {boolean} isRxOrder Marks the order order as a prescription. Is mutually exclusive from
  * isSatelliteOrder. Field will be set to false if left undefined; this resolves to 0 when built.
