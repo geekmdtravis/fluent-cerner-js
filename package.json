@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0-alpha.1",
+  "version": "0.0.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -11,6 +11,9 @@
     "node": ">=10"
   },
   "scripts": {
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major",
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
