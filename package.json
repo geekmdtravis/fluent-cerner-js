@@ -11,9 +11,9 @@
     "node": ">=10"
   },
   "scripts": {
-    "version:alpha:patch": "npm version prepatch --preid=alpha",
-    "version:alpha:minor": "npm version preminor --preid=alpha",
-    "version:alpha:major": "npm version premajor --preid=alpha",
+    "ver:a:patch": "npm version prepatch --preid=alpha",
+    "ver:a:minor": "npm version preminor --preid=alpha",
+    "ver:a:major": "npm version premajor --preid=alpha",
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
