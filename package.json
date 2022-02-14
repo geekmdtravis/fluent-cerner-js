@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -11,9 +11,9 @@
     "node": ">=10"
   },
   "scripts": {
-    "version:alpha:patch": "npm version patch --preid=alpha",
-    "version:alpha:minor": "npm version minor --preid=alpha",
-    "version:alpha:major": "npm version major --preid=alpha",
+    "version:alpha:patch": "npm version prepatch --preid=alpha",
+    "version:alpha:minor": "npm version preminor --preid=alpha",
+    "version:alpha:major": "npm version premajor --preid=alpha",
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
