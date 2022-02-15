@@ -93,7 +93,7 @@ export function makeCclRequest<T>(
   return new Promise((resolve, reject) => {
     try {
       // @ts-ignore - From Powerchart context
-      const request: XMLCclRequest = window.XMLCclRequest()
+      const request: XMLCclRequest = window.XMLCclRequest();
 
       request.open('GET', `${prg}`);
       request.send(paramsList);
@@ -172,47 +172,3 @@ export function openPatientTab(
     }
   }
 }
-
-const _dummyXMLCclRequest: XMLCclRequest = {
-  options: {},
-  readyState: 0,
-  responseText: '',
-  status: 0,
-  statusText: '',
-  sendFlag: false,
-  errorFlag: false,
-  responseBody: '',
-  responseXML: '',
-  async: false,
-  requestBinding: '',
-  requestText: '',
-  blobIn: '',
-  onreadystatechange: function(): void {
-    throw new Error('Function not implemented.');
-  },
-  onerror: function(): void {
-    throw new Error('Function not implemented.');
-  },
-  abort: function(): void {
-    throw new Error('Function not implemented.');
-  },
-  getAllResponseHeaders: function(): string[] {
-    throw new Error('Function not implemented.');
-  },
-  // @ts-ignore - dummy function
-  getResponseHeader: function(header: string): string {
-    throw new Error('Function not implemented.');
-  },
-  // @ts-ignore - dummy function
-  open: function(method: string, url: string, async?: boolean): void {
-    throw new Error('Function not implemented.');
-  },
-  // @ts-ignore - dummy function
-  send: function(data: string): void {
-    throw new Error('Function not implemented.');
-  },
-  // @ts-ignore - dummy function
-  setRequestHeader: function(name: string, value: string): void {
-    throw new Error('Function not implemented.');
-  },
-};
