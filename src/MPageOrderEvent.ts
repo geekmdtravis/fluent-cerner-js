@@ -98,7 +98,6 @@ class MPageOrderEvent {
 
   send() {
     try {
-      // @ts-ignore
       window.MPAGES_EVENT('ORDERS', this.toString());
     } catch (e) {
       if (e instanceof ReferenceError) {

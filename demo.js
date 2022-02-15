@@ -5,6 +5,7 @@ const fcjs = require('./dist/');
 const MPageOrder = fcjs.MPageOrder;
 const MPageOrderEvent = fcjs.MPageOrderEvent;
 const makeCclRequest = fcjs.makeCclRequest;
+const openPatientChartTab = fcjs.openPatientTab;
 
 // Make a new order from an existing order which serves as a template for copy.
 const order1 = new MPageOrder();
@@ -56,3 +57,9 @@ let result = undefined;
 makeCclRequest(cclOpts)
   .then(data => (result = data))
   .catch(console.error);
+
+/********************************************************
+ * Open a specific tab in a patients chart
+ ********************************************************/
+
+openPatientChartTab(12345, 54321, 'Notes', true);

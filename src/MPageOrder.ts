@@ -1,4 +1,24 @@
-import { NewOrderOpts } from './types';
+/**
+ * Options for a new order
+ * @param {boolean} isRxOrder Marks the order order as a prescription. Is mutually exclusive from
+ * isSatelliteOrder. Field will be set to false if left undefined; this resolves to 0 when built.
+ * @param {boolean} isSatelliteOrder Moarks the order origination as satellite. Is mutually
+ * exclusive from isRxOrder. Field will be set to false if left undefined; this resolves to 0 when built.
+ * @param {number} orderSentenceId The optional Cerner order_sentence_id to be associated with
+ * the new order. Field will be set to 0 if undefined.
+ * @param {number} nomenclatureId The optional Cerner nomenclature_id to be associated with the
+ * new order. Field will be set to 0 if undefined.
+ * @param {boolean} skipInteractionCheckUntilSign Determines cerner sign-time interaction
+ * checking. A value of true skips checking for interactions until orders are signed, false
+ * will not. Field will be set to false if left undefined; this resolves to 0 when built.
+ */
+export type NewOrderOpts = {
+  isRxOrder?: boolean;
+  isSatelliteOrder?: boolean;
+  orderSentenceId?: number;
+  nomenclatureId?: number;
+  skipInteractionCheckUntilSign?: boolean;
+};
 
 export class MPageOrder {
   private _orderAction: string = '';
