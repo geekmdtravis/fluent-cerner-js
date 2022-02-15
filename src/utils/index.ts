@@ -92,18 +92,8 @@ export function makeCclRequest<T>(
       .join(',');
   return new Promise((resolve, reject) => {
     try {
-<<<<<<< HEAD
       // @ts-ignore - From Powerchart context
-      const request: XMLCclRequest = new window.XMLCclRequest();
-=======
-      const request = (function() {
-        if (window.XMLCclRequest) {
-          return window.XMLCclRequest;
-        }
-
-        return _dummyXMLCclRequest;
-      })();
->>>>>>> a3bc056df037856174fca1e13e64e4657ab93b1c
+      const request: XMLCclRequest = window.XMLCclRequest()
 
       request.open('GET', `${prg}`);
       request.send(paramsList);
