@@ -1,5 +1,5 @@
 {
-  "version": "0.1.4",
+  "version": "0.2.0-alpha.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -11,8 +11,11 @@
     "node": ">=10"
   },
   "scripts": {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> a3bc056df037856174fca1e13e64e4657ab93b1c
     "ver:a:patch": "npm version prepatch --preid=alpha",
     "ver:a:minor": "npm version preminor --preid=alpha",
     "ver:a:major": "npm version premajor --preid=alpha",
@@ -25,7 +28,10 @@
     "ver:stable:patch": "npm version patch",
     "ver:stable:minor": "npm version minor",
     "ver:stable:major": "npm version major",
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> a3bc056df037856174fca1e13e64e4657ab93b1c
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
