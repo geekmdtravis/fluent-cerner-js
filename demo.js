@@ -5,7 +5,8 @@ const fcjs = require('./dist/');
 const MPageOrder = fcjs.MPageOrder;
 const MPageOrderEvent = fcjs.MPageOrderEvent;
 const makeCclRequest = fcjs.makeCclRequest;
-const openPatientChartTab = fcjs.openPatientTab;
+const openPatientTab = fcjs.openPatientTab;
+const openOrganizerTab = fcjs.openOrganizerTab;
 
 // Make a new order from an existing order which serves as a template for copy.
 const order1 = new MPageOrder();
@@ -62,4 +63,10 @@ makeCclRequest(cclOpts)
  * Open a specific tab in a patients chart
  ********************************************************/
 
-openPatientChartTab(12345, 54321, 'Notes', true);
+openPatientTab(12345, 54321, 'Notes', true);
+
+/********************************************************
+ * Open a specific organizer level tab
+ ********************************************************/
+
+openOrganizerTab('Message Center');
