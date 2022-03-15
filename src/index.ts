@@ -94,7 +94,7 @@ export {
   MPageOrder,
   MPageOrderEvent,
   NewOrderOpts,
-  openOrganizerTab,
   openPatientTab,
+  openOrganizerTab,
   XmlCclStatus,
 };
