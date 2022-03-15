@@ -1,4 +1,12 @@
-import { makeCclRequest, openPatientTab, CclOpts, CclCallParam } from './utils';
+import {
+  makeCclRequest,
+  openPatientTab,
+  openOrganizerTab,
+  CclOpts,
+  CclCallParam,
+  CclRequestResponse,
+  XmlCclStatus,
+} from './utils';
 import { MPageOrderEvent } from './MPageOrderEvent';
 import { MPageOrder, NewOrderOpts } from './MPageOrder';
 
@@ -81,9 +89,12 @@ declare global {
 export {
   CclCallParam,
   CclOpts,
-  openPatientTab,
+  CclRequestResponse,
   makeCclRequest,
   MPageOrder,
   MPageOrderEvent,
   NewOrderOpts,
+  openPatientTab,
+  openOrganizerTab,
+  XmlCclStatus,
 };
