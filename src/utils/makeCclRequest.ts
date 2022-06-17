@@ -138,14 +138,19 @@ export function makeCclRequest<T>(
  * @returns {string} the XmlCclRequest compatible string.
  */
 export function processCclRequestParams(
-  params: Array<CclCallParam>,
-  excludeMine: boolean
+  params?: Array<CclCallParam>,
+  excludeMine?: boolean
 ) {
-  const paramsList =
-    (excludeMine ? '' : "'MINE',") +
-    params
-      .map(({ type, param }) => (type === 'string' ? `'${param}'` : param))
-      .join(',');
+  params = params || [];
+  excludeMine = excludeMine || false;
 
-  return paramsList;
+  const updatedParams: Array<CclCallParam> = excludeMine
+    ? [...params]
+    : [{ type: 'string', param: 'MINE' }, ...params];
+
+  const paramString = updatedParams
+    .map(({ type, param }) => (type === 'string' ? `'${param}'` : param))
+    .join(',');
+
+  return paramString;
 }
