@@ -1,3 +1,5 @@
+import { XMLParser } from 'fast-xml-parser';
+
 /**
  * A type which represents the input parameter for an `XmlCclRequest`, which is wrapped by `makeCclRequest`.
  * The parameters are passed in a string, and numbers and strings are interpreted within this string by
@@ -16,16 +18,19 @@ export type CclCallParam = {
  * A type which represents the full set of data required to make an XmlCclRequest, which is wrapped
  * by `makeCclRequest`.
  * @param {string} prg - The name of the CCL program to run, e.g. 12_USER_DETAILS.
- * @param {boolean?} excludeMine - Determines whether or not to include the "MINE" parameter as the
+ * @param {boolean | undefined} excludeMine - Determines whether or not to include the "MINE" parameter as the
  * first parameter in the CCL call. This defaults to `false`, and almost all cases will require
  * the "MINE" parameter to be included.
  * @param {CclCallParam[]} params - An array of CclCallParam objects, each of which represents
  * a strongly typed parameter.
+ * @param {'json' | 'xml' | undefined} type - Specify the expected return data type to be either JSON or XML.
+ * this is an optional parameter and the default return data type is JSON.
  */
 export type CclOpts = {
   prg: string;
-  excludeMine?: boolean;
   params: Array<CclCallParam>;
+  excludeMine?: boolean;
+  returnData?: 'json' | 'xml';
 };
 
 /**
@@ -84,8 +89,10 @@ statusCodeMap.set(500, 'internal server exception');
 export function makeCclRequest<T>(
   opts: CclOpts
 ): Promise<CclRequestResponse<T>> {
-  const { prg, excludeMine, params } = opts;
+  const { prg, excludeMine, params, returnData } = opts;
   const paramsList = processCclRequestParams(params, excludeMine || false);
+
+  let xmlCclRequestParse = getParser(returnData || 'json');
 
   return new Promise((resolve, reject) => {
     try {
@@ -106,7 +113,7 @@ export function makeCclRequest<T>(
           data:
             request.responseText === ''
               ? undefined
-              : JSON.parse(request.responseText),
+              : xmlCclRequestParse(request.responseText),
         };
         if (request.readyState === 4) {
           resolve(data);
@@ -153,4 +160,34 @@ export function processCclRequestParams(
     .join(',');
 
   return paramString;
+}
+
+/**
+ * Get's the correct parser for the specified return data.
+ * @param returnData {'json' | 'xml'} - A string type representing the expected return data
+ * object from the CCL request.
+ * @returns a function which takes an input string and returns data as an object of type `T`.
+ */
+export function getParser(
+  returnData: 'json' | 'xml'
+):
+  | ((
+      xmlData: string | Buffer,
+      validationOptions?: boolean | Partial<any> | undefined
+    ) => any)
+  | ((
+      text: string,
+      reviver?: ((this: any, key: string, value: any) => any) | undefined
+    ) => any) {
+  const xmlParser = new XMLParser();
+  switch (returnData) {
+    case 'json':
+      return JSON.parse;
+    case 'xml':
+      return xmlParser.parse;
+    default:
+      throw new Error(
+        `unexpected and unsupported returnData type provided: ${returnData}`
+      );
+  }
 }

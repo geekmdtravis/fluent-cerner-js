@@ -1,5 +1,6 @@
 import {
   processCclRequestParams,
+  getParser,
   CclCallParam,
 } from '../../src/utils/makeCclRequest';
 
@@ -48,5 +49,25 @@ describe('processCclRequestParams', () => {
     ];
     const result = processCclRequestParams(params, true);
     expect(result).toEqual("'test'");
+  });
+});
+
+type GetParserTestData = {
+  id: number;
+  data: string;
+};
+
+describe('getParser', () => {
+  it('properly processes a JSON object', () => {
+    const jsonData = `{"id": 3,"data": "hello, world!"}`;
+    const parse = getParser('json');
+    const returnData: GetParserTestData = parse(jsonData);
+    expect(returnData).toEqual({ id: 3, data: 'hello, world!' });
+  });
+  it('properly processes an XML object', () => {
+    const xmlData = `<?xml version="1.0" encoding="UTF-8" ?><root><id>3</id><data>hello, world!</data></root>`;
+    const parse = getParser('xml');
+    const returnData: GetParserTestData = parse(xmlData);
+    expect(returnData).toEqual({ id: 3, data: 'hello, world!' });
   });
 });
