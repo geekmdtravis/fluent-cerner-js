@@ -17,4 +17,21 @@ describe('launchPowerForm', () => {
     const result = launchPowerForm(opts);
     expect(result).toEqual(expected);
   });
+
+  it("properly checks for the targetID parameter when set to form or activity and throws error if not present", () => {
+
+    const opts: PowerFormOpts = {
+      personId: 733757,
+      encounterId: 701346,
+      target: 'form',
+      //no targetID
+      permissions: 'modify',
+    };
+
+    const result = launchPowerForm(opts);
+    expect(result).toEqual(new Error("Missing required parameter 'targetId'"));
+
+  });
+
+
 });
