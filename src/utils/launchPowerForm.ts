@@ -32,8 +32,8 @@ export const launchPowerForm = (opts: PowerFormOpts): string => {
 
   try {
     window.MPAGES_EVENT('POWERFORM', pfSentence);
-  } catch (e) {
-    if (e instanceof ReferenceError) {
+  } catch (error) {
+    if (error instanceof ReferenceError) {
       console.error(
         'MPAGES_EVENT is not defined, and therefore we are not likely in PowerChart'
       );
