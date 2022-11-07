@@ -97,7 +97,7 @@ export const orderString = (action: OrderAction, opts?: OrderOpts): string => {
       break;
   }
 
-  return params.join('|');
+  return `{${params.join('|')}}`;
 };
 
 const orderActionMap = new Map()
