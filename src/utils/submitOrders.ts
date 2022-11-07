@@ -66,7 +66,10 @@ export const submitOrders = (
   try {
     window.MPAGES_EVENT('ORDERS', eventString);
   } catch (e) {
-    if (e instanceof TypeError) {
+    if (
+      e instanceof TypeError &&
+      e.message === 'window.MPAGES_EVENT is not a function'
+    ) {
       inPowerChart = false;
     } else {
       throw e;
