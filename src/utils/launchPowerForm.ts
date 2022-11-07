@@ -6,7 +6,12 @@ export type PowerFormOpts = {
   permissions: 'modify' | 'read only';
 };
 
-export const launchPowerForm = (opts: PowerFormOpts): string => {
+export type MPageEventReturn = {
+  eventString: string;
+  inPowerChart: boolean;
+};
+
+export const launchPowerForm = (opts: PowerFormOpts): MPageEventReturn => {
   const { personId, encounterId, target, targetId, permissions } = opts;
   const params: Array<string> = [`${personId}`, `${encounterId}`];
 
@@ -28,17 +33,27 @@ export const launchPowerForm = (opts: PowerFormOpts): string => {
   }
   params.push(permissions === 'modify' ? '0' : '1');
 
+  const returnObject: MPageEventReturn = {
+    eventString: '',
+    inPowerChart: true,
+  };
+
   const pfSentence = `${params.join('|')}`;
 
   try {
     window.MPAGES_EVENT('POWERFORM', pfSentence);
   } catch (e) {
-    if (e instanceof ReferenceError) {
-      console.error(
-        'MPAGES_EVENT is not defined, and therefore we are not likely in PowerChart'
-      );
+    if (
+      e instanceof TypeError &&
+      e.message === 'window.MPAGES_EVENT is not a function'
+    ) {
+      returnObject.inPowerChart = false;
+    } else {
+      throw e;
     }
   }
 
-  return pfSentence;
+  returnObject.eventString = pfSentence;
+
+  return returnObject;
 };
