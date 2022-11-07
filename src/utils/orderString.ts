@@ -32,18 +32,18 @@ export type OrderAction =
   | 'suspend';
 
 /**
- * @param `synonymId` - The Cerner synonym_id to be associated with the new order. Must be set.
+ * @param `synonymId` - The Cerner synonym_id for the order to be generated.
  * @param `orderSentenceId` - (optional) The order sentence id to be associated with the new order.
  * This is an accompanied value to the synonymId and provides specificity to the order type.
  * @param `nomenclatureId` - (optional) The nomenclature id, or associated problem/diagnosis, to be associated with the new order.
- * @param `interaction` - Defines when an interaction between the provider and PowerChart takes place only at sign time, or impromptu.
- * @param `origination` - Defines the origination of the order as `satellite`, `prescription`, or `normal`.
+ * @param `interaction` - (optional) Defines when an interaction between the provider and PowerChart takes place only at sign time, or impromptu.
+ * @param `origination` - (optional) Defines the origination of the order as `satellite`, `prescription`, or `normal`.
  */
 export type NewOrderOpts = {
   synonymId: number;
   orderSentenceId?: number;
   nomenclatureId?: number;
-  interaction?: 'skip' | 'default';
+  interactionCheck?: 'on sign' | 'default';
   origination?: 'satellite' | 'prescription' | 'normal';
 };
 
@@ -63,16 +63,13 @@ export type OrderOpts = {
  * @param opts - (optional) The options for the order.
  * @returns `string` - A pipe-delimited string which can be integrated into an MPage Event for one or more orders.
  */
-export const makeOrderString = (
-  action: OrderAction,
-  opts?: OrderOpts
-): string => {
+export const orderString = (action: OrderAction, opts?: OrderOpts): string => {
   const { orderId, newOrderOpts } = opts || {};
   const {
     synonymId,
     orderSentenceId,
     nomenclatureId,
-    interaction,
+    interactionCheck: interaction,
     origination,
   } = newOrderOpts || {};
 
@@ -124,4 +121,4 @@ const originationMap = new Map()
   .set('prescription', '1')
   .set('normal', '0');
 
-const interactionMap = new Map().set('skip', '1').set('default', '0');
+const interactionMap = new Map().set('on sign', '1').set('default', '0');
