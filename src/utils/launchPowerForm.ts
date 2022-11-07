@@ -1,7 +1,7 @@
 /**
  * A type which represents the parameters to be be passed into the launchPowerForm() function.
- * @param {number} personId - The person_id of the patient whose clinical note is to be displayed.
- * @param {number} encounterId - The encntr_id of the patient whose clinical note is to be displayed.
+ * @param {number} personId - The person_id of the patient whose power form is to be displayed.
+ * @param {number} encounterId - The encntr_id of the patient whose power form is to be displayed.
  * @param {string} target - Determines whether to target the "form", "activity", or the "ad hoc" charting dialog box.
  * @param {number} targetId - The id number of the target document -- required only for `form` or `activity` targets.
  * @param {string} permissions - The permissions to open the document with. Choices are "modify" or "read-only".
