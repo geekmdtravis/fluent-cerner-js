@@ -141,7 +141,6 @@ export class MPageOrder {
    * @example
    * m.willMakeNewOrder(34, true, 13, 42, true).toString() => "{'ORDER'|34|5|1342|1}"
    */
-
   willMakeNewOrder(synonymId: number, opts?: NewOrderOpts) {
     const {
       isRxOrder,
