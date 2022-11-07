@@ -15,7 +15,7 @@ describe('launchPowerForm', () => {
     };
 
     const result = launchPowerForm(opts);
-    expect(result).toEqual(expected);
+    expect(result.eventString).toEqual(expected);
   });
 
   it('properly checks for the targetID parameter when set to form or activity and throws error if not present', () => {
@@ -40,7 +40,7 @@ describe('launchPowerForm', () => {
     };
 
     const result = launchPowerForm(opts);
-    expect(result).toEqual(expected);
+    expect(result.eventString).toEqual(expected);
   });
 
   it('successfully generates a power form request with the `ad hoc` target selected', () => {
@@ -54,10 +54,10 @@ describe('launchPowerForm', () => {
     };
 
     const result = launchPowerForm(opts);
-    expect(result).toEqual(expected);
+    expect(result.eventString).toEqual(expected);
   });
 
-  it('logs to console.error, as expected, if called outside of PowerChart', () => {
+  it('behaves as expected if called outside of PowerChart', () => {
     const opts: PowerFormOpts = {
       personId: 733757,
       encounterId: 701346,
@@ -66,12 +66,7 @@ describe('launchPowerForm', () => {
       permissions: 'modify',
     };
 
-    try {
-      launchPowerForm(opts);
-    } catch (e) {
-      if (e instanceof ReferenceError) {
-        expect(console.error()).toHaveBeenCalled();
-      }
-    }
+    const result = launchPowerForm(opts);
+    expect(result.inPowerChart).toBe(false);
   });
 });
