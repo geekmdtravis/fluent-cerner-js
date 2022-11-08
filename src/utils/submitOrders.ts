@@ -40,18 +40,13 @@ export const submitOrders = (
   orders: Array<string>,
   opts?: SubmitOrderOpts
 ): { eventString: string; inPowerChart: boolean } => {
-  const { targetTab, launchView, disablePowerPlans, signSilently } = opts || {
-    targetTab: 'power orders',
-    launchView: 'search',
-    disablePowerPlans: false,
-    signSilently: false,
-  };
+  let { targetTab, launchView, disablePowerPlans, signSilently } = opts || {};
+  if (!targetTab) targetTab = 'power orders';
+  if (!launchView) launchView = 'search';
+  
   let inPowerChart = true;
 
-  if (!targetTab) throw new Error('targetTab is required');
-  if (!launchView) throw new Error('launchView is required');
-
-  let params: Array<string> = [`${pid}`, `${eid}`, ...orders];
+  let params: Array<string> = [`${pid}`, `${eid}`, orders.join('')];
 
   params.push(disablePowerPlans ? '0' : '24');
 
