@@ -1,7 +1,4 @@
-import {
-  launchPowerNote,
-  PowerNoteOpts,
-} from '../../src/utils/launchPowerNote';
+import { launchPowerNote, PowerNoteOpts } from './launchPowerNote';
 
 describe('launchPowerNote', () => {
   it('properly constructs a valid power note request to load an *existing* power note', () => {

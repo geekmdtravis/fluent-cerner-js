@@ -1,3 +1,5 @@
+import { MPageEventReturn } from '.';
+
 /**
  * A type which represents the parameters to be be passed into the launchClinicalNote() function
  * @param {number} personId - The person_id of the patient whose clinical note is to be displayed.
@@ -20,16 +22,6 @@ export type ClinicalNoteOpts = {
   viewSeq: number;
   compName: string;
   compSeq: number;
-};
-
-/**
- * A type which represents the object to be returned from the launchClinicalNote() function.
- * @param {string} eventString - The string version of the MPageEvent
- * @param {boolean} inPowerChart - Returns `true` if being run from inside of PowerChart and returns `false` otherwise.
- **/
-export type MPageEventReturn = {
-  eventString: string;
-  inPowerChart: boolean;
 };
 
 /**

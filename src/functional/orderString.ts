@@ -39,7 +39,7 @@ export type OrderAction =
  * @param `interaction` - (optional) Defines when an interaction between the provider and PowerChart takes place only at sign time, or impromptu.
  * @param `origination` - (optional) Defines the origination of the order as `satellite`, `prescription`, or `normal`.
  */
-export type NewOrderOpts = {
+type NewOrderOpts = {
   synonymId: number;
   orderSentenceId?: number;
   nomenclatureId?: number;

@@ -1,7 +1,4 @@
-import {
-  processCclRequestParams,
-  CclCallParam,
-} from '../../src/utils/makeCclRequest';
+import { processCclRequestParams, CclCallParam } from './makeCclRequest';
 
 describe('processCclRequestParams', () => {
   it('returns a proper request params string when given string, number, and all options', () => {

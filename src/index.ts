@@ -1,13 +1,53 @@
-import { makeCclRequest, openPatientTab, openOrganizerTab } from './utils';
 import {
+  launchClinicalNote,
+  launchPowerForm,
+  launchPowerNote,
+  makeCclRequest,
+  openPatientTab,
+  openOrganizerTab,
+  orderString,
+  submitOrders,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
+  ClinicalNoteOpts,
+  OrderAction,
+  OrderOpts,
+  PowerFormOpts,
+  PowerNoteOpts,
+  SubmitOrderOpts,
   XmlCclStatus,
-} from './utils/makeCclRequest';
+} from './functional';
 
 import { MPageOrderEvent } from './MPageOrderEvent';
 import { MPageOrder, NewOrderOpts } from './MPageOrder';
+
+export {
+  launchClinicalNote,
+  launchPowerForm,
+  launchPowerNote,
+  makeCclRequest,
+  openPatientTab,
+  openOrganizerTab,
+  orderString,
+  submitOrders,
+};
+
+export {
+  MPageOrder,
+  MPageOrderEvent,
+  NewOrderOpts,
+  CclCallParam,
+  CclOpts,
+  CclRequestResponse,
+  ClinicalNoteOpts,
+  OrderAction,
+  OrderOpts,
+  PowerFormOpts,
+  PowerNoteOpts,
+  SubmitOrderOpts,
+  XmlCclStatus,
+};
 
 declare global {
   /**
@@ -84,16 +124,3 @@ declare global {
     ) => void;
   }
 }
-
-export {
-  makeCclRequest,
-  MPageOrder,
-  MPageOrderEvent,
-  openPatientTab,
-  openOrganizerTab,
-  CclCallParam,
-  CclOpts,
-  CclRequestResponse,
-  XmlCclStatus,
-  NewOrderOpts,
-};
