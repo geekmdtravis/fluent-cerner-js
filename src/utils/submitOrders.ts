@@ -43,7 +43,7 @@ export const submitOrders = (
   let { targetTab, launchView, disablePowerPlans, signSilently } = opts || {};
   if (!targetTab) targetTab = 'power orders';
   if (!launchView) launchView = 'search';
-  
+
   let inPowerChart = true;
 
   let params: Array<string> = [`${pid}`, `${eid}`, orders.join('')];
