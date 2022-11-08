@@ -9,6 +9,13 @@ describe('submitOrders', () => {
     expect(typeof eventString).toBe('string');
     expect(typeof inPowerChart).toBe('boolean');
   });
+  test('being called outside of PowerChart environment does not throw an error', () => {
+    expect(() => submitOrders(1, 2, [order])).not.toThrow();
+  });
+  test('being called outside of PowerChart environment will return the inPowerChart flag as false', () => {
+    const { inPowerChart } = submitOrders(1, 2, [order]);
+    expect(inPowerChart).toBe(false);
+  });
   test("effectively adds orders to the 'eventString'", () => {
     const order1 = orderString('launch moew');
     const order2 = orderString('new order', {
