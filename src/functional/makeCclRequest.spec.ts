@@ -1,7 +1,19 @@
 import {
   processCclRequestParams,
   CclCallParam,
-} from '../../src/utils/makeCclRequest';
+  makeCclRequest,
+} from './makeCclRequest';
+
+describe('makeCclRequest', () => {
+  it('rejects when outside of PowerChart', async () => {
+    return expect(
+      makeCclRequest({
+        prg: 'TEST',
+        params: [{ type: 'string', param: 'param1' }],
+      })
+    ).rejects.toEqual('window.XMLCclRequest is not a function');
+  });
+});
 
 describe('processCclRequestParams', () => {
   it('returns a proper request params string when given string, number, and all options', () => {

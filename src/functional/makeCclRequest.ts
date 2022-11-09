@@ -1,3 +1,5 @@
+import { outsideOfPowerChartError } from '../utils';
+
 /**
  * A type which represents the input parameter for an `XmlCclRequest`, which is wrapped by `makeCclRequest`.
  * The parameters are passed in a string, and numbers and strings are interpreted within this string by
@@ -120,10 +122,8 @@ export function makeCclRequest<T>(
         }
       };
     } catch (e) {
-      if (e instanceof ReferenceError) {
-        reject(
-          `We're likely not inside PowerChart. We cannot send request: "${paramsList}" to "${prg}"`
-        );
+      if (outsideOfPowerChartError(e)) {
+        reject((e as Error).message);
       } else {
         throw e;
       }

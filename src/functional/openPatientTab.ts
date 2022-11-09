@@ -1,3 +1,5 @@
+import { outsideOfPowerChartError } from '../utils';
+
 /**
  * Attempts to open a tab with the name given to the `tab` variable in a
  * patients chart given in the context of a given encounter.
@@ -18,19 +20,17 @@ export function openPatientTab(
   pid: number,
   eid: number,
   tab: string,
-  quickAdd: boolean
+  quickAdd?: boolean
 ): void {
   const args = `/PERSONID=${pid} /ENCNTRID=${eid} /FIRSTTAB=^${tab.toUpperCase()}${
-    quickAdd ? '+' : ''
+    quickAdd || false ? '+' : ''
   }^`;
 
   try {
     window.APPLINK(1, '$APP_APPNAME$', args);
   } catch (e) {
-    if (e instanceof ReferenceError) {
-      console.warn(
-        `We're likely not inside PowerChart. The input given would be: '1, "$APP_NAME$", ${args}'`
-      );
+    if (outsideOfPowerChartError(e)) {
+      console.warn(`window.APPLINK('1, "$APP_NAME$", ${args}')`);
     } else {
       throw e;
     }

@@ -1,5 +1,7 @@
-import { makeCclRequest } from './makeCclRequest';
-import { openPatientTab } from './openPatientTab';
-import { openOrganizerTab } from './openOrganizerTab';
+import { outsideOfPowerChartError } from './outsideOfPowerChartError';
+import { warnAttemptedOrdersOutsideOfPowerChart } from './warnOutsideOfPowerChart';
 
-export { makeCclRequest, openPatientTab, openOrganizerTab };
+export {
+  outsideOfPowerChartError,
+  warnAttemptedOrdersOutsideOfPowerChart as warnOutsideOfPowerChart,
+};
