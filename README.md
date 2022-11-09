@@ -2,10 +2,10 @@
 
 A fluent `MPAGE_EVENT` string generation library.
 
-| Environment | CI                                                                                                                             | Publish                                                                                                               |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Environment | CI                                                                                                                             | Publish                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
 | Production  | ![Main Build](https://github.com/geekmdtravis/fluent-cerner-js/actions/workflows/main.yml/badge.svg?branch=main)               | ![Main Publish](https://github.com/geekmdtravis/fluent-cerner-js/actions/workflows/publish.yml/badge.svg) |
-| Development | ![Development Build](https://github.com/geekmdtravis/fluent-cerner-js/actions/workflows/main.yml/badge.svg?branch=development) | Not Applicable                                                                                                        |
+| Development | ![Development Build](https://github.com/geekmdtravis/fluent-cerner-js/actions/workflows/main.yml/badge.svg?branch=development) | Not Applicable                                                                                            |
 
 ## Resources
 
@@ -104,17 +104,42 @@ As:
 ## API In Action: Create and Send Orders to MOEW
 
 ```js
-// Make a new order from an existing order which serves as a template for copy.
+/************************************************
+ * Create and submit new orders to PowerChart
+ ************************************************/
+
+// Functional ulities
+// ------------------
+
+const orderStr1 = orderString('copy existing', { orderId: 12345 });
+
+const orderStr2 = orderString('new order', {
+  newOrderOpts: {
+    synonymId: 1343,
+    origination: 'prescription',
+  },
+});
+
+const orderStr3 = orderString('new order', {
+  newOrderOpts: {
+    synonymId: 3428,
+    orderSentenceId: 3,
+    nomenclatureId: 14,
+    interactionCheck: 'on sign',
+  },
+});
+
+submitOrders(123, 456, [orderStr1, orderStr2, orderStr3]);
+
+// Class utilities
+// ---------------
+
 const order1 = new MPageOrder();
 order1.willCopyExistingOrder(12345);
 
-// Make a new order from scratch, declare that it's a prescription order.
 const order2 = new MPageOrder();
 order2.willMakeNewOrder(1343, { isRxOrder: true });
 
-// Make a new order from scratch, declare that it's a non-prescription order,
-// reference an order sentence id and a nomenclature id in addition to requesting
-// skip interaction checks until sign.
 const opts = {
   orderSentenceId: 3,
   nomenclatureId: 14,
@@ -123,50 +148,42 @@ const opts = {
 const order3 = new MPageOrder();
 order3.willMakeNewOrder(3428, opts);
 
-// Prepare the MPage event for person 1231251 on encounter 812388.
 const event = new MPageOrderEvent();
 event
-  .forPerson(1231251)
-  .forEncounter(812388)
+  .forPerson(123)
+  .forEncounter(456)
   .addOrders([order1, order2, order3])
   .enablePowerPlans()
   .customizeOrderListProfile()
   .enablePowerOrders()
-  .launchOrderProfile();
+  .launchOrdersForSignature();
 
 // Send the MPage event to the server.
 event.send();
-```
 
-You can also invoke the `toString()` override method to confirm your order string is correct.
-
-```js
-console.log(`MPage Event String:\n${mpageEvent}\n`);
-```
-
-Result:
-
-```sh
-1231251|812388|{REPEAT|12345}{ORDER|1343|1|0|0|0}{ORDER|3428|0|3|14|1}|24|{2|127}|16|0
-```
-
-## API in Action: Make a CCL call to pull data into you MPage
-
-```js
-const cclOpts = {
+/********************************************************
+ * Make a CCL request to the server and retrieve the data
+ ********************************************************/
+let result = undefined;
+makeCclRequest({
   prg: 'MP_GET_ORDER_LIST',
   params: [
     { type: 'number', param: 12345 },
     { type: 'string', param: 'joe' },
   ],
-};
-
-let result = undefined;
-
-makeCclRequest(cclOpts)
+})
   .then(data => (result = data))
-  .catch(console.error);
+  .catch(console.error)
+  .finally(() => console.log(result));
 ```
+
+## Other Functions Not Demonstrated Above
+
+1. `launchClinicalNote`
+2. `launchPowerForm`
+3. `launchPowerNote`
+4. `openPatientTab`
+5. `openOrganizerTab`
 
 ## TypeScript Support
 
@@ -202,3 +219,8 @@ const MyComponent = ({ user }) => {
   );
 };
 ```
+
+## Contributors
+
+- [Travis Nesbit, MD (geekmdtravis)](https://github.com/geekmdtravis/) - Primary Author
+- [Daniel "Danny" Lara, MD(dl2github)](https://github.com/dl2github)

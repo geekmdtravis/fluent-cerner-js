@@ -1,4 +1,5 @@
 import { MPageOrder } from '.';
+import { outsideOfPowerChartError, warnOutsideOfPowerChart } from './utils';
 
 class MPageOrderEvent {
   private _orders: Array<MPageOrder>;
@@ -100,10 +101,8 @@ class MPageOrderEvent {
     try {
       window.MPAGES_EVENT('ORDERS', this.toString());
     } catch (e) {
-      if (e instanceof ReferenceError) {
-        console.warn(
-          `We're likely not inside PowerChart. The output would be an MPAGES_EVENT: ${this.toString()}`
-        );
+      if (outsideOfPowerChartError(e)) {
+        warnOutsideOfPowerChart(this.toString());
       } else {
         throw e;
       }

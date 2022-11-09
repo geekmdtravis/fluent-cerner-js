@@ -1,10 +1,7 @@
-import { makeCclRequest } from './makeCclRequest';
-import { openPatientTab } from './openPatientTab';
-import { openOrganizerTab } from './openOrganizerTab';
+import { outsideOfPowerChartError } from './outsideOfPowerChartError';
+import { warnAttemptedOrdersOutsideOfPowerChart } from './warnOutsideOfPowerChart';
 
-type MPageEventReturn = {
-  eventString: string;
-  inPowerchart: boolean;
+export {
+  outsideOfPowerChartError,
+  warnAttemptedOrdersOutsideOfPowerChart as warnOutsideOfPowerChart,
 };
-
-export { makeCclRequest, openPatientTab, openOrganizerTab, MPageEventReturn };

@@ -1,4 +1,4 @@
-import { MPageOrder, NewOrderOpts } from '../src/';
+import { MPageOrder, NewOrderOpts } from '.';
 
 describe('MPageOrder', () => {
   // Check orderAction

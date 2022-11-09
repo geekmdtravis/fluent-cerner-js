@@ -1,7 +1,4 @@
-import {
-  launchPowerForm,
-  PowerFormOpts,
-} from '../../src/utils/launchPowerForm';
+import { launchPowerForm, PowerFormOpts } from './launchPowerForm';
 
 describe('launchPowerForm', () => {
   it('properly constructs a valid power form request', () => {

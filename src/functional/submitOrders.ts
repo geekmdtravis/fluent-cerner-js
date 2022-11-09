@@ -1,3 +1,6 @@
+import { warnOutsideOfPowerChart } from '../utils';
+import { outsideOfPowerChartError } from '../utils/outsideOfPowerChartError';
+
 const launchViewMap = new Map()
   .set('search', 8)
   .set('profile', 16)
@@ -26,6 +29,8 @@ export type SubmitOrderOpts = {
 
 /**
  * Submit orders for a patient in a given encounter through the Cerner PowerChart MPage Event interface.
+ * By default, power plans are enabled, the target tab is set to order with power orders enabled, and
+ * will launch to the signature view.
  * @param pid - The patient id.
  * @param eid - The encounter id for the patient.
  * @param orders - The orders to be submitted. Orders are given in the form of an
@@ -42,7 +47,7 @@ export const submitOrders = (
 ): { eventString: string; inPowerChart: boolean } => {
   let { targetTab, launchView, disablePowerPlans, signSilently } = opts || {};
   if (!targetTab) targetTab = 'power orders';
-  if (!launchView) launchView = 'search';
+  if (!launchView) launchView = 'signature';
 
   let inPowerChart = true;
 
@@ -53,7 +58,7 @@ export const submitOrders = (
   const { tab, display } = tabsMap.get(targetTab) || { tab: 2, display: 127 };
   params.push(`{${tab}|${display}}`);
 
-  params.push(`${launchViewMap.get(launchView) || 8}`);
+  params.push(`${launchViewMap.get(launchView) || 32}`);
 
   params.push(`${signSilently ? '1' : '0'}`);
 
@@ -61,11 +66,9 @@ export const submitOrders = (
   try {
     window.MPAGES_EVENT('ORDERS', eventString);
   } catch (e) {
-    if (
-      e instanceof TypeError &&
-      e.message === 'window.MPAGES_EVENT is not a function'
-    ) {
+    if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
+      warnOutsideOfPowerChart(eventString);
     } else {
       throw e;
     }

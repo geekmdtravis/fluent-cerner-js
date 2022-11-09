@@ -39,7 +39,7 @@ export type OrderAction =
  * @param `interaction` - (optional) Defines when an interaction between the provider and PowerChart takes place only at sign time, or impromptu.
  * @param `origination` - (optional) Defines the origination of the order as `satellite`, `prescription`, or `normal`.
  */
-export type NewOrderOpts = {
+export type NewOrderStrOpts = {
   synonymId: number;
   orderSentenceId?: number;
   nomenclatureId?: number;
@@ -51,9 +51,9 @@ export type NewOrderOpts = {
  * @param `orderId` - (optional) The order id value for the order to activate.
  * @param `newOrderOpts` - (optional) The options for the new order.
  */
-export type OrderOpts = {
+export type OrderStrOpts = {
   orderId?: number;
-  newOrderOpts?: NewOrderOpts;
+  newOrderOpts?: NewOrderStrOpts;
 };
 
 /**
@@ -63,7 +63,10 @@ export type OrderOpts = {
  * @param opts - (optional) The options for the order.
  * @returns `string` - A pipe-delimited string which can be integrated into an MPage Event for one or more orders.
  */
-export const orderString = (action: OrderAction, opts?: OrderOpts): string => {
+export const orderString = (
+  action: OrderAction,
+  opts?: OrderStrOpts
+): string => {
   const { orderId, newOrderOpts } = opts || {};
   const {
     synonymId,

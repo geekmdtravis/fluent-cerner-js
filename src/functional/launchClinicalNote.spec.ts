@@ -1,7 +1,4 @@
-import {
-  launchClinicalNote,
-  ClinicalNoteOpts,
-} from '../../src/utils/launchClinicalNote';
+import { launchClinicalNote, ClinicalNoteOpts } from './launchClinicalNote';
 
 describe('launchPowerNote', () => {
   it('properly constructs a valid multiple clinical note request', () => {
