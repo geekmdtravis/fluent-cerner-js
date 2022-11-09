@@ -10,7 +10,12 @@ import {
 } from './makeCclRequest';
 import { openPatientTab } from './openPatientTab';
 import { openOrganizerTab } from './openOrganizerTab';
-import { orderString, OrderAction, OrderOpts } from './orderString';
+import {
+  orderString,
+  OrderAction,
+  OrderStrOpts,
+  NewOrderStrOpts,
+} from './orderString';
 import { submitOrders, SubmitOrderOpts } from './submitOrders';
 
 /**
@@ -41,8 +46,9 @@ export {
   CclOpts,
   CclRequestResponse,
   ClinicalNoteOpts,
+  NewOrderStrOpts,
   OrderAction,
-  OrderOpts,
+  OrderStrOpts,
   PowerFormOpts,
   PowerNoteOpts,
   SubmitOrderOpts,

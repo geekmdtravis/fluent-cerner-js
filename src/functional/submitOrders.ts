@@ -1,3 +1,5 @@
+import { outsideOfPowerChartError } from '../utils/outsideOfPowerChartError';
+
 const launchViewMap = new Map()
   .set('search', 8)
   .set('profile', 16)
@@ -42,7 +44,7 @@ export const submitOrders = (
 ): { eventString: string; inPowerChart: boolean } => {
   let { targetTab, launchView, disablePowerPlans, signSilently } = opts || {};
   if (!targetTab) targetTab = 'power orders';
-  if (!launchView) launchView = 'search';
+  if (!launchView) launchView = 'signature';
 
   let inPowerChart = true;
 
@@ -61,11 +63,9 @@ export const submitOrders = (
   try {
     window.MPAGES_EVENT('ORDERS', eventString);
   } catch (e) {
-    if (
-      e instanceof TypeError &&
-      e.message === 'window.MPAGES_EVENT is not a function'
-    ) {
+    if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
+      console.warn(`Output: ${eventString}`);
     } else {
       throw e;
     }
