@@ -35,10 +35,7 @@ const orderStr3 = orderString('new order', {
   },
 });
 
-submitOrders(123, 456, [orderStr1, orderStr2, orderStr3], {
-  targetTab: 'power orders',
-  launchView: 'signature',
-});
+submitOrders(123, 456, [orderStr1, orderStr2, orderStr3]);
 
 // Class utilities
 // ---------------
@@ -73,20 +70,17 @@ event.send();
 /********************************************************
  * Make a CCL request to the server and retrieve the data
  ********************************************************/
-
-const cclOpts = {
+let result = undefined;
+makeCclRequest({
   prg: 'MP_GET_ORDER_LIST',
   params: [
     { type: 'number', param: 12345 },
     { type: 'string', param: 'joe' },
   ],
-};
-
-let result = undefined;
-
-makeCclRequest(cclOpts)
+})
   .then(data => (result = data))
-  .catch(console.error);
+  .catch(console.error)
+  .finally(() => console.log(result));
 
 /********************************************************
  * Open a specific tab in a patients chart

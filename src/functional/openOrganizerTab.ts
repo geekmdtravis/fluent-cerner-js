@@ -1,3 +1,5 @@
+import { outsideOfPowerChartError } from '../utils';
+
 /**
  * Attempts to open a tab with the name given to the `tab` variable in at the chart organizer
  * level.
@@ -12,9 +14,9 @@ export function openOrganizerTab(tab: string): void {
   try {
     window.APPLINK(0, 'Powerchart.exe', `/ORGANIZERTAB=^${tab}^`);
   } catch (e) {
-    if (e instanceof ReferenceError) {
+    if (outsideOfPowerChartError(e)) {
       console.warn(
-        `We're likely not inside PowerChart. The input given would be: '0, "Powerchart.exe", "/ORGANIZERTAB=^${tab}^"'`
+        `window.APPLINK("Powerchart.exe", "/ORGANIZERTAB=^${tab}^")`
       );
     } else {
       throw e;
