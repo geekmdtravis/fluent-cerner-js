@@ -123,7 +123,7 @@ export function makeCclRequest<T>(
       };
     } catch (e) {
       if (outsideOfPowerChartError(e)) {
-        reject(`XMLCclRequest: ${prg} <= (${paramsList})`);
+        reject((e as Error).message);
       } else {
         throw e;
       }

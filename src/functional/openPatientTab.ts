@@ -20,10 +20,10 @@ export function openPatientTab(
   pid: number,
   eid: number,
   tab: string,
-  quickAdd: boolean
+  quickAdd?: boolean
 ): void {
   const args = `/PERSONID=${pid} /ENCNTRID=${eid} /FIRSTTAB=^${tab.toUpperCase()}${
-    quickAdd ? '+' : ''
+    quickAdd || false ? '+' : ''
   }^`;
 
   try {
