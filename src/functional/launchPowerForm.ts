@@ -1,3 +1,5 @@
+import { outsideOfPowerChartError } from '../utils';
+
 /**
  * A type which represents the parameters to be be passed into the launchPowerForm() function.
  * @param {number} personId - The person_id of the patient whose power form is to be displayed.
@@ -27,15 +29,18 @@ export type MPageEventReturn = {
 /**
  * A function to launch a power form, which returns an object of `MPageEventReturn`
  * @param {PowerFormOpts} opts - The parameters passed, as specified in `PowerFormOpts`
+ * @returns {MPageEventReturn} - An object containing the `eventString` and `inPowerChart` values.
  **/
 export const launchPowerForm = (opts: PowerFormOpts): MPageEventReturn => {
   const { personId, encounterId, target, targetId, permissions } = opts;
-  const params: Array<string> = [`${personId}`, `${encounterId}`];
 
   if ((target === 'form' || target === 'activity') && !targetId) {
-    throw new Error("Missing required parameter 'targetId'");
+    throw new Error(
+      "'targetId' is required for 'form' and 'activity' targets."
+    );
   }
 
+  const params: Array<string> = [`${personId}`, `${encounterId}`];
   if (target === 'form') {
     params.push(`${targetId}`);
     params.push('0');
@@ -50,26 +55,19 @@ export const launchPowerForm = (opts: PowerFormOpts): MPageEventReturn => {
   }
   params.push(permissions === 'modify' ? '0' : '1');
 
-  const returnObject: MPageEventReturn = {
-    eventString: '',
-    inPowerChart: true,
-  };
-
-  const pfSentence = `${params.join('|')}`;
+  let inPowerChart = true;
+  const eventString = `${params.join('|')}`;
 
   try {
-    window.MPAGES_EVENT('POWERFORM', pfSentence);
+    window.MPAGES_EVENT('POWERFORM', eventString);
   } catch (e) {
-    if (
-      e instanceof TypeError &&
-      e.message === 'window.MPAGES_EVENT is not a function'
-    ) {
-      returnObject.inPowerChart = false;
+    if (outsideOfPowerChartError(e)) {
+      inPowerChart = false;
+      console.warn(`window.MPAGES_EVENT('POWERFORM', ${eventString})`);
     } else {
       throw e;
     }
   }
 
-  returnObject.eventString = pfSentence;
-  return returnObject;
+  return { inPowerChart, eventString };
 };

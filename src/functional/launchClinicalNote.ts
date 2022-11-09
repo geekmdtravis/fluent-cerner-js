@@ -39,6 +39,7 @@ export type ClinicalNoteOpts = {
 /**
  * A function to launch a clinical note, which returns an object of `MPageEventReturn`
  * @param {ClinicalNoteOpts} opts - The parameters passed, as specified in `ClinicalNoteOpts`
+ * @returns {MPageEventReturn} - An object containing the `eventString` and `inPowerChart` values.
  **/
 export const launchClinicalNote = (
   opts: ClinicalNoteOpts

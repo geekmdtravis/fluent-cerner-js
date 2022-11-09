@@ -1,4 +1,7 @@
 import { outsideOfPowerChartError } from './outsideOfPowerChartError';
-import { warnOutsideOfPowerChart } from './warnOutsideOfPowerChart';
+import { warnAttemptedOrdersOutsideOfPowerChart } from './warnOutsideOfPowerChart';
 
-export { outsideOfPowerChartError, warnOutsideOfPowerChart };
+export {
+  outsideOfPowerChartError,
+  warnAttemptedOrdersOutsideOfPowerChart as warnOutsideOfPowerChart,
+};
