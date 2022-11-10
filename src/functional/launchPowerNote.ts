@@ -40,7 +40,7 @@ export const launchPowerNote = (opts: PowerNoteOpts): MPageEventReturn => {
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
-      console.warn(`window.MPAGES_EVENT('POWERNOTE', ${eventString})`);
+      console.warn(`window.MPAGES_EVENT('POWERNOTE', '${eventString}')`);
     } else {
       throw e;
     }

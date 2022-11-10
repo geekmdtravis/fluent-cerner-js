@@ -1,12 +1,12 @@
 import { launchPowerForm, PowerFormOpts } from './launchPowerForm';
 
 describe('launchPowerForm', () => {
-  it('properly constructs a valid power form request', () => {
+  it('properly constructs a valid power form request with `new form` selected', () => {
     const expected = '733757|701346|15721144|0|0';
     const opts: PowerFormOpts = {
       personId: 733757,
       encounterId: 701346,
-      target: 'form',
+      target: 'new form',
       targetId: 15721144,
       permissions: 'modify',
     };
@@ -15,23 +15,23 @@ describe('launchPowerForm', () => {
     expect(result.eventString).toEqual(expected);
   });
 
-  it('properly checks for the targetID parameter when set to form or activity and throws error if not present', () => {
+  it('properly checks for the targetID parameter when set to `new form` or `completed form` and throws error if not present', () => {
     const opts: PowerFormOpts = {
       personId: 733757,
       encounterId: 701346,
-      target: 'form',
+      target: 'new form',
       targetId: undefined,
       permissions: 'modify',
     };
     expect(() => launchPowerForm(opts)).toThrow(Error);
   });
 
-  it('successfully generates a power form request with the `activity` target selected', () => {
+  it('successfully generates a power form request with the `completed form` target selected', () => {
     const expected = '733757|701346|0|15721144|0';
     const opts: PowerFormOpts = {
       personId: 733757,
       encounterId: 701346,
-      target: 'activity',
+      target: 'completed form',
       targetId: 15721144,
       permissions: 'modify',
     };
@@ -40,12 +40,12 @@ describe('launchPowerForm', () => {
     expect(result.eventString).toEqual(expected);
   });
 
-  it('successfully generates a power form request with the `ad hoc` target selected', () => {
+  it('successfully generates a power form request with the `new form search` target selected', () => {
     const expected = '733757|701346|0|0|0';
     const opts: PowerFormOpts = {
       personId: 733757,
       encounterId: 701346,
-      target: 'ad hoc',
+      target: 'new form search',
       targetId: 15721144,
       permissions: 'modify',
     };
@@ -58,7 +58,7 @@ describe('launchPowerForm', () => {
     const opts: PowerFormOpts = {
       personId: 733757,
       encounterId: 701346,
-      target: 'form',
+      target: 'new form',
       targetId: 15721144,
       permissions: 'modify',
     };

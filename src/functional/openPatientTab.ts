@@ -30,7 +30,7 @@ export function openPatientTab(
     window.APPLINK(1, '$APP_APPNAME$', args);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-      console.warn(`window.APPLINK('1, "$APP_NAME$", ${args}')`);
+      console.warn(`window.APPLINK(1, "$APP_NAME$", '${args}')`);
     } else {
       throw e;
     }
