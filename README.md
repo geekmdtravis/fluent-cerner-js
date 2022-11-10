@@ -11,7 +11,7 @@ A fluent `MPAGE_EVENT` string generation library.
 
 - [MPage Developer Guide - MPAGE_EVENT Orders](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT-ORDERS)
 
-### Anatomy of an `MPAGE_EVENT` String
+### Anatomy of an `MPAGE_EVENT` String for the `ORDER` type.
 
 An `MPAGE_EVENT` string takes the form:
 
