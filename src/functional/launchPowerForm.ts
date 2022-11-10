@@ -4,8 +4,8 @@ import { outsideOfPowerChartError } from '../utils';
  * A type which represents the parameters to be be passed into the launchPowerForm() function.
  * @param {number} personId - The person_id of the patient whose power form is to be displayed.
  * @param {number} encounterId - The encntr_id of the patient whose power form is to be displayed.
- * @param {string} target - Determines whether to target a "new form" of a specified type, a "completed form", or a "new form search" box.
- * @param {number} targetId - The id number of the target document -- required only for `new form` or `completed form` targets.
+ * @param {string} target - Determines whether to target (open) a "new form" of a specified type, a "completed form", or a "new form search" box.
+ * @param {number} targetId - The form_id (pulled from DCP_FORMS_REF_ID) for the target document -- required only for `new form` or `completed form` targets.
  * @param {string} permissions - The permissions to open the document with. Choices are: "modify" or "read-only".
  **/
 export type PowerFormOpts = {
