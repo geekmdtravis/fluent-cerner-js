@@ -4,14 +4,14 @@ import { outsideOfPowerChartError } from '../utils';
  * A type which represents the parameters to be be passed into the launchPowerForm() function.
  * @param {number} personId - The person_id of the patient whose power form is to be displayed.
  * @param {number} encounterId - The encntr_id of the patient whose power form is to be displayed.
- * @param {string} target - Determines whether to target the "form", "activity", or the "ad hoc" charting dialog box.
- * @param {number} targetId - The id number of the target document -- required only for `form` or `activity` targets.
- * @param {string} permissions - The permissions to open the document with. Choices are "modify" or "read-only".
+ * @param {string} target - Determines whether to target (open) a "new form" of a specified type, a "completed form", or a "new form search" box.
+ * @param {number} targetId - The form_id (pulled from DCP_FORMS_REF_ID) for the target document -- required only for `new form` or `completed form` targets.
+ * @param {string} permissions - The permissions to open the document with. Choices are: "modify" or "read-only".
  **/
 export type PowerFormOpts = {
   personId: number;
   encounterId: number;
-  target: 'form' | 'activity' | 'ad hoc';
+  target: 'new form' | 'completed form' | 'new form search';
   targetId?: number;
   permissions: 'modify' | 'read only';
 };
@@ -34,22 +34,22 @@ export type MPageEventReturn = {
 export const launchPowerForm = (opts: PowerFormOpts): MPageEventReturn => {
   const { personId, encounterId, target, targetId, permissions } = opts;
 
-  if ((target === 'form' || target === 'activity') && !targetId) {
+  if ((target === 'new form' || target === 'completed form') && !targetId) {
     throw new Error(
-      "'targetId' is required for 'form' and 'activity' targets."
+      "'targetId' is required for 'new form' and 'completed form' targets."
     );
   }
 
   const params: Array<string> = [`${personId}`, `${encounterId}`];
-  if (target === 'form') {
+  if (target === 'new form') {
     params.push(`${targetId}`);
     params.push('0');
   }
-  if (target === 'activity') {
+  if (target === 'completed form') {
     params.push('0');
     params.push(`${targetId}`);
   }
-  if (target === 'ad hoc') {
+  if (target === 'new form search') {
     params.push('0');
     params.push('0');
   }
