@@ -63,7 +63,7 @@ export const launchPowerForm = (opts: PowerFormOpts): MPageEventReturn => {
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
-      console.warn(`window.MPAGES_EVENT('POWERFORM', ${eventString})`);
+      console.warn(`window.MPAGES_EVENT('POWERFORM', '${eventString}')`);
     } else {
       throw e;
     }

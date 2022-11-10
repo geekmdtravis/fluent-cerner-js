@@ -72,7 +72,7 @@ export const launchClinicalNote = (
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
-      console.warn(`window.MPAGES_EVENT('CLINICALNOTE', ${eventString})`);
+      console.warn(`window.MPAGES_EVENT('CLINICALNOTE', '${eventString}')`);
     } else {
       throw e;
     }
