@@ -15,11 +15,22 @@ describe('launchPowerForm', () => {
     expect(result.eventString).toEqual(expected);
   });
 
-  it('properly checks for the targetID parameter when set to `new form` or `completed form` and throws error if not present', () => {
+  it('checks for the targetID parameter when set to `new form` and throws error if not present', () => {
     const opts: PowerFormOpts = {
       personId: 733757,
       encounterId: 701346,
       target: 'new form',
+      targetId: undefined,
+      permissions: 'modify',
+    };
+    expect(() => launchPowerForm(opts)).toThrow(Error);
+  });
+
+  it('checks for the targetId parameter when set to `completed form` and throws error if not present', () => {
+    const opts: PowerFormOpts = {
+      personId: 733757,
+      encounterId: 701346,
+      target: 'completed form',
       targetId: undefined,
       permissions: 'modify',
     };
@@ -65,5 +76,18 @@ describe('launchPowerForm', () => {
 
     const result = launchPowerForm(opts);
     expect(result.inPowerChart).toBe(false);
+  });
+
+  it('when permissions is undefined, defaults to `read-only`', () => {
+    const expected = '733757|701346|15721144|0|1';
+    const opts: PowerFormOpts = {
+      personId: 733757,
+      encounterId: 701346,
+      target: 'new form',
+      targetId: 15721144,
+    };
+
+    const result = launchPowerForm(opts);
+    expect(result.eventString).toEqual(expected);
   });
 });
