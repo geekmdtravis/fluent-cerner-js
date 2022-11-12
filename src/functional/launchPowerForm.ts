@@ -1,3 +1,4 @@
+import { MPageEventReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
 
 /**
@@ -25,19 +26,7 @@ export type PowerFormOpts = {
 };
 
 /**
- * A type which represents the object to be returned from the launchClinicalNote() function.
- * @param {string} eventString - The string version of the MPageEvent
- * @param {boolean} inPowerChart - Returns `true` if being run from inside of PowerChart and returns `false` otherwise.
- *
- * @documentation [MPAGES_EVENT - POWERFORM](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERFORM)
- **/
-export type MPageEventReturn = {
-  eventString: string;
-  inPowerChart: boolean;
-};
-
-/**
- * A function to launch a power form, which returns an object of `MPageEventReturn`
+ * Launch a PowerForm in Cerner's PowerChart.
  * @param {PowerFormOpts} opts - The parameters passed, as specified in `PowerFormOpts`
  * @returns {MPageEventReturn} - An object containing the `eventString` and `inPowerChart` values.
  *

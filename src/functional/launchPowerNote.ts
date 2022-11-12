@@ -3,34 +3,51 @@ import { outsideOfPowerChartError } from '../utils';
 
 /**
  * A type which represents the parameters to be be passed into the launchPowerNote() function.
- * @param {number} personId - The person_id of the patient whose power note is to be displayed.
- * @param {number} encounterId - The encntr_id of the patient whose power note is to be displayed.
- * @param {string} CKI - (exclusive option to eventID) A CKI value for a new PowerNote that corresponds to an encounter pathway.
+ * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * Cerner context variable: PAT_PersonId.
+ * @param {number} encounterId - The identifier for the encounter belonging to the patient where
+ * this note will be launched. Cerner context variable: VIS_EncntrId.
+ * @param {string} target - Determines whether to target (open) a "new" PowerNote or an "existing" PowerNote.
+ * @param {number | string} targetId - For a `new` note, this value should be a `string` representing the
+ * CKI value for an encounter pathway. For an `existing` note, this value should be a `number` representing
+ * the eventId of the note to be opened.
+ * corresponds to an encounter pathway.
  * @param {number} eventId - (exclusive option to CKI) An event_id for an existing PowerNote to load.
+ *
+ * @documentation [MPAGES_EVENT - POWERNOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERNOTE)
  **/
 export type PowerNoteOpts = {
   personId: number;
   encounterId: number;
-  CKI?: string;
-  eventId?: number;
+  target: 'new' | 'existing';
+  targetId: string | number;
 };
 
 /**
- * A function to launch a power note, which returns an object of `MPageEventReturn`
+ * Launch a PowerNote in Cerner's PowerChart.
  * @param {PowerNoteOpts} opts - The parameters passed, as specified in `PowerNoteOpts`
  * @returns {MPageEventReturn} - An object containing the `eventString` and `inPowerChart` values.
+ * @throws {Error} - if there is a type mismatch between the provided option for `target` and `targetId`.
+ *
+ * @documentation [MPAGES_EVENT - POWERNOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERNOTE)
  **/
 export const launchPowerNote = (opts: PowerNoteOpts): MPageEventReturn => {
-  const { personId, encounterId, CKI, eventId } = opts;
+  const { personId, encounterId, target, targetId } = opts;
 
-  if (!CKI && !eventId)
-    throw new Error("Either 'CKI' or 'eventId' is required.");
+  if (target === 'new' && typeof targetId !== 'string') {
+    throw new Error('CKI must be a string when launching a new PowerNote.');
+  }
 
+  if (target === 'existing' && typeof targetId !== 'number') {
+    throw new Error(
+      'eventId must be a number when loading an existing PowerNote.'
+    );
+  }
   const params: Array<string> = [
     `${personId}`,
     `${encounterId}`,
-    `${(!eventId && CKI) || ''}`,
-    `${eventId || 0}`,
+    `${target === 'new' ? targetId : ''}`,
+    `${target === 'existing' ? targetId : 0}`,
   ];
 
   const eventString = `${params.join('|')}`;

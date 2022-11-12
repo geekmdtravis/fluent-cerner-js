@@ -9,6 +9,8 @@ import { outsideOfPowerChartError } from '../utils';
  * If no match is found, then sub-tab names will be searched and
  * navigation made to the first sub-tab that matches
  * the `tab` string.  If no matches are found, no navigation will occur.
+ *
+ * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
 export function openOrganizerTab(tab: string): void {
   try {
