@@ -8,6 +8,9 @@ const {
   openOrganizerTab,
   OrderStrOpts,
   NewOrderStrOpts,
+  launchClinicalNote,
+  launchPowerForm,
+  launchPowerNote,
 } = require('./dist/');
 
 /************************************************
@@ -93,3 +96,33 @@ openPatientTab(12345, 54321, 'Notes', true);
  ********************************************************/
 
 openOrganizerTab('Message Center');
+
+/****************************************************
+ * Launch a Clinical Note
+ ***************************************************/
+launchClinicalNote({
+  patientId: 12345,
+  encounterId: 54321,
+  eventIds: [123, 456, 789],
+  windowTitle: 'My Note',
+  viewOptionFlags: ['buttons', 'view-only'],
+});
+
+/****************************************************
+ * Launch a PowerForm
+ ***************************************************/
+launchPowerForm({
+  personId: 12345,
+  encounterId: 54321,
+  target: 'new form search',
+});
+
+/****************************************************
+ * Launch a PowerNote
+ ***************************************************/
+launchPowerNote({
+  personId: 12345,
+  encounterId: 54321,
+  target: 'new',
+  targetId: 'CKI!HAIR LOSS',
+});

@@ -14,6 +14,8 @@
  * @action `copy existing` - Copy an existing order.
  * @action `resume` - Resumes an existing order.
  * @action `suspend` - Suspends an existing order.
+ *
+ * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export type OrderAction =
   | 'launch moew'
@@ -38,6 +40,8 @@ export type OrderAction =
  * @param `nomenclatureId` - (optional) The nomenclature id, or associated problem/diagnosis, to be associated with the new order.
  * @param `interaction` - (optional) Defines when an interaction between the provider and PowerChart takes place only at sign time, or impromptu.
  * @param `origination` - (optional) Defines the origination of the order as `satellite`, `prescription`, or `normal`.
+ *
+ * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export type NewOrderStrOpts = {
   synonymId: number;
@@ -48,8 +52,10 @@ export type NewOrderStrOpts = {
 };
 
 /**
- * @param `orderId` - (optional) The order id value for the order to activate.
- * @param `newOrderOpts` - (optional) The options for the new order.
+ * @param {number} orderId - (optional) The order id value for the order to activate.
+ * @param {NewOrderOpts}newOrderOpts - (optional) The options for the new order.
+ *
+ * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export type OrderStrOpts = {
   orderId?: number;
@@ -59,9 +65,12 @@ export type OrderStrOpts = {
 /**
  * Creates a new pipe-delimited MPage Order string.
  * @since 0.4.0
- * @param action - The action to be performed on the order.
- * @param opts - (optional) The options for the order.
- * @returns `string` - A pipe-delimited string which can be integrated into an MPage Event for one or more orders.
+ * @param {OrderAction} action - The action to be performed on the order.
+ * @param {OrderStrOpts} opts - (optional) The options for the order.
+ * @returns {string} - A pipe-delimited string which can be integrated into an MPage Event for one or more orders.
+ * @throws {Error} - If the action is not a valid order action.
+ *
+ * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export const orderString = (
   action: OrderAction,

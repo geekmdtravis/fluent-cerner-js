@@ -17,18 +17,18 @@ describe('launchPowerNote', () => {
         'calculator',
         'view-only',
       ],
-      viewName: 'CLINNOTES',
-      viewSeq: 341,
-      compName: 'CLINNOTES',
-      compSeq: 1,
+      inheritanceProps: {
+        viewName: 'CLINNOTES',
+        viewSeq: 341,
+        compName: 'CLINNOTES',
+        compSeq: 1,
+      },
     };
 
     const result = launchClinicalNote(opts);
     expect(result.eventString).toEqual(expected);
   });
-});
 
-describe('launchPowerNote', () => {
   it('properly constructs a valid single clinical note request', () => {
     const expected =
       '8316243|12575702|[155543]|Clinical Notes Title|17|CLINNOTES5|143|CLINNOTES5|18';
@@ -39,10 +39,70 @@ describe('launchPowerNote', () => {
       eventIds: [155543],
       windowTitle: 'Clinical Notes Title',
       viewOptionFlags: ['menu', 'view-only'],
-      viewName: 'CLINNOTES5',
-      viewSeq: 143,
-      compName: 'CLINNOTES5',
-      compSeq: 18,
+      inheritanceProps: {
+        viewName: 'CLINNOTES5',
+        viewSeq: 143,
+        compName: 'CLINNOTES5',
+        compSeq: 18,
+      },
+    };
+
+    const result = launchClinicalNote(opts);
+    expect(result.eventString).toEqual(expected);
+  });
+
+  it('empty viewOptions defaults to `view-only` with no other options', () => {
+    const expected =
+      '8316243|12575702|[155543]|Clinical Notes Title|16|CLINNOTES5|143|CLINNOTES5|18';
+
+    const opts: ClinicalNoteOpts = {
+      personId: 8316243,
+      encounterId: 12575702,
+      eventIds: [155543],
+      windowTitle: 'Clinical Notes Title',
+      viewOptionFlags: [],
+      inheritanceProps: {
+        viewName: 'CLINNOTES5',
+        viewSeq: 143,
+        compName: 'CLINNOTES5',
+        compSeq: 18,
+      },
+    };
+
+    const result = launchClinicalNote(opts);
+    expect(result.eventString).toEqual(expected);
+  });
+
+  it('undefined viewOptions defaults to `view-only` with no other options', () => {
+    const expected =
+      '8316243|12575702|[155543]|Clinical Notes Title|16|CLINNOTES5|143|CLINNOTES5|18';
+
+    const opts: ClinicalNoteOpts = {
+      personId: 8316243,
+      encounterId: 12575702,
+      eventIds: [155543],
+      windowTitle: 'Clinical Notes Title',
+      inheritanceProps: {
+        viewName: 'CLINNOTES5',
+        viewSeq: 143,
+        compName: 'CLINNOTES5',
+        compSeq: 18,
+      },
+    };
+
+    const result = launchClinicalNote(opts);
+    expect(result.eventString).toEqual(expected);
+  });
+
+  it('undefined `inheritanceProps` will leave the last four fields empty', () => {
+    const expected = '8316243|12575702|[155543]|Clinical Notes Title|16||||';
+
+    const opts: ClinicalNoteOpts = {
+      personId: 8316243,
+      encounterId: 12575702,
+      eventIds: [155543],
+      windowTitle: 'Clinical Notes Title',
+      viewOptionFlags: ['view-only'],
     };
 
     const result = launchClinicalNote(opts);

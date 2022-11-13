@@ -7,7 +7,8 @@ describe('launchPowerNote', () => {
     const opts: PowerNoteOpts = {
       personId: 123456,
       encounterId: 78910,
-      eventId: 1337,
+      target: 'existing',
+      targetId: 1337,
     };
 
     const result = launchPowerNote(opts);
@@ -19,33 +20,42 @@ describe('launchPowerNote', () => {
     const opts: PowerNoteOpts = {
       personId: 8316243,
       encounterId: 12575702,
-      CKI: 'CKI!EPS HAIR LOSS',
+      target: 'new',
+      targetId: 'CKI!EPS HAIR LOSS',
     };
 
     const result = launchPowerNote(opts);
     expect(result.eventString).toEqual(expected);
   });
-  it('properly constructs a valid power note request to load an *existing* power note when both CKI and eventId are provided', () => {
-    const expected = '123456|78910||1337';
-
+  it('throws an error if `new` is provided but is not a string', () => {
     const opts: PowerNoteOpts = {
       personId: 123456,
       encounterId: 78910,
-      CKI: 'CKI!EPS HAIR LOSS',
-      eventId: 1337,
-    };
-
-    const result = launchPowerNote(opts);
-    expect(result.eventString).toEqual(expected);
-  });
-  it('throws an error if neither CKI nor eventId are provided', () => {
-    const opts: PowerNoteOpts = {
-      personId: 123456,
-      encounterId: 78910,
+      target: 'new',
+      targetId: 1337,
     };
 
     expect(() => launchPowerNote(opts)).toThrowError();
   });
-});
+  it('throws an error if `existing` is provided but is not a number', () => {
+    const opts: PowerNoteOpts = {
+      personId: 123456,
+      encounterId: 78910,
+      target: 'existing',
+      targetId: 'CKI!EPS HAIR LOSS',
+    };
 
-//npx yarn test --verbose --coverage
+    expect(() => launchPowerNote(opts)).toThrowError();
+  });
+  it('returns false for `inPowerChart` when called outside of PowerChart', () => {
+    const opts: PowerNoteOpts = {
+      personId: 123456,
+      encounterId: 78910,
+      target: 'existing',
+      targetId: 1337,
+    };
+
+    const result = launchPowerNote(opts);
+    expect(result.inPowerChart).toEqual(false);
+  });
+});

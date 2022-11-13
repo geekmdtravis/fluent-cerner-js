@@ -82,6 +82,8 @@ statusCodeMap.set(500, 'internal server exception');
  * the `data` field will be set to `undefined`. The objects `meta` field
  * includes `responseText`, `status`, and `statusTest` fields.
  * @rejects with an error message if the CCL request fails.
+ *
+ * @documentation - [XMLCclRequest](https://wiki.cerner.com/display/MPAGES/MPages+JavaScript+Reference#MPagesJavaScriptReference-XMLCclRequest)
  */
 export function makeCclRequest<T>(
   opts: CclOpts

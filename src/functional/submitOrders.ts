@@ -19,6 +19,8 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
  * will default to `search` view.
  * @action `disablePowerPlans` - (optional) Disables power plans. Power plans are enabled by default.
  * @action `silentSign` - (optional) Signs the orders silently. Orders are not signed silently by default.
+ *
+ * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export type SubmitOrderOpts = {
   targetTab?: 'orders' | 'power orders' | 'medications' | 'power medications';
@@ -31,17 +33,21 @@ export type SubmitOrderOpts = {
  * Submit orders for a patient in a given encounter through the Cerner PowerChart MPage Event interface.
  * By default, power plans are enabled, the target tab is set to order with power orders enabled, and
  * will launch to the signature view.
- * @param pid - The patient id.
- * @param eid - The encounter id for the patient.
+ * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * Cerner context variable: PAT_PersonId.
+ * @param {number} encounterId - The identifier for the encounter belonging to the patient where
+ * this note will be launched. Cerner context variable: VIS_EncntrId.
  * @param orders - The orders to be submitted. Orders are given in the form of an
  * Cerner MPage Order string of pipe-delimited parameters.
  * @param opts - (optional) User defined options for the order submission event.
  * @returns an object with the order `eventString` and a boolean flag set to notify the user if
  * the attempt was made outside of PowerChart, `inPowerChart`.
+ *
+ * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export const submitOrders = (
-  pid: number,
-  eid: number,
+  personId: number,
+  encounterId: number,
   orders: Array<string>,
   opts?: SubmitOrderOpts
 ): { eventString: string; inPowerChart: boolean } => {
@@ -51,7 +57,11 @@ export const submitOrders = (
 
   let inPowerChart = true;
 
-  let params: Array<string> = [`${pid}`, `${eid}`, orders.join('')];
+  let params: Array<string> = [
+    `${personId}`,
+    `${encounterId}`,
+    orders.join(''),
+  ];
 
   params.push(disablePowerPlans ? '0' : '24');
 
