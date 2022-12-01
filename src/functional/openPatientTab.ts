@@ -1,3 +1,4 @@
+import { MPageEventReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
 
 /**
@@ -25,18 +26,20 @@ export function openPatientTab(
   encounterId: number,
   tab: string,
   quickAdd?: boolean
-): void {
-  const args = `/PERSONID=${personId} /ENCNTRID=${encounterId} /FIRSTTAB=^${tab.toUpperCase()}${
+): MPageEventReturn {
+  let inPowerChart = true;
+  const eventString = `/PERSONID=${personId} /ENCNTRID=${encounterId} /FIRSTTAB=^${tab.toUpperCase()}${
     quickAdd || false ? '+' : ''
   }^`;
 
   try {
-    window.APPLINK(1, '$APP_APPNAME$', args);
+    window.APPLINK(1, '$APP_APPNAME$', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-      console.warn(`window.APPLINK(1, "$APP_NAME$", '${args}')`);
+      inPowerChart = false;
     } else {
       throw e;
     }
   }
+  return { eventString, inPowerChart };
 }

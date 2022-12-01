@@ -1,3 +1,4 @@
+import { MPageEventReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
 
 /**
@@ -12,16 +13,17 @@ import { outsideOfPowerChartError } from '../utils';
  *
  * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
-export function openOrganizerTab(tab: string): void {
+export function openOrganizerTab(tab: string): MPageEventReturn {
+  let inPowerChart = true;
+  const eventString = `/ORGANIZERTAB=^${tab}^`;
   try {
-    window.APPLINK(0, 'Powerchart.exe', `/ORGANIZERTAB=^${tab}^`);
+    window.APPLINK(0, 'Powerchart.exe', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-      console.warn(
-        `window.APPLINK("Powerchart.exe", "/ORGANIZERTAB=^${tab}^")`
-      );
+      inPowerChart = false;
     } else {
       throw e;
     }
   }
+  return { eventString, inPowerChart };
 }
