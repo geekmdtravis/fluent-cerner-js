@@ -10,6 +10,8 @@ export function outsideOfPowerChartError(e: unknown) {
       e.message === 'window.MPAGES_EVENT is not a function') ||
     (e instanceof TypeError &&
       e.message === 'window.XMLCclRequest is not a function') ||
+    (e instanceof TypeError &&
+      e.message === 'window.APPLINK is not a function') ||
     (e instanceof ReferenceError && e.message === 'window is not defined')
   );
 }
