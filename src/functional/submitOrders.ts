@@ -34,8 +34,8 @@ export type SubmitOrderOpts = {
 
 /**
  * Submit orders for a patient in a given encounter through the Cerner PowerChart MPage Event interface.
- * By default, power plans are enabled, the target tab is set to order with power orders enabled, and
- * will launch to the signature view.
+ * By default, power plans are disabled (potential bug in PowerChart), the target tab is set to order
+ * with power orders enabled, and will launch to the signature view.
  * @param {number} personId - The identifier for the patient to whom the note belongs.
  * Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
