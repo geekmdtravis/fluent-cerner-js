@@ -17,7 +17,10 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
  * If not provided, will default to `power orders`, that is the orders tab with power orders enabled.
  * @action `launchView` - (optional) Sets the view to be displayed.If not provided,
  * will default to `search` view.
- * @action `disablePowerPlans` - (optional) Disables power plans. Power plans are enabled by default.
+ * @action `enablePowerPlans` - (optional) Enables power plans in the MOEW. Power plans are disabled by default.
+ * **NOTE**: Our internal testing suggests there is a _PowerChart_ bug relating to enabling this option
+ * where making MPAGES_EVENT calls, through `submitOrders`, in series with this option enabled will lead
+ * to some MPAGES_EVENT calls failing to be invoked. Please keep this in mind when enabling this option.
  * @action `silentSign` - (optional) Signs the orders silently. Orders are not signed silently by default.
  *
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
@@ -25,7 +28,7 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
 export type SubmitOrderOpts = {
   targetTab?: 'orders' | 'power orders' | 'medications' | 'power medications';
   launchView?: 'search' | 'profile' | 'signature';
-  disablePowerPlans?: boolean;
+  enablePowerPlans?: boolean;
   signSilently?: boolean;
 };
 
@@ -51,7 +54,7 @@ export const submitOrders = (
   orders: Array<string>,
   opts?: SubmitOrderOpts
 ): { eventString: string; inPowerChart: boolean } => {
-  let { targetTab, launchView, disablePowerPlans, signSilently } = opts || {};
+  let { targetTab, launchView, enablePowerPlans, signSilently } = opts || {};
   if (!targetTab) targetTab = 'power orders';
   if (!launchView) launchView = 'signature';
 
@@ -63,7 +66,7 @@ export const submitOrders = (
     orders.join(''),
   ];
 
-  params.push(disablePowerPlans ? '0' : '24');
+  params.push(enablePowerPlans ? '24' : '0');
 
   const { tab, display } = tabsMap.get(targetTab) || { tab: 2, display: 127 };
   params.push(`{${tab}|${display}}`);
