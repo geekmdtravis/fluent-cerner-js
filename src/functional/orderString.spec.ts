@@ -44,11 +44,17 @@ describe('makeOrderString', () => {
     });
     expect(result).toBe('{ORDER|1|0|2|0|0}');
   });
-  test("'new order' with a 'nomenclatureId' of `3` returns `{ORDER|1|0|0|3|0}`", () => {
+  test("'new order' with 'nomenclatureIds' of `3` returns `{ORDER|1|0|0|3|0}`", () => {
     const result = orderString('new order', {
-      newOrderOpts: { synonymId: 1, nomenclatureId: 3 },
+      newOrderOpts: { synonymId: 1, nomenclatureIds: [3] },
     });
     expect(result).toBe('{ORDER|1|0|0|3|0}');
+  });
+  test("'new order' with 'nomenclatureIds' of `3` and `4` returns `{ORDER|1|0|0|[3|4]|0}`", () => {
+    const result = orderString('new order', {
+      newOrderOpts: { synonymId: 1, nomenclatureIds: [3, 4] },
+    });
+    expect(result).toBe('{ORDER|1|0|0|[3|4]|0}');
   });
   test("'new order' with an `interaction` of `on sign` returns `{ORDER|1|0|0|0|1}`", () => {
     const result = orderString('new order', {
@@ -130,7 +136,7 @@ describe('makeOrderString', () => {
         synonymId: 1,
         origination: 'prescription',
         orderSentenceId: 2,
-        nomenclatureId: 3,
+        nomenclatureIds: [3],
         interactionCheck: 'on sign',
       },
     });

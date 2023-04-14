@@ -33,7 +33,7 @@ const orderStr3 = orderString('new order', {
   newOrderOpts: {
     synonymId: 3428,
     orderSentenceId: 3,
-    nomenclatureId: 14,
+    nomenclatureIds: [14, 15, 16],
     interactionCheck: 'on sign',
   },
 });
@@ -51,7 +51,7 @@ order2.willMakeNewOrder(1343, { isRxOrder: true });
 
 const opts = {
   orderSentenceId: 3,
-  nomenclatureId: 14,
+  nomenclatureIds: [14],
   skipInteractionCheckUntilSign: true,
 };
 const order3 = new MPageOrder();
@@ -89,7 +89,7 @@ makeCclRequest({
  * Open a specific tab in a patients chart
  ********************************************************/
 
-openPatientTab(12345, 54321, 'Notes', true);
+openPatientTab(12345, 54321, 'Notes');
 
 /********************************************************
  * Open a specific organizer level tab
