@@ -30,7 +30,7 @@ const o3 = orderString('new order', {
   newOrderOpts: {
     synonymId: 3428,
     orderSentenceId: 3,
-    nomenclatureId: 14,
+    nomenclatureIds: [14, 15],
     interactionCheck: 'on sign',
   },
 });
