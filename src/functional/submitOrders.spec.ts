@@ -32,23 +32,24 @@ describe('submitOrders', () => {
     const pidAndEidAtHead = eventString.startsWith('1|2');
     expect(pidAndEidAtHead).toBe(true);
   });
-  test('setting `enablePowerPlans` to `true` updates the `eventString` properly', () => {
+  test('setting `targetTab` to `power orders` updates the `eventString` to include the _PowerPlans_ flag `24` and _PowerOrders_ flag `127` and sets the target tab to `2`.', () => {
     const opts: SubmitOrderOpts = {
-      enablePowerPlans: true,
+      targetTab: 'power orders',
     };
     const { eventString } = submitOrders(1, 2, [order], opts);
     const expectedString = '1|2|{ORDER|0|0|0|0|0}|24|{2|127}|32|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting `enablePowerPlans` to `false` updates the `eventString` properly', () => {
+  test('setting `targetTab` to `power medications` updates the `eventString` to include the _PowerPlans_ flag `24` and _PowerOrders_ flag `127` and sets the target tab to `3`.', () => {
     const opts: SubmitOrderOpts = {
-      enablePowerPlans: false,
+      targetTab: 'power medications',
     };
     const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|127}|32|0';
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|24|{3|127}|32|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting `targetTab` to `orders` updates the `eventString` properly', () => {
+
+  test('setting `targetTab` to `orders` updates the `eventString` properly to a target tab of `2` with both _PowerOrders_ and _PowerPlans_ disabled.', () => {
     const opts: SubmitOrderOpts = {
       targetTab: 'orders',
     };
@@ -56,15 +57,8 @@ describe('submitOrders', () => {
     const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|32|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting `targetTab` to `power orders` updates the `eventString` properly', () => {
-    const opts: SubmitOrderOpts = {
-      targetTab: 'power orders',
-    };
-    const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|127}|32|0';
-    expect(eventString).toBe(expectedString);
-  });
-  test('setting the `targetTab` to `medications` updates the `eventString` properly', () => {
+
+  test('setting `targetTab` to `medications` updates the `eventString` properly to a target tab of `3` with both _PowerOrders_ and _PowerPlans_ disabled.', () => {
     const opts: SubmitOrderOpts = {
       targetTab: 'medications',
     };
@@ -72,68 +66,60 @@ describe('submitOrders', () => {
     const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{3|0}|32|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting the `targetTab` to `power medications` updates the `eventString` properly', () => {
-    const opts: SubmitOrderOpts = {
-      targetTab: 'power medications',
-    };
-    const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{3|127}|32|0';
-    expect(eventString).toBe(expectedString);
-  });
-  test('setting the `launchView` to `search` updates the `eventString` properly', () => {
+
+  test('setting the `launchView` to `search` updates the `eventString` to include the proper flag `8`', () => {
     const opts: SubmitOrderOpts = {
       launchView: 'search',
     };
     const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|127}|8|0';
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|8|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting the `launchView` to `profile` updates the `eventString` properly', () => {
+  test('setting the `launchView` to `profile` updates the `eventString` properly to include the proper flag `16`', () => {
     const opts: SubmitOrderOpts = {
       launchView: 'profile',
     };
     const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|127}|16|0';
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|16|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting the `launchView` to `signature` updates the `eventString` properly', () => {
+  test('setting the `launchView` to `signature` updates the `eventString` properly to include the proper flag `32`', () => {
     const opts: SubmitOrderOpts = {
       launchView: 'signature',
     };
     const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|127}|32|0';
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|32|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting `signSilently` to `false` updates the `eventString` properly', () => {
+  test('setting `signSilently` to `false` updates the `eventString` properly to end the string with a `0` flag', () => {
     const opts: SubmitOrderOpts = {
       signSilently: false,
     };
     const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|127}|32|0';
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|32|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting `signSilently` to `true` updates the `eventString` properly', () => {
+  test('setting `signSilently` to `true` updates the `eventString` properly to end the string with a `1` flag', () => {
     const opts: SubmitOrderOpts = {
       signSilently: true,
     };
     const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|127}|32|1';
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|32|1';
     expect(eventString).toBe(expectedString);
   });
-  test('not providing options properly produces default `eventString` values', () => {
+  test('not providing options properly produces default `eventString` values with disabled _PowerPlans_, disabled _PowerOrders_, target tab of orders tab `2`, and showing orders for signature `32`', () => {
     const { eventString } = submitOrders(1, 2, [order]);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|127}|32|0';
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|32|0';
     expect(eventString).toBe(expectedString);
   });
-  test('setting `targetTab` to `power medications`, `launchView` to `signature`, `enablePowerPlans` to `false`, and `signSilently` to `true` produces the proper `eventString`', () => {
+  test('setting `targetTab` to `power medications`, `launchView` to `signature`, and `signSilently` to `true` produces the proper `eventString`', () => {
     const opts: SubmitOrderOpts = {
       targetTab: 'power medications',
       launchView: 'signature',
-      enablePowerPlans: false,
       signSilently: true,
     };
     const { eventString } = submitOrders(1, 2, [order], opts);
-    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{3|127}|32|1';
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|24|{3|127}|32|1';
     expect(eventString).toBe(expectedString);
   });
 });
