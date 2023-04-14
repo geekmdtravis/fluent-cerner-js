@@ -37,7 +37,7 @@ export type OrderAction =
  * @param `synonymId` - The Cerner synonym_id for the order to be generated.
  * @param `orderSentenceId` - (optional) The order sentence id to be associated with the new order.
  * This is an accompanied value to the synonymId and provides specificity to the order type.
- * @param `nomenclatureId` - (optional) The nomenclature id, or associated problem/diagnosis, to be associated with the new order.
+ * @param `nomenclatureIds` - (optional) An array of nomenclature ids (identifiers for problems/diagnoses) to be associated with the new order.
  * @param `interaction` - (optional) Defines when an interaction between the provider and PowerChart takes place only at sign time, or impromptu.
  * @param `origination` - (optional) Defines the origination of the order as `satellite`, `prescription`, or `normal`.
  *
@@ -46,7 +46,7 @@ export type OrderAction =
 export type NewOrderStrOpts = {
   synonymId: number;
   orderSentenceId?: number;
-  nomenclatureId?: number;
+  nomenclatureIds?: Array<number>;
   interactionCheck?: 'on sign' | 'default';
   origination?: 'satellite' | 'prescription' | 'normal';
 };
@@ -80,12 +80,14 @@ export const orderString = (
   const {
     synonymId,
     orderSentenceId,
-    nomenclatureId,
+    nomenclatureIds,
     interactionCheck: interaction,
     origination,
   } = newOrderOpts || {};
 
   let params: Array<string> = [orderActionMap.get(action)];
+
+  const nids = nomenclatureIds || [];
 
   switch (action) {
     case 'launch moew':
@@ -98,7 +100,7 @@ export const orderString = (
         `${synonymId}`,
         `${originationMap.get(origination) || 0}`,
         `${orderSentenceId || 0}`,
-        `${nomenclatureId || 0}`,
+        nids.length > 1 ? `[${nids.join('|')}]` : `${nids[0] || 0}`,
         `${interactionMap.get(interaction) || 0}`,
       ]);
       break;

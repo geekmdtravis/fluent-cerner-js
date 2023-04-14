@@ -33,42 +33,12 @@ const orderStr3 = orderString('new order', {
   newOrderOpts: {
     synonymId: 3428,
     orderSentenceId: 3,
-    nomenclatureId: 14,
+    nomenclatureIds: [14, 15, 16],
     interactionCheck: 'on sign',
   },
 });
 
 submitOrders(123, 456, [orderStr1, orderStr2, orderStr3]);
-
-// Class utilities
-// ---------------
-
-const order1 = new MPageOrder();
-order1.willCopyExistingOrder(12345);
-
-const order2 = new MPageOrder();
-order2.willMakeNewOrder(1343, { isRxOrder: true });
-
-const opts = {
-  orderSentenceId: 3,
-  nomenclatureId: 14,
-  skipInteractionCheckUntilSign: true,
-};
-const order3 = new MPageOrder();
-order3.willMakeNewOrder(3428, opts);
-
-const event = new MPageOrderEvent();
-event
-  .forPerson(123)
-  .forEncounter(456)
-  .addOrders([order1, order2, order3])
-  .enablePowerPlans()
-  .customizeOrderListProfile()
-  .enablePowerOrders()
-  .launchOrdersForSignature();
-
-// Send the MPage event to the server.
-event.send();
 
 /********************************************************
  * Make a CCL request to the server and retrieve the data
@@ -89,7 +59,7 @@ makeCclRequest({
  * Open a specific tab in a patients chart
  ********************************************************/
 
-openPatientTab(12345, 54321, 'Notes', true);
+openPatientTab(12345, 54321, 'Notes');
 
 /********************************************************
  * Open a specific organizer level tab
