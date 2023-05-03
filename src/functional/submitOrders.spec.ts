@@ -122,4 +122,12 @@ describe('submitOrders', () => {
     const expectedString = '1|2|{ORDER|0|0|0|0|0}|24|{3|127}|32|1';
     expect(eventString).toBe(expectedString);
   });
+  test('produces valid eventString when dryRun is true', () => {
+    const opts: SubmitOrderOpts = {
+      dryRun: true,
+    };
+    const { eventString } = submitOrders(1, 2, [order], opts);
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|32|0';
+    expect(eventString).toBe(expectedString);
+  });
 });
