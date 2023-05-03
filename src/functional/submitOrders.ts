@@ -18,7 +18,8 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
  * Any tab with the term _power_ in it will enable both _PowerOrders_ and _PowerPlans_ in _PowerChart_.
  * @action `launchView` - (optional) Sets the view to be displayed.If not provided,
  * will default to `search` view.
- * @action `silentSign` - (optional) Signs the orders silently. Orders are not signed silently by default.
+ * @action `signSilently` - (optional) Signs the orders silently. Orders are not signed silently by default.
+ * @action `dryRun` - (optional) If set to true, will not submit the order.
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  * @warning Our internal testing suggests there is a _PowerChart_ bug relating to the use of power
  * orders. When making MPAGES_EVENT calls (which we do in this library through `submitOrders`)
@@ -30,6 +31,7 @@ export type SubmitOrderOpts = {
   targetTab?: 'orders' | 'power orders' | 'medications' | 'power medications';
   launchView?: 'search' | 'profile' | 'signature';
   signSilently?: boolean;
+  dryRun?: boolean;
 };
 
 /**
@@ -56,7 +58,7 @@ export const submitOrders = (
   orders: Array<string>,
   opts?: SubmitOrderOpts
 ): { eventString: string; inPowerChart: boolean } => {
-  let { targetTab, launchView, signSilently } = opts || {};
+  let { targetTab, launchView, signSilently, dryRun } = opts || {};
   if (!targetTab) targetTab = 'orders';
   if (!launchView) launchView = 'signature';
   const enablePowerPlans =
@@ -80,6 +82,9 @@ export const submitOrders = (
   params.push(`${signSilently ? '1' : '0'}`);
 
   const eventString = params.join('|');
+
+  if (dryRun) return { eventString, inPowerChart };
+
   try {
     window.MPAGES_EVENT('ORDERS', eventString);
   } catch (e) {
