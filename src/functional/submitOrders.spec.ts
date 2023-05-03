@@ -136,4 +136,13 @@ describe('submitOrders', () => {
     const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{3|127}|32|1';
     expect(eventString).toBe(expectedString);
   });
+  test('produces valid eventString when dryRun is true', () => {
+    const opts: SubmitOrderOpts = {
+      enablePowerPlans: true,
+      dryRun: true,
+    };
+    const { eventString } = submitOrders(1, 2, [order], opts);
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|24|{2|127}|32|0';
+    expect(eventString).toBe(expectedString);
+  });
 });

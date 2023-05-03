@@ -22,7 +22,7 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
  * where making MPAGES_EVENT calls, through `submitOrders`, in series with this option enabled will lead
  * to some MPAGES_EVENT calls failing to be invoked. Please keep this in mind when enabling this option.
  * @action `silentSign` - (optional) Signs the orders silently. Orders are not signed silently by default.
- *
+ * @action `dryRun` - (optional) If set to true, will not submit the order.
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export type SubmitOrderOpts = {
@@ -30,6 +30,7 @@ export type SubmitOrderOpts = {
   launchView?: 'search' | 'profile' | 'signature';
   enablePowerPlans?: boolean;
   signSilently?: boolean;
+  dryRun?: boolean;
 };
 
 /**
@@ -54,7 +55,8 @@ export const submitOrders = (
   orders: Array<string>,
   opts?: SubmitOrderOpts
 ): { eventString: string; inPowerChart: boolean } => {
-  let { targetTab, launchView, enablePowerPlans, signSilently } = opts || {};
+  let { targetTab, launchView, enablePowerPlans, signSilently, dryRun } =
+    opts || {};
   if (!targetTab) targetTab = 'power orders';
   if (!launchView) launchView = 'signature';
 
@@ -76,6 +78,9 @@ export const submitOrders = (
   params.push(`${signSilently ? '1' : '0'}`);
 
   const eventString = params.join('|');
+
+  if (dryRun) return { eventString, inPowerChart: false };
+
   try {
     window.MPAGES_EVENT('ORDERS', eventString);
   } catch (e) {
