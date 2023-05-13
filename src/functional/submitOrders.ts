@@ -1,5 +1,7 @@
-import { warnOutsideOfPowerChart } from '../utils';
-import { outsideOfPowerChartError } from '../utils/outsideOfPowerChartError';
+import {
+  outsideOfPowerChartError,
+  warnAttemptedOrdersOutsideOfPowerChart,
+} from '../utils';
 
 const launchViewMap = new Map()
   .set('search', 8)
@@ -86,7 +88,7 @@ export const submitOrders = (
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
-      warnOutsideOfPowerChart(eventString);
+      warnAttemptedOrdersOutsideOfPowerChart(eventString);
     } else {
       throw e;
     }
