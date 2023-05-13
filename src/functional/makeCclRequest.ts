@@ -1,4 +1,8 @@
-import { outsideOfPowerChartError } from '../utils';
+import {
+  composeXmlCclReqRejectMsg,
+  outsideOfPowerChartError,
+  processXmlCclReqResponseText,
+} from '../utils';
 
 /**
  * A type which represents the input parameter for an `XmlCclRequest`, which is wrapped by `makeCclRequest`.
@@ -31,6 +35,16 @@ export type CclOpts = {
 };
 
 /**
+ * A type functioning as a convience wrapper for the ready state of an XmlCclRequest.
+ */
+export type XmlCclReadyState =
+  | 'uninitialized'
+  | 'loading'
+  | 'loaded'
+  | 'interactive'
+  | 'completed';
+
+/**
  * A type functioning as a convience wrapper for several status
  * codes, respresented as strings, that are returned by XMLCclRequest.
  */
@@ -56,6 +70,13 @@ export type CclRequestResponse<T> = {
   };
   data: T | undefined;
 };
+
+const readyStateMap: Map<number, XmlCclReadyState> = new Map();
+readyStateMap.set(0, 'uninitialized');
+readyStateMap.set(1, 'loading');
+readyStateMap.set(2, 'loaded');
+readyStateMap.set(3, 'interactive');
+readyStateMap.set(4, 'completed');
 
 const statusCodeMap: Map<number, XmlCclStatus> = new Map();
 statusCodeMap.set(200, 'success');
@@ -99,28 +120,27 @@ export function makeCclRequest<T>(
       request.open('GET', `${prg}`);
       request.send(paramsList);
       request.onreadystatechange = function() {
-        const data: CclRequestResponse<T> = {
+        const readyState = readyStateMap.get(request.readyState);
+
+        if (readyState !== 'completed') return;
+
+        const statusText = statusCodeMap.get(request.status);
+        const responseText = processXmlCclReqResponseText(request.responseText);
+        const data: T | undefined = responseText && JSON.parse(responseText);
+
+        const response: CclRequestResponse<T> = {
           meta: {
-            responseText: request.responseText,
+            responseText: responseText || 'no response text',
             status: request.status,
-            statusText:
-              statusCodeMap.get(request.status) ||
-              'status refers to unknown error',
+            statusText: statusText || 'status refers to unknown error',
           },
-          data:
-            request.responseText === ''
-              ? undefined
-              : JSON.parse(request.responseText),
+          data,
         };
-        if (request.readyState === 4) {
-          resolve(data);
+
+        if (statusText === 'success') {
+          resolve(response);
         } else {
-          reject(
-            `error with status ${request.status} and readyState ${
-              request.readyState
-            } on ${prg} with params ${paramsList} returning response text: ${request.responseText ||
-              'no response text'}`
-          );
+          reject(composeXmlCclReqRejectMsg(request, prg, paramsList));
         }
       };
     } catch (e) {
