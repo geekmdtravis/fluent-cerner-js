@@ -73,6 +73,10 @@ declare global {
     requestBinding: string;
     requestText: string;
     blobIn: string;
+    url: string;
+    method: string;
+    requestHeaders: Object;
+    requestLen: number;
     onreadystatechange: () => void;
     onerror: () => void;
     abort: () => void;
