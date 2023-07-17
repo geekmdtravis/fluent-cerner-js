@@ -67,6 +67,10 @@ export type CclRequestResponse<T> = {
     responseText: string;
     status: number;
     statusText: XmlCclStatus;
+    statusDetails: string;
+    prgName: string;
+    prgArguments: string;
+    __original: XMLCclRequest;
   };
   data: T | undefined;
 };
@@ -133,6 +137,10 @@ export function makeCclRequest<T>(
             responseText: responseText || 'no response text',
             status: request.status,
             statusText: statusText || 'status refers to unknown error',
+            statusDetails: request.statusText,
+            prgName: request.url,
+            prgArguments: request.requestText,
+            __original: request,
           },
           data,
         };
