@@ -1,3 +1,4 @@
+import { MPageEventReturn } from '.';
 import {
   outsideOfPowerChartError,
   warnAttemptedOrdersOutsideOfPowerChart,
@@ -59,7 +60,7 @@ export const submitOrders = (
   encounterId: number,
   orders: Array<string>,
   opts?: SubmitOrderOpts
-): { eventString: string; inPowerChart: boolean } => {
+): MPageEventReturn => {
   let { targetTab, launchView, signSilently, dryRun } = opts || {};
   if (!targetTab) targetTab = 'orders';
   if (!launchView) launchView = 'signature';
