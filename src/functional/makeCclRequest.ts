@@ -163,22 +163,37 @@ export function makeCclRequest<T>(
 
 /**
  * A function which processes the CCL request parameters, converting them to a string compatible with an XmlCclRequest.
- * @param params {Array<CclCallParam>} An array of CclCallParam objects, each of which represents
+ * @param params {Array<CclCallParam|string|number>} An array of CclCallParam objects when explicitly defining
+ * type, or strings and numbers when implicitly defining type, each of which represents
  * @param excludeMine {boolean} Determines whether or not to include the "MINE" parameter as the
  * @returns {string} the XmlCclRequest compatible string.
  */
 export function processCclRequestParams(
-  params?: Array<CclCallParam>,
+  params?: Array<CclCallParam | string | number>,
   excludeMine?: boolean
 ) {
   params = params || [];
   excludeMine = excludeMine || false;
 
-  const updatedParams: Array<CclCallParam> = excludeMine
-    ? [...params]
-    : [{ type: 'string', param: 'MINE' }, ...params];
+  const processedParams: Array<CclCallParam> = params.map(param => {
+    if (typeof param === 'string') {
+      return { type: 'string', param: param };
+    } else if (typeof param === 'number') {
+      return { type: 'number', param: param };
+    } else if (typeof param === 'object' && param.param && param.type) {
+      return param;
+    } else {
+      throw new Error(
+        `Invalid parameter type. Expected string, number, or a valid CclCallParam object. Received ${typeof param}`
+      );
+    }
+  });
 
-  const paramString = updatedParams
+  const finalParams = excludeMine
+    ? [...processedParams]
+    : [{ type: 'string', param: 'MINE' }, ...processedParams];
+
+  const paramString = finalParams
     .map(({ type, param }) => (type === 'string' ? `'${param}'` : param))
     .join(',');
 
