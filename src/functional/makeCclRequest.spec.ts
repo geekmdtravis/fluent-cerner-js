@@ -61,4 +61,19 @@ describe('processCclRequestParams', () => {
     const result = processCclRequestParams(params, true);
     expect(result).toEqual("'test'");
   });
+  it('handles properly processes parameters when the list items types are decided without explicit type declaration', () => {
+    const params: Array<number | string | CclCallParam> = [
+      1234,
+      'test',
+      6789,
+      'test2',
+      { param: 'test3', type: 'string' },
+    ];
+    const result = processCclRequestParams(params, true);
+    expect(result).toEqual("1234,'test',6789,'test2','test3'");
+  });
+  it('throws and error when invalid parameters are given', () => {
+    const params: Array<number | string> = [{ test: 'test' } as any];
+    expect(() => processCclRequestParams(params, true)).toThrowError();
+  });
 });

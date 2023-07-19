@@ -2,12 +2,8 @@ const {
   orderString,
   submitOrders,
   makeCclRequest,
-  MPageOrder,
-  MPageOrderEvent,
   openPatientTab,
   openOrganizerTab,
-  OrderStrOpts,
-  NewOrderStrOpts,
   launchClinicalNote,
   launchPowerForm,
   launchPowerNote,
@@ -54,6 +50,18 @@ makeCclRequest({
   .then(data => (result = data))
   .catch(console.error)
   .finally(() => console.log(result));
+
+/********************************************************
+ * Alternative example, where the parameter types are inferred
+ ********************************************************/
+let altResult = undefined;
+makeCclRequest({
+  prg: 'MP_GET_ORDER_LIST',
+  params: [12345, 'joe'],
+})
+  .then(data => (altResult = data))
+  .catch(console.error)
+  .finally(() => console.log(altResult));
 
 /********************************************************
  * Open a specific tab in a patients chart
