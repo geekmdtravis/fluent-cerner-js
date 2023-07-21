@@ -91,12 +91,10 @@ statusCodeMap.set(493, 'memory error');
 statusCodeMap.set(500, 'internal server exception');
 
 /**
- * A generic wrapper function for `XMLCclRequest` which simplifies it's use. Of note,
- * use of this requires the `head` of the HTML document contain the following
- * `meta` tag: `<META content='XMLCCLREQUEST' name='discern'>` so that it might
- * interface with the appropriate COM object.
+ * A generic wrapper function for `XMLCclRequest`, which is a native function
+ * in Cerner's Discern platform, which simplifies it's use.
  * @param {CclOpts} opts - Required options for the CCL request.
- * @returns a promise of type `CclRequestResponse<T>` where `T` is the type
+ * @returns a `Promise` of type `CclRequestResponse<T>` where `T` is the type
  * or interface which represents the resolved data from the CCL request. If
  * no data are returned, that is an empty string, from the XMLCclRequest then
  * the `data` field will be set to `undefined`. The objects `meta` field
