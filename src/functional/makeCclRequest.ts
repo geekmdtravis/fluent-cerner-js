@@ -110,7 +110,7 @@ statusCodeMap.set(500, 'internal server exception');
  *
  * @documentation - [XMLCclRequest](https://wiki.cerner.com/display/MPAGES/MPages+JavaScript+Reference#MPagesJavaScriptReference-XMLCclRequest)
  */
-export function makeCclRequest<T>(
+export async function makeCclRequestAsync<T>(
   opts: CclOpts
 ): Promise<CclRequestResponse<T>> {
   const { prg, excludeMine, params } = opts;

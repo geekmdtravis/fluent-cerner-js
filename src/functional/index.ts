@@ -2,7 +2,7 @@ import { launchClinicalNote, ClinicalNoteOpts } from './launchClinicalNote';
 import { launchPowerForm, PowerFormOpts } from './launchPowerForm';
 import { launchPowerNote, PowerNoteOpts } from './launchPowerNote';
 import {
-  makeCclRequest,
+  makeCclRequestAsync,
   CclCallParam,
   CclOpts,
   XmlCclStatus,
@@ -33,7 +33,7 @@ export {
   launchClinicalNote,
   launchPowerForm,
   launchPowerNote,
-  makeCclRequest,
+  makeCclRequestAsync,
   openPatientTab,
   openOrganizerTab,
   orderString,
