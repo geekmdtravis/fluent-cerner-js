@@ -1,3 +1,4 @@
+import { XMLParser } from 'fast-xml-parser';
 import { MPageEventReturn } from '.';
 import {
   outsideOfPowerChartError,
@@ -37,6 +38,20 @@ export type SubmitOrderOpts = {
   dryRun?: boolean;
 };
 
+export type SubmitOrdersStatus =
+  | 'success'
+  | 'cancelled'
+  | 'failed'
+  | 'invalid data returned'
+  | 'xml parse error'
+  | 'dry run';
+
+export type SubmitOrderReturn = MPageEventReturn & {
+  status: SubmitOrdersStatus;
+  response: MpagesEventOrdersReturnXML | null;
+  orderId: number | null;
+};
+
 /**
  * Submit orders for a patient in a given encounter through the _Cerner PowerChart_ `MPAGES_EVENT` function.
  * By default, _PowerPlans_ are disabled (potential bug in _PowerChart_), _PowerOrders_ are disabled,
@@ -55,19 +70,17 @@ export type SubmitOrderOpts = {
  *
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
-export const submitOrders = (
+export const submitOrders = async (
   personId: number,
   encounterId: number,
   orders: Array<string>,
   opts?: SubmitOrderOpts
-): MPageEventReturn => {
+): Promise<SubmitOrderReturn> => {
   let { targetTab, launchView, signSilently, dryRun } = opts || {};
   if (!targetTab) targetTab = 'orders';
   if (!launchView) launchView = 'signature';
   const enablePowerPlans =
     targetTab === 'power orders' || targetTab === 'power medications';
-
-  let inPowerChart = true;
 
   let params: Array<string> = [
     `${personId}`,
@@ -86,17 +99,238 @@ export const submitOrders = (
 
   const eventString = params.join('|');
 
-  if (dryRun) return { eventString, inPowerChart };
+  const retVal: SubmitOrderReturn = {
+    eventString,
+    inPowerChart: true,
+    status: 'success',
+    response: null,
+    orderId: null,
+  };
+
+  if (dryRun) {
+    retVal.status = 'dry run';
+    return retVal;
+  }
 
   try {
-    window.MPAGES_EVENT('ORDERS', eventString);
+    const response = await window.MPAGES_EVENT('ORDERS', eventString);
+
+    if (!response) {
+      retVal.status = 'failed';
+      return retVal;
+    }
+
+    if (typeof response !== 'string') {
+      retVal.status = 'invalid data returned';
+      return retVal;
+    }
+
+    switch (response.trim()) {
+      case '':
+        retVal.status = 'cancelled';
+        break;
+      default:
+        retVal.status = 'success';
+        const parser = new XMLParser();
+        try {
+          const parsed = parser.parse(response);
+          retVal.response = parsed;
+          retVal.orderId = parsed.Orders.Order.OrderId;
+        } catch {
+          retVal.status = 'xml parse error';
+        }
+
+        break;
+    }
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-      inPowerChart = false;
+      retVal.inPowerChart = false;
       warnAttemptedOrdersOutsideOfPowerChart(eventString);
     } else {
       throw e;
     }
   }
-  return { eventString, inPowerChart };
+  return retVal;
+};
+
+/**
+ * When an MPAGES_EVENT:ORDER call is made asynchronously, it returns a
+ * `Promise` of an XML string. This type is the parsed XML string. Several bits
+ * of useful information can be extracted from here, including the order ID
+ * and additional details of the newly placed order.
+ */
+export type MpagesEventOrdersReturnXML = {
+  Orders: {
+    OrderVersion: number;
+    Order: {
+      OrderableType: number;
+      OrderId: number;
+      SynonymId: number;
+      ClinCatCd: number;
+      CatalogTypeCd: number;
+      ActivityTypeCd: number;
+      OrderSentenceId: number;
+      RxMask: number;
+      HnaOrderMnemonic: string;
+      OrderedAsMnemonic: string;
+      OrderDtTm: string;
+      OrigOrderDtTm: string;
+      OrderMnemonic: string;
+      OrderStatusCd: number;
+      OrderStatusDisp: string;
+      ClinDisplayLine: string;
+      SimpleDisplayLine: string;
+      DeptStatusCd: number;
+      NeedDoctorCosignInd: number;
+      NeedPhysicianValidateInd: number;
+      NeedNurseReviewInd: number;
+      CommInd: number;
+      IngredientInd: number;
+      LastUpdtCnt: number;
+      MultipleOrdSentInd: number;
+      OrderActionId: number;
+      TemplateOrderFlag: number;
+      TemplateOrderId: number;
+      CsFlag: number;
+      CsOrderId: number;
+      OrderStatus: number;
+      SuspendInd: number;
+      ResumeInd: number;
+      OrderableTypeFlag: number;
+      RequiredInd: number;
+      ConstantInd: number;
+      PrnInd: number;
+      FreqTypeFlag: number;
+      HybridInd: number;
+      NeedRxVerifyFlag: number;
+      MedTypeCd: number;
+      LastActionSeq: number;
+      CommentTypeMask: number;
+      StopTypeCd: number;
+      ProviderId: number;
+      ProviderName: string;
+      CommunicationTypeCd: number;
+      CurrentStartDtTm: string;
+      ProjectedStopDtTm: string;
+      TimeZone: number;
+      OrigOrdAsFlag: number;
+      OrdCommentTemplateId: number;
+      DisableOrdCommentInd: number;
+      SuspendEffectiveDtTm: string;
+      ResumeEffectiveDtTm: string;
+      AdditiveCnt: number;
+      ClinSigDiluentCnt: number;
+      LinkNbr: number;
+      LinkTypeFlag: number;
+      SuperviseProviderId: number;
+      SuperviseProviderName: string;
+      BillingProvider: string;
+      RelatedOrderObjId: number;
+      ActionDtTm: string;
+      OeFormatId: number;
+      FmtActionCd: number;
+      SignedActionCd: number;
+      ActionType: number;
+      EncntrId: number;
+      ProcessMask: number;
+      CatalogCd: number;
+      ParentId: number;
+      ProjectedOrderId: number;
+      ProposalAcceptance: string;
+      ProposalId: number;
+      SignDtTm: string;
+      ActionDisplay: string;
+      SignedOrderStatusCd: number;
+      LastActionPrsnlId: number;
+      LastActionPrsnlName: string;
+      LastActionDtTm: string;
+      DetailList: DetailList;
+      ComplianceDetailList: string;
+      CommentList: CommentList;
+      AdHocFreqList: AdHocFreqList;
+      DiagnosisList: DiagnosisList;
+      CurrSchedExceptionList: string;
+      PrevSchedExceptionList: string;
+      OrigSchedExceptionList: string;
+      ResponsibleProviderId: number;
+      ResponsibleProviderName: string;
+      SuspendedDtTm: string;
+      RelatedFromOrderId: number;
+      OrderRelationTypeCd: number;
+      OrderRelationTypeMeaning: string;
+      OrderRelationTypeDisplay: string;
+      ProposalRejectReasonCd: number;
+      ProposalRejectReasonDisplay: string;
+      ProposalFreetextRejectReason: string;
+    };
+  };
+};
+
+export type FieldValueList = {
+  ListValues: {
+    FieldValue: number;
+    FieldDisplayValue: number;
+    FieldDtTmValue: string;
+  };
+};
+
+export type Detail = {
+  FieldValueList: FieldValueList;
+  OeFieldId: number;
+  OeFieldMeaning: string;
+  OeFieldMeaningId: number;
+  ValueRequiredInd: number;
+  GroupSeq: number;
+  FieldSeq: number;
+  ModifiedInd: number;
+  DetailAlterFlag: number;
+};
+
+export type DetailList = {
+  STRENGTHDOSE: Detail;
+  STRENGTHDOSEUNIT: Detail;
+  RXROUTE: Detail;
+  DRUGFORM: Detail;
+  FREQ: Detail;
+  'SCH.PRN': Detail;
+  OTHER: Detail[];
+  DURATION: Detail;
+  DURATIONUNIT: Detail;
+  REQSTARTDTTM: Detail;
+  STOPDTTM: Detail;
+  STOPTYPE: Detail;
+  FREQSCHEDID: Detail;
+  ADHOCFREQINSTANCE: Detail;
+  NEXTDOSEDTTM: Detail;
+  PHARMORDERTYPE: Detail;
+  DIFFINMIN: Detail;
+  ICD9: Detail;
+  INSTREPLACEREQUIREDDETS: Detail;
+  REFERENCESTARTDTTM: Detail;
+  DetailListCount: number;
+};
+
+export type CommentList = {
+  CommentValues: {
+    CommentType: number;
+    CommentText: string;
+  };
+};
+
+export type AdHocFreqList = {
+  CurrSchedList: string;
+  OrigSchedList: string;
+  PrevSchedList: string;
+};
+
+export type DiagnosisList = {
+  Diagnosis: {
+    DiagnosisId: number;
+    NomenclatureId: number;
+    SourceVocabularyCd: number;
+    SourceIdentifier: string;
+    DiagnosisDescription: string;
+    DiagnosisRanking: number;
+    SearchNomenclatureId: number;
+  };
 };
