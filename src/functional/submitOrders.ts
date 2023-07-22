@@ -157,6 +157,7 @@ export const submitOrdersAsync = async (
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;
+      retVal.status = 'invalid data returned';
       warnAttemptedOrdersOutsideOfPowerChart(eventString);
     } else {
       throw e;

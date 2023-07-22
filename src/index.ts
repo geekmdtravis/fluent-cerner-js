@@ -31,7 +31,7 @@ export {
   openPatientTab,
   openOrganizerTab,
   orderString,
-  submitOrdersAsync as submitOrders,
+  submitOrdersAsync,
 };
 
 export {

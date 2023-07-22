@@ -1,7 +1,7 @@
 const {
   orderString,
   submitOrdersAsync,
-  makeCclRequest,
+  makeCclRequestAsync,
   openPatientTab,
   openOrganizerTab,
   launchClinicalNote,
@@ -34,51 +34,57 @@ const orderStr3 = orderString('new order', {
   },
 });
 
-const {
-  ordersPlaced,
-  status,
-  response,
-  inPowerChart,
-  eventString,
-} = await submitOrdersAsync(123, 456, [orderStr1, orderStr2, orderStr3]);
+(async function() {
+  const {
+    ordersPlaced,
+    status,
+    response,
+    inPowerChart,
+    eventString,
+  } = await submitOrdersAsync(123, 456, [orderStr1, orderStr2, orderStr3]);
 
-console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
-console.log(
-  `Status: ${status} for orders placed with event string: ${eventString}`
-);
-ordersPlaced.forEach(({ name, oid, display }) => {
-  console.log(`Order${name} (ID: ${oid}) - ${display}`);
-});
-if (response) {
-  response.Orders.Order.forEach(o => console.log(o.ProviderName));
-}
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(
+    `Status: ${status} for orders placed with event string: ${eventString}`
+  );
+  ordersPlaced?.forEach(({ name, oid, display }) => {
+    console.log(`Order${name} (ID: ${oid}) - ${display}`);
+  });
+  if (response) {
+    response.Orders.Order.forEach(o => console.log(o.ProviderName));
+  }
+})();
 
 /********************************************************
  * Make a CCL request to the server and retrieve the data
  ********************************************************/
 let result = undefined;
-makeCclRequest({
-  prg: 'MP_GET_ORDER_LIST',
-  params: [
-    { type: 'number', param: 12345 },
-    { type: 'string', param: 'joe' },
-  ],
-})
-  .then(data => (result = data))
-  .catch(console.error)
-  .finally(() => console.log(result));
+(async function() {
+  makeCclRequestAsync({
+    prg: 'MP_GET_ORDER_LIST',
+    params: [
+      { type: 'number', param: 12345 },
+      { type: 'string', param: 'joe' },
+    ],
+  })
+    .then(data => (result = data))
+    .catch(console.error)
+    .finally(() => console.log(result));
+})();
 
 /********************************************************
  * Alternative example, where the parameter types are inferred
  ********************************************************/
 let altResult = undefined;
-makeCclRequest({
-  prg: 'MP_GET_ORDER_LIST',
-  params: [12345, 'joe'],
-})
-  .then(data => (altResult = data))
-  .catch(console.error)
-  .finally(() => console.log(altResult));
+(async function() {
+  makeCclRequestAsync({
+    prg: 'MP_GET_ORDER_LIST',
+    params: [12345, 'joe'],
+  })
+    .then(data => (altResult = data))
+    .catch(console.error)
+    .finally(() => console.log(altResult));
+})();
 
 /********************************************************
  * Open a specific tab in a patients chart
