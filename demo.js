@@ -1,6 +1,6 @@
 const {
   orderString,
-  submitOrders,
+  submitOrdersAsync,
   makeCclRequest,
   openPatientTab,
   openOrganizerTab,
@@ -34,7 +34,24 @@ const orderStr3 = orderString('new order', {
   },
 });
 
-submitOrders(123, 456, [orderStr1, orderStr2, orderStr3]);
+const {
+  ordersPlaced,
+  status,
+  response,
+  inPowerChart,
+  eventString,
+} = await submitOrdersAsync(123, 456, [orderStr1, orderStr2, orderStr3]);
+
+console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+console.log(
+  `Status: ${status} for orders placed with event string: ${eventString}`
+);
+ordersPlaced.forEach(({ name, oid, display }) => {
+  console.log(`Order${name} (ID: ${oid}) - ${display}`);
+});
+if (response) {
+  response.Orders.Order.forEach(o => console.log(o.ProviderName));
+}
 
 /********************************************************
  * Make a CCL request to the server and retrieve the data
