@@ -16,7 +16,7 @@ import {
   OrderStrOpts,
   NewOrderStrOpts,
 } from './orderString';
-import { submitOrders, SubmitOrderOpts } from './submitOrders';
+import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
 
 /**
  * A type which represents the object to be returned from the launchClinicalNote() function.
@@ -37,7 +37,7 @@ export {
   openPatientTab,
   openOrganizerTab,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
 };
 
 // Export types; cannot use the `export type` syntax.

@@ -6,7 +6,7 @@ import {
   openPatientTab,
   openOrganizerTab,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
@@ -31,7 +31,7 @@ export {
   openPatientTab,
   openOrganizerTab,
   orderString,
-  submitOrders,
+  submitOrdersAsync as submitOrders,
 };
 
 export {

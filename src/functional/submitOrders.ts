@@ -70,7 +70,7 @@ export type SubmitOrderReturn = MPageEventReturn & {
  *
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
-export const submitOrders = async (
+export const submitOrdersAsync = async (
   personId: number,
   encounterId: number,
   orders: Array<string>,
@@ -133,7 +133,7 @@ export const submitOrders = async (
         retVal.status = 'success';
         const parser = new XMLParser();
         try {
-          const parsed = parser.parse(response);
+          const parsed: MpagesEventOrdersReturnXML = parser.parse(response);
           retVal.response = parsed;
           retVal.orderId = parsed.Orders.Order.OrderId;
         } catch {
