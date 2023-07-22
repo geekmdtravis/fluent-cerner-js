@@ -49,7 +49,7 @@ export type SubmitOrdersStatus =
 export type SubmitOrderReturn = MPageEventReturn & {
   status: SubmitOrdersStatus;
   response: MpagesEventOrdersReturnXML | null;
-  orderId: number | null;
+  orderIds: Array<{ name: string; oid: number; display: string }> | null;
 };
 
 /**
@@ -104,7 +104,7 @@ export const submitOrdersAsync = async (
     inPowerChart: true,
     status: 'success',
     response: null,
-    orderId: null,
+    orderIds: null,
   };
 
   if (dryRun) {
@@ -135,7 +135,14 @@ export const submitOrdersAsync = async (
         try {
           const parsed: MpagesEventOrdersReturnXML = parser.parse(response);
           retVal.response = parsed;
-          retVal.orderId = parsed.Orders.Order.OrderId;
+          if (!(parsed.Orders.Order instanceof Array)) {
+            parsed.Orders.Order = [parsed.Orders.Order];
+          }
+          retVal.orderIds = parsed.Orders.Order.map(o => ({
+            name: o.OrderedAsMnemonic,
+            oid: o.OrderId,
+            display: o.ClinDisplayLine,
+          }));
         } catch {
           retVal.status = 'xml parse error';
         }
@@ -162,107 +169,7 @@ export const submitOrdersAsync = async (
 export type MpagesEventOrdersReturnXML = {
   Orders: {
     OrderVersion: number;
-    Order: {
-      OrderableType: number;
-      OrderId: number;
-      SynonymId: number;
-      ClinCatCd: number;
-      CatalogTypeCd: number;
-      ActivityTypeCd: number;
-      OrderSentenceId: number;
-      RxMask: number;
-      HnaOrderMnemonic: string;
-      OrderedAsMnemonic: string;
-      OrderDtTm: string;
-      OrigOrderDtTm: string;
-      OrderMnemonic: string;
-      OrderStatusCd: number;
-      OrderStatusDisp: string;
-      ClinDisplayLine: string;
-      SimpleDisplayLine: string;
-      DeptStatusCd: number;
-      NeedDoctorCosignInd: number;
-      NeedPhysicianValidateInd: number;
-      NeedNurseReviewInd: number;
-      CommInd: number;
-      IngredientInd: number;
-      LastUpdtCnt: number;
-      MultipleOrdSentInd: number;
-      OrderActionId: number;
-      TemplateOrderFlag: number;
-      TemplateOrderId: number;
-      CsFlag: number;
-      CsOrderId: number;
-      OrderStatus: number;
-      SuspendInd: number;
-      ResumeInd: number;
-      OrderableTypeFlag: number;
-      RequiredInd: number;
-      ConstantInd: number;
-      PrnInd: number;
-      FreqTypeFlag: number;
-      HybridInd: number;
-      NeedRxVerifyFlag: number;
-      MedTypeCd: number;
-      LastActionSeq: number;
-      CommentTypeMask: number;
-      StopTypeCd: number;
-      ProviderId: number;
-      ProviderName: string;
-      CommunicationTypeCd: number;
-      CurrentStartDtTm: string;
-      ProjectedStopDtTm: string;
-      TimeZone: number;
-      OrigOrdAsFlag: number;
-      OrdCommentTemplateId: number;
-      DisableOrdCommentInd: number;
-      SuspendEffectiveDtTm: string;
-      ResumeEffectiveDtTm: string;
-      AdditiveCnt: number;
-      ClinSigDiluentCnt: number;
-      LinkNbr: number;
-      LinkTypeFlag: number;
-      SuperviseProviderId: number;
-      SuperviseProviderName: string;
-      BillingProvider: string;
-      RelatedOrderObjId: number;
-      ActionDtTm: string;
-      OeFormatId: number;
-      FmtActionCd: number;
-      SignedActionCd: number;
-      ActionType: number;
-      EncntrId: number;
-      ProcessMask: number;
-      CatalogCd: number;
-      ParentId: number;
-      ProjectedOrderId: number;
-      ProposalAcceptance: string;
-      ProposalId: number;
-      SignDtTm: string;
-      ActionDisplay: string;
-      SignedOrderStatusCd: number;
-      LastActionPrsnlId: number;
-      LastActionPrsnlName: string;
-      LastActionDtTm: string;
-      DetailList: DetailList;
-      ComplianceDetailList: string;
-      CommentList: CommentList;
-      AdHocFreqList: AdHocFreqList;
-      DiagnosisList: DiagnosisList;
-      CurrSchedExceptionList: string;
-      PrevSchedExceptionList: string;
-      OrigSchedExceptionList: string;
-      ResponsibleProviderId: number;
-      ResponsibleProviderName: string;
-      SuspendedDtTm: string;
-      RelatedFromOrderId: number;
-      OrderRelationTypeCd: number;
-      OrderRelationTypeMeaning: string;
-      OrderRelationTypeDisplay: string;
-      ProposalRejectReasonCd: number;
-      ProposalRejectReasonDisplay: string;
-      ProposalFreetextRejectReason: string;
-    };
+    Order: Array<MpagesEventReturnOrderXML>;
   };
 };
 
@@ -333,4 +240,106 @@ export type DiagnosisList = {
     DiagnosisRanking: number;
     SearchNomenclatureId: number;
   };
+};
+
+export type MpagesEventReturnOrderXML = {
+  OrderableType: number;
+  OrderId: number;
+  SynonymId: number;
+  ClinCatCd: number;
+  CatalogTypeCd: number;
+  ActivityTypeCd: number;
+  OrderSentenceId: number;
+  RxMask: number;
+  HnaOrderMnemonic: string;
+  OrderedAsMnemonic: string;
+  OrderDtTm: string;
+  OrigOrderDtTm: string;
+  OrderMnemonic: string;
+  OrderStatusCd: number;
+  OrderStatusDisp: string;
+  ClinDisplayLine: string;
+  SimpleDisplayLine: string;
+  DeptStatusCd: number;
+  NeedDoctorCosignInd: number;
+  NeedPhysicianValidateInd: number;
+  NeedNurseReviewInd: number;
+  CommInd: number;
+  IngredientInd: number;
+  LastUpdtCnt: number;
+  MultipleOrdSentInd: number;
+  OrderActionId: number;
+  TemplateOrderFlag: number;
+  TemplateOrderId: number;
+  CsFlag: number;
+  CsOrderId: number;
+  OrderStatus: number;
+  SuspendInd: number;
+  ResumeInd: number;
+  OrderableTypeFlag: number;
+  RequiredInd: number;
+  ConstantInd: number;
+  PrnInd: number;
+  FreqTypeFlag: number;
+  HybridInd: number;
+  NeedRxVerifyFlag: number;
+  MedTypeCd: number;
+  LastActionSeq: number;
+  CommentTypeMask: number;
+  StopTypeCd: number;
+  ProviderId: number;
+  ProviderName: string;
+  CommunicationTypeCd: number;
+  CurrentStartDtTm: string;
+  ProjectedStopDtTm: string;
+  TimeZone: number;
+  OrigOrdAsFlag: number;
+  OrdCommentTemplateId: number;
+  DisableOrdCommentInd: number;
+  SuspendEffectiveDtTm: string;
+  ResumeEffectiveDtTm: string;
+  AdditiveCnt: number;
+  ClinSigDiluentCnt: number;
+  LinkNbr: number;
+  LinkTypeFlag: number;
+  SuperviseProviderId: number;
+  SuperviseProviderName: string;
+  BillingProvider: string;
+  RelatedOrderObjId: number;
+  ActionDtTm: string;
+  OeFormatId: number;
+  FmtActionCd: number;
+  SignedActionCd: number;
+  ActionType: number;
+  EncntrId: number;
+  ProcessMask: number;
+  CatalogCd: number;
+  ParentId: number;
+  ProjectedOrderId: number;
+  ProposalAcceptance: string;
+  ProposalId: number;
+  SignDtTm: string;
+  ActionDisplay: string;
+  SignedOrderStatusCd: number;
+  LastActionPrsnlId: number;
+  LastActionPrsnlName: string;
+  LastActionDtTm: string;
+  DetailList: DetailList;
+  ComplianceDetailList: string;
+  CommentList: CommentList;
+  AdHocFreqList: AdHocFreqList;
+  DiagnosisList: DiagnosisList;
+  CurrSchedExceptionList: string;
+  PrevSchedExceptionList: string;
+  OrigSchedExceptionList: string;
+  ResponsibleProviderId: number;
+  ResponsibleProviderName: string;
+  SuspendedDtTm: string;
+  RelatedFromOrderId: number;
+  OrderRelationTypeCd: number;
+  OrderRelationTypeMeaning: string;
+  OrderRelationTypeDisplay: string;
+  ProposalRejectReasonCd: number;
+  ProposalRejectReasonDisplay: string;
+  ProposalFreetextRejectReason: string;
 };

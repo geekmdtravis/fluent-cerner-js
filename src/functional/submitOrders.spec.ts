@@ -132,7 +132,7 @@ describe('submitOrders', () => {
     const expectedString = '1|2|{ORDER|0|0|0|0|0}|0|{2|0}|32|0';
     expect(eventString).toBe(expectedString);
   });
-  test('orderId, status, and response are successfully parsed from the response text', async () => {
+  test('orderId, status, and response are successfully parsed from the response text with a single order', async () => {
     Object.defineProperty(window, 'MPAGES_EVENT', {
       writable: true,
       value: jest
@@ -155,17 +155,90 @@ describe('submitOrders', () => {
               <CatalogTypeCd type="double">777.0000</CatalogTypeCd>
               <ActivityTypeCd type="double">888.0000</ActivityTypeCd>
               <OrderSentenceId type="double">999.0000</OrderSentenceId>
+              <OrderedAsMnemonic type="string">tamsulosin</OrderedAsMnemonic>
+              <ClinDisplayLine type="string">0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT</ClinDisplayLine>
               </Order>
               </Orders>`)
           );
         }),
     });
 
-    const { orderId, status, response } = await submitOrdersAsync(1, 2, [
+    const { orderIds, status, response } = await submitOrdersAsync(1, 2, [
       order,
     ]);
-    expect(orderId).not.toBeNull();
-    expect(orderId).toBe(123);
+    expect(orderIds).not.toBeNull();
+    expect(orderIds).toStrictEqual([
+      {
+        name: 'tamsulosin',
+        oid: 123,
+        display:
+          '0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT',
+      },
+    ]);
+    expect(status).toBe('success');
+    expect(response).not.toBeNull();
+    expect(response).toBeInstanceOf(Object);
+  });
+  test('orderId, status, and response are successfully parsed from the response text with more than one orders', async () => {
+    Object.defineProperty(window, 'MPAGES_EVENT', {
+      writable: true,
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<string> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve =>
+            resolve(`<?xml version="1.0"?>
+              <?xml-stylesheet type='text/xml' href='dom.xsl'?>
+              <Orders>
+              <OrderVersion>1</OrderVersion>
+              <Order id="123.00">
+              <OrderableType type="int">8</OrderableType>
+              <OrderId type="double">123.0000</OrderId>
+              <SynonymId type="double">555.0000</SynonymId>
+              <ClinCatCd type="double">666.0000</ClinCatCd>
+              <CatalogTypeCd type="double">777.0000</CatalogTypeCd>
+              <ActivityTypeCd type="double">888.0000</ActivityTypeCd>
+              <OrderSentenceId type="double">999.0000</OrderSentenceId>
+              <OrderedAsMnemonic type="string">tamsulosin</OrderedAsMnemonic>
+              <ClinDisplayLine type="string">0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT</ClinDisplayLine>
+              </Order>
+              <Order id="1234.00">
+              <OrderableType type="int">8</OrderableType>
+              <OrderId type="double">1234.0000</OrderId>
+              <SynonymId type="double">555.0000</SynonymId>
+              <ClinCatCd type="double">666.0000</ClinCatCd>
+              <CatalogTypeCd type="double">777.0000</CatalogTypeCd>
+              <ActivityTypeCd type="double">888.0000</ActivityTypeCd>
+              <OrderSentenceId type="double">999.0000</OrderSentenceId>
+              <OrderedAsMnemonic type="string">tamsulosin</OrderedAsMnemonic>
+              <ClinDisplayLine type="string">0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT</ClinDisplayLine>
+              </Order>
+              </Orders>`)
+          );
+        }),
+    });
+
+    const { orderIds, status, response } = await submitOrdersAsync(1, 2, [
+      order,
+    ]);
+    expect(orderIds).not.toBeNull();
+    expect(orderIds).toStrictEqual([
+      {
+        name: 'tamsulosin',
+        oid: 123,
+        display:
+          '0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT',
+      },
+      {
+        name: 'tamsulosin',
+        oid: 1234,
+        display:
+          '0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT',
+      },
+    ]);
     expect(status).toBe('success');
     expect(response).not.toBeNull();
     expect(response).toBeInstanceOf(Object);
