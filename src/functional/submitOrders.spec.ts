@@ -163,9 +163,11 @@ describe('submitOrders', () => {
         }),
     });
 
-    const { orderIds, status, response } = await submitOrdersAsync(1, 2, [
-      order,
-    ]);
+    const {
+      ordersPlaced: orderIds,
+      status,
+      response,
+    } = await submitOrdersAsync(1, 2, [order]);
     expect(orderIds).not.toBeNull();
     expect(orderIds).toStrictEqual([
       {
@@ -221,9 +223,11 @@ describe('submitOrders', () => {
         }),
     });
 
-    const { orderIds, status, response } = await submitOrdersAsync(1, 2, [
-      order,
-    ]);
+    const {
+      ordersPlaced: orderIds,
+      status,
+      response,
+    } = await submitOrdersAsync(1, 2, [order]);
     expect(orderIds).not.toBeNull();
     expect(orderIds).toStrictEqual([
       {

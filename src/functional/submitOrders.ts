@@ -49,7 +49,7 @@ export type SubmitOrdersStatus =
 export type SubmitOrderReturn = MPageEventReturn & {
   status: SubmitOrdersStatus;
   response: MpagesEventOrdersReturnXML | null;
-  orderIds: Array<{ name: string; oid: number; display: string }> | null;
+  ordersPlaced: Array<{ name: string; oid: number; display: string }> | null;
 };
 
 /**
@@ -65,8 +65,13 @@ export type SubmitOrderReturn = MPageEventReturn & {
  * `orderString` function to simplify building these pipe-delimited order strings.
  * @param opts - (optional) User defined options for the order submission event. The options allow for
  * changing the target tab, the view to be launched, and whether or not the orders should be signed silently.
- * @returns an object with the order `eventString` and a boolean flag set to notify the user if
- * the attempt was made outside of PowerChart, `inPowerChart`.
+ * @returns an object with several high value properties. The standard MPageEventReturn properties are present
+ * with order `eventString` and a boolean flag set to notify the user if the attempt was made outside of
+ * PowerChart, `inPowerChart`. In addition, the `status` of the order attempt is made available
+ * (success | cancelled | failed | invalid data returned | xml parse error | dry run), the full JavaScript
+ * Object representing the XML response string is available as `response`, and an array of the orders placed
+ * as `ordersPlaced` with order `name`, `oid`, and `display` available for each. Note that the `oid` property
+ * represents the actual order id for the newly placed order.
  *
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
@@ -104,7 +109,7 @@ export const submitOrdersAsync = async (
     inPowerChart: true,
     status: 'success',
     response: null,
-    orderIds: null,
+    ordersPlaced: null,
   };
 
   if (dryRun) {
@@ -138,7 +143,7 @@ export const submitOrdersAsync = async (
           if (!(parsed.Orders.Order instanceof Array)) {
             parsed.Orders.Order = [parsed.Orders.Order];
           }
-          retVal.orderIds = parsed.Orders.Order.map(o => ({
+          retVal.ordersPlaced = parsed.Orders.Order.map(o => ({
             name: o.OrderedAsMnemonic,
             oid: o.OrderId,
             display: o.ClinDisplayLine,
