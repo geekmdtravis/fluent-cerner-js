@@ -120,7 +120,9 @@ export const submitOrdersAsync = async (
   try {
     const response = await window.MPAGES_EVENT('ORDERS', eventString);
 
-    if (!response) {
+    // 'null' must be checked for explicitly, as it is a valid response
+    // '!response' will return true for null, undefined, and empty string.
+    if (response === null) {
       retVal.status = 'failed';
       return retVal;
     }

@@ -4,6 +4,12 @@ import { SubmitOrderOpts, submitOrdersAsync } from './submitOrders';
 const order = orderString('launch moew');
 
 describe('submitOrders', () => {
+  afterEach(() => {
+    Object.defineProperty(window, 'MPAGES_EVENT', {
+      writable: true,
+      value: null,
+    });
+  });
   test('returns an object with a string and a boolean', async () => {
     const { eventString, inPowerChart } = await submitOrdersAsync(1, 2, [
       order,
@@ -246,5 +252,61 @@ describe('submitOrders', () => {
     expect(status).toBe('success');
     expect(response).not.toBeNull();
     expect(response).toBeInstanceOf(Object);
+  });
+  test('returns status "invalid data returned" when there is no response', async () => {
+    const { status } = await submitOrdersAsync(1, 2, [order]);
+
+    expect(status).toBe('invalid data returned');
+  });
+  test('returns status "invalid data returned" when the response is not a string', async () => {
+    Object.defineProperty(window, 'MPAGES_EVENT', {
+      writable: true,
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<Object> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve => resolve({}));
+        }),
+    });
+    const { status } = await submitOrdersAsync(1, 2, [order]);
+
+    expect(status).toBe('invalid data returned');
+  });
+  test('returns "cancelled" when an empty string is returned', async () => {
+    Object.defineProperty(window, 'MPAGES_EVENT', {
+      writable: true,
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<string> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve => resolve(''));
+        }),
+    });
+    const { status } = await submitOrdersAsync(1, 2, [order]);
+
+    expect(status).toBe('cancelled');
+  });
+  test('returns "xml parse error" when an string that is not a valid XML string is returned', async () => {
+    Object.defineProperty(window, 'MPAGES_EVENT', {
+      writable: true,
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<string> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve => resolve('<xml>'));
+        }),
+    });
+    const { status } = await submitOrdersAsync(1, 2, [order]);
+
+    expect(status).toBe('xml parse error');
   });
 });
