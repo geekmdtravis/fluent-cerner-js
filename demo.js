@@ -50,9 +50,7 @@ const orderStr3 = orderString('new order', {
   ordersPlaced?.forEach(({ name, oid, display }) => {
     console.log(`Order${name} (ID: ${oid}) - ${display}`);
   });
-  if (response) {
-    response.Orders.Order.forEach(o => console.log(o.ProviderName));
-  }
+  response?.Orders.Order.forEach(o => console.log(o.ProviderName));
 })();
 
 /********************************************************
