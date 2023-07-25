@@ -8,7 +8,7 @@ import {
   XmlCclStatus,
   CclRequestResponse,
 } from './makeCclRequest';
-import { openPatientTab } from './openPatientTab';
+import { openPatientTabAsync } from './openPatientTab';
 import { openOrganizerTab } from './openOrganizerTab';
 import {
   orderString,
@@ -34,7 +34,7 @@ export {
   launchPowerForm,
   launchPowerNote,
   makeCclRequestAsync,
-  openPatientTab,
+  openPatientTabAsync,
   openOrganizerTab,
   orderString,
   submitOrdersAsync,
