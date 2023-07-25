@@ -1,9 +1,5 @@
-import { MPageEventReturn } from '.';
+import { ApplinkReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
-
-export type OpenPatientTabReturn = MPageEventReturn & {
-  badInput: boolean;
-};
 
 /**
  * Attempts to open a tab with the name given to the `tab` variable in a
@@ -22,7 +18,7 @@ export type OpenPatientTabReturn = MPageEventReturn & {
  * in a quick add mode. E.g. if the Orders tab is connected to it will
  * attempt to launch the Add Order window so long as Enhanced Navigation is
  * supported by your installation. Defaults to false.
- * @returns {Promise<OpenPatientTabReturn>} - A promise that will resolve to an object with
+ * @returns {Promise<ApplinkReturn>} - A promise that will resolve to an object with
  * the following properties: `eventString`, `badInput`, and `inPowerChart`. The properties
  * `eventString` and `inPowerChart` are inhereted from `MPageEventReturn`. The property
  * `badInput` is a boolean that indicates whether the tab name given in the `tab` parameter,
@@ -37,8 +33,8 @@ export async function openPatientTabAsync(
   encounterId: number,
   tab: string,
   quickAdd?: boolean
-): Promise<OpenPatientTabReturn> {
-  const retVal = {
+): Promise<ApplinkReturn> {
+  const retVal: ApplinkReturn = {
     eventString: `/PERSONID=${personId} /ENCNTRID=${encounterId} /FIRSTTAB=^${tab.toUpperCase()}${
       quickAdd || false ? '+' : ''
     }^`,

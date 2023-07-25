@@ -28,6 +28,8 @@ export type MPageEventReturn = {
   inPowerChart: boolean;
 };
 
+export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
+
 // Export functions
 export {
   launchClinicalNote,

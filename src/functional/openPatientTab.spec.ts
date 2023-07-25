@@ -1,7 +1,7 @@
 import { openPatientTabAsync } from './openPatientTab';
 
 describe('openPatientTab', () => {
-  test('returns an OpenPatientTabReturn object', async () => {
+  test('returns an ApplinkReturn object', async () => {
     const result = await openPatientTabAsync(0, 1, 'Tab Name');
     expect(result).toBeInstanceOf(Object);
     expect(result).toHaveProperty('eventString');
