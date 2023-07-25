@@ -72,6 +72,7 @@ export type SubmitOrderReturn = MPageEventReturn & {
  * Object representing the XML response string is available as `response`, and an array of the orders placed
  * as `ordersPlaced` with order `name`, `oid`, and `display` available for each. Note that the `oid` property
  * represents the actual order id for the newly placed order.
+ * @throws if an unexpected error occurs that could not be handled.
  *
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
