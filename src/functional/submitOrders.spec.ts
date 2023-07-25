@@ -309,4 +309,51 @@ describe('submitOrders', () => {
 
     expect(status).toBe('xml parse error');
   });
+  test('returns "failed" when a null response is returned', async () => {
+    Object.defineProperty(window, 'MPAGES_EVENT', {
+      writable: true,
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<null> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve => resolve(null));
+        }),
+    });
+    const { status } = await submitOrdersAsync(1, 2, [order]);
+
+    expect(status).toBe('failed');
+  });
+
+  test('throws an error when the error type is not one expected to be generated as an "out-of-powerchart" error.', async () => {
+    Object.defineProperty(window, 'MPAGES_EVENT', {
+      writable: true,
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<Error> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return Promise.reject(new Error('unexpected error'));
+        }),
+    });
+
+    try {
+      await submitOrdersAsync(1, 2, [order]);
+    } catch (e) {
+      expect((e as Error).message).toBe('unexpected error');
+    }
+  });
+
+  test('successfully updates targetTab and display when provided as options', async () => {
+    const opts: SubmitOrderOpts = {
+      targetTab: 'power medications',
+    };
+    const { eventString } = await submitOrdersAsync(1, 2, [order], opts);
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|24|{3|127}|32|0';
+    expect(eventString).toBe(expectedString);
+  });
 });
