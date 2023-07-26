@@ -53,7 +53,7 @@ export {
 
 declare global {
   /**
-   * Interface for the Cerner Windows COM Object for an XMLCclRequest.
+   * Interface for the Cerner Discern native function for an XMLCclRequest.
    * Useful for development but not intended for production use. Use of
    * this method in that context requires the following meta tag in the
    * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
@@ -88,7 +88,7 @@ declare global {
   }
   interface Window {
     /**
-     * Interface for the Cerner Windows COM object for an XMLCclRequest.
+     * Interface for the Cerner Discern native function for an XMLCclRequest.
      * Useful for development but not intended for production use. Use of
      * this method in that context requires the following meta tag in the
      * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
@@ -96,7 +96,7 @@ declare global {
      */
     XMLCclRequest: XMLCclRequest;
     /**
-     * Interface for the Cerner Windows COM object which provides the function
+     * Interface for the Cerner Discern native function which provides the function
      * responsible for opening an application, chart tab, or organization level tab.
      * Useful for development but not intended for production use. Use of
      * this method in that context requires the following meta tag in the
@@ -115,7 +115,7 @@ declare global {
      */
     APPLINK: (mode: 0 | 1 | 100, target: string, args: string) => void;
     /**
-     * Interface for the Cerner Windows COM object which provides the function
+     * Interface for the Cerner Discern native function which provides the function
      * responsible for engaging in special Cerneer _conversation events_ within the
      * web page (MPage) with the Cerner PowerChart application. Useful for development
      * but not intended for production use. Use of this method in that context requires
