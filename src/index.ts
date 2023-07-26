@@ -4,7 +4,7 @@ import {
   launchPowerNote,
   makeCclRequestAsync,
   openPatientTabAsync,
-  openOrganizerTab,
+  openOrganizerTabAsync,
   orderString,
   submitOrdersAsync,
   CclCallParam,
@@ -29,7 +29,7 @@ export {
   launchPowerNote,
   makeCclRequestAsync,
   openPatientTabAsync as openPatientTab,
-  openOrganizerTab,
+  openOrganizerTabAsync as openOrganizerTab,
   orderString,
   submitOrdersAsync,
 };

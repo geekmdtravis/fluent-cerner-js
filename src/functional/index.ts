@@ -9,7 +9,7 @@ import {
   CclRequestResponse,
 } from './makeCclRequest';
 import { openPatientTabAsync } from './openPatientTab';
-import { openOrganizerTab } from './openOrganizerTab';
+import { openOrganizerTabAsync } from './openOrganizerTab';
 import {
   orderString,
   OrderAction,
@@ -37,7 +37,7 @@ export {
   launchPowerNote,
   makeCclRequestAsync,
   openPatientTabAsync,
-  openOrganizerTab,
+  openOrganizerTabAsync,
   orderString,
   submitOrdersAsync,
 };
