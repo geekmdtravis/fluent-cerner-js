@@ -24,7 +24,7 @@ export type ViewOption =
  * @param {number} compSeq - 	The component sequence for the component-level preference of the tab to model
  * the preferences after. An invalid compSeq loads the clinical note with the default preferences.
  * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
- * and `inPowerChart` values. Of note, we cannot provide additiona information about the
+ * and `inPowerChart` values. Of note, we cannot provide additional information about the
  * success or failure of the invocation because this information is not provided by the
  * underlying Discern native function call's return, which awlays returns `null` no matter
  * the outcome of the call.
@@ -66,7 +66,11 @@ export type ClinicalNoteOpts = {
 /**
  * Launch a ClinicalNote in Cerner's PowerChart.
  * @param {ClinicalNoteOpts} opts - The parameters passed, as specified in `ClinicalNoteOpts`
- * @returns {MPageEventReturn} - An object containing the `eventString` and `inPowerChart` values.
+ * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
+ * and `inPowerChart` values. Of note, we cannot provide additional information about the
+ * success or failure of the invocation because this information is not provided by the
+ * underlying Discern native function call's return, which awlays returns `null` no matter
+ * the outcome of the call.
  *
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/

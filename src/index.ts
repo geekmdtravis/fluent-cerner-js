@@ -1,6 +1,6 @@
 import {
   launchClinicalNoteAsync,
-  launchPowerForm,
+  launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
   openPatientTabAsync,
@@ -25,7 +25,7 @@ import { MPageOrder, NewOrderOpts } from './MPageOrder';
 
 export {
   launchClinicalNoteAsync,
-  launchPowerForm,
+  launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
   openPatientTabAsync,

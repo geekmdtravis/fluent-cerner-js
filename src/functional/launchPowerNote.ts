@@ -27,7 +27,7 @@ export type PowerNoteOpts = {
  * Launch a PowerNote in Cerner's PowerChart.
  * @param {PowerNoteOpts} opts - The parameters passed, as specified in `PowerNoteOpts`
  * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
- * and `inPowerChart` values. Of note, we cannot provide additiona information about the
+ * and `inPowerChart` values. Of note, we cannot provide additional information about the
  * success or failure of the invocation because this information is not provided by the
  * underlying Discern native function call's return, which awlays returns `null` no matter
  * the outcome of the call.

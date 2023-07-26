@@ -129,11 +129,17 @@ let altResult = undefined;
 /****************************************************
  * Launch a PowerForm
  ***************************************************/
-launchPowerForm({
-  personId: 12345,
-  encounterId: 54321,
-  target: 'new form search',
-});
+
+(async () => {
+  const { inPowerChart, eventString } = await launchPowerForm({
+    personId: 12345,
+    encounterId: 54321,
+    target: 'new form search',
+  });
+
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+})();
 
 /****************************************************
  * Launch a PowerNote
