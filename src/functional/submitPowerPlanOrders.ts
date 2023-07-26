@@ -1,5 +1,3 @@
-import { outsideOfPowerChartError } from '../utils';
-
 /**
  * MOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
  *
@@ -74,8 +72,7 @@ export type PowerPlanOrderOpts = {
   encounterId: number;
 };
 
-export const submitPowerPlanOrders = (opts: MOEWOpts): boolean => {
-    
+export const submitPowerPlanOrdersAsync = async (opts: MOEWOpts): boolean => {
   // Destructure input, assign default values
   const {
     signLater = false,
