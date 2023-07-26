@@ -1,4 +1,4 @@
-import { MPageEventReturn } from '.';
+import { ApplinkReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
 
 /**
@@ -18,28 +18,43 @@ import { outsideOfPowerChartError } from '../utils';
  * in a quick add mode. E.g. if the Orders tab is connected to it will
  * attempt to launch the Add Order window so long as Enhanced Navigation is
  * supported by your installation. Defaults to false.
+ * @returns {Promise<ApplinkReturn>} - A promise that will resolve to an object with
+ * the following properties: `eventString`, `badInput`, and `inPowerChart`. The properties
+ * `eventString` and `inPowerChart` are inhereted from `MPageEventReturn`. The property
+ * `badInput` is a boolean that indicates whether the tab name given in the `tab` parameter,
+ * the `eid` parameter, or the `pid` parameter was invalid. Given the underlying Cerner Discern
+ * implementation, we cannot determine which parameter was invalid.
+ * @throws If an unexpected error occurs while attempting to open the tab.
  *
  * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
-export function openPatientTab(
+export async function openPatientTabAsync(
   personId: number,
   encounterId: number,
   tab: string,
   quickAdd?: boolean
-): MPageEventReturn {
-  let inPowerChart = true;
-  const eventString = `/PERSONID=${personId} /ENCNTRID=${encounterId} /FIRSTTAB=^${tab.toUpperCase()}${
-    quickAdd || false ? '+' : ''
-  }^`;
+): Promise<ApplinkReturn> {
+  const retVal: ApplinkReturn = {
+    eventString: `/PERSONID=${personId} /ENCNTRID=${encounterId} /FIRSTTAB=^${tab.toUpperCase()}${
+      quickAdd || false ? '+' : ''
+    }^`,
+    badInput: false,
+    inPowerChart: true,
+  };
 
   try {
-    window.APPLINK(1, '$APP_APPNAME$', eventString);
+    const response = await window.APPLINK(
+      1,
+      '$APP_APPNAME$',
+      retVal.eventString
+    );
+    retVal.badInput = response === null ? true : false;
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-      inPowerChart = false;
+      retVal.inPowerChart = false;
     } else {
       throw e;
     }
   }
-  return { eventString, inPowerChart };
+  return retVal;
 }

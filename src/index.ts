@@ -1,12 +1,12 @@
 import {
-  launchClinicalNote,
-  launchPowerForm,
-  launchPowerNote,
-  makeCclRequest,
-  openPatientTab,
-  openOrganizerTab,
+  launchClinicalNoteAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
@@ -24,14 +24,14 @@ import { MPageOrderEvent } from './MPageOrderEvent';
 import { MPageOrder, NewOrderOpts } from './MPageOrder';
 
 export {
-  launchClinicalNote,
-  launchPowerForm,
-  launchPowerNote,
-  makeCclRequest,
-  openPatientTab,
-  openOrganizerTab,
+  launchClinicalNoteAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
 };
 
 export {
@@ -127,6 +127,6 @@ declare global {
     MPAGES_EVENT: (
       type: 'ALLERGY' | 'POWERFORM' | 'POWERNOTE' | 'ORDERS' | 'CLINICALNOTE',
       args: string
-    ) => void;
+    ) => Promise<any>;
   }
 }

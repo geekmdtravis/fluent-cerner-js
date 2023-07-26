@@ -1,13 +1,13 @@
 import {
   processCclRequestParams,
   CclCallParam,
-  makeCclRequest,
+  makeCclRequestAsync,
 } from './makeCclRequest';
 
 describe('makeCclRequest', () => {
   it('rejects when outside of PowerChart', async () => {
     return expect(
-      makeCclRequest({
+      makeCclRequestAsync({
         prg: 'TEST',
         params: [{ type: 'string', param: 'param1' }],
       })
