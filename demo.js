@@ -6,7 +6,7 @@ const {
   openOrganizerTabAsync,
   launchClinicalNote,
   launchPowerForm,
-  launchPowerNote,
+  launchPowerNoteAsync,
 } = require('./dist/');
 
 /************************************************
@@ -134,9 +134,13 @@ launchPowerForm({
 /****************************************************
  * Launch a PowerNote
  ***************************************************/
-launchPowerNote({
-  personId: 12345,
-  encounterId: 54321,
-  target: 'new',
-  targetId: 'CKI!HAIR LOSS',
-});
+(async () => {
+  const { inPowerChart, eventString } = await launchPowerNoteAsync({
+    personId: 12345,
+    encounterId: 54321,
+    target: 'new',
+    targetId: 'CKI!HAIR LOSS',
+  });
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+})();
