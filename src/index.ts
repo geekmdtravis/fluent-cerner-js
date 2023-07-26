@@ -1,13 +1,13 @@
 import {
   getValidEncountersAsync,
-  launchClinicalNote,
-  launchPowerForm,
-  launchPowerNote,
-  makeCclRequest,
-  openPatientTab,
-  openOrganizerTab,
+  launchClinicalNoteAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
@@ -26,14 +26,14 @@ import { MPageOrder, NewOrderOpts } from './MPageOrder';
 
 export {
   getValidEncountersAsync,
-  launchClinicalNote,
-  launchPowerForm,
-  launchPowerNote,
-  makeCclRequest,
-  openPatientTab,
-  openOrganizerTab,
+  launchClinicalNoteAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
 };
 
 export {
@@ -56,7 +56,10 @@ export {
 declare global {
   /**
    * Interface for the Cerner Windows COM Object for an XMLCclRequest.
-   * Useful for development but not intended for production use.
+   * Useful for development but not intended for production use. Use of
+   * this method in that context requires the following meta tag in the
+   * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
+   * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/XMLCCLREQUEST)
    */
   interface XMLCclRequest {
     options: Object;
@@ -124,11 +127,14 @@ declare global {
     DiscernObjectFactory: DiscernObjectFactory;
     /**
      * Interface for the Cerner Windows COM object for an XMLCclRequest.
-     * Useful for development but not intended for production use.
+     * Useful for development but not intended for production use. Use of
+     * this method in that context requires the following meta tag in the
+     * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
+     * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/XMLCCLREQUEST)
      */
     XMLCclRequest: XMLCclRequest;
     /**
-     * Interface for the Cerner Windows COM object which provides the function
+     * Interface for the Cerner Discern native function which provides the function
      * responsible for opening an application, chart tab, or organization level tab.
      * Useful for development but not intended for production use.
      * @param {0 | 1 | 100} mode - The _linkmode_ parameter for the APPLINK function.The value 0
@@ -144,7 +150,7 @@ declare global {
      */
     APPLINK: (mode: 0 | 1 | 100, target: string, args: string) => void;
     /**
-     * Interface for the Cerner Windows COM object which provides the function
+     * Interface for the Cerner Discern native function which provides the function
      * responsible for engaging in special Cerneer _conversation events_ within the
      * web page (MPage) with the Cerner PowerChart application. Useful for development
      * but not intended for production use.
@@ -154,6 +160,6 @@ declare global {
     MPAGES_EVENT: (
       type: 'ALLERGY' | 'POWERFORM' | 'POWERNOTE' | 'ORDERS' | 'CLINICALNOTE',
       args: string
-    ) => void;
+    ) => Promise<any>;
   }
 }
