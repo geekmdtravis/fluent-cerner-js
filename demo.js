@@ -4,7 +4,7 @@ const {
   makeCclRequestAsync,
   openPatientTabAsync,
   openOrganizerTabAsync,
-  launchClinicalNote,
+  launchClinicalNoteAsync,
   launchPowerForm,
   launchPowerNoteAsync,
 } = require('./dist/');
@@ -114,13 +114,17 @@ let altResult = undefined;
 /****************************************************
  * Launch a Clinical Note
  ***************************************************/
-launchClinicalNote({
-  patientId: 12345,
-  encounterId: 54321,
-  eventIds: [123, 456, 789],
-  windowTitle: 'My Note',
-  viewOptionFlags: ['buttons', 'view-only'],
-});
+(async () => {
+  const { inPowerChart, eventString } = await launchClinicalNoteAsync({
+    patientId: 12345,
+    encounterId: 54321,
+    eventIds: [123, 456, 789],
+    windowTitle: 'My Note',
+    viewOptionFlags: ['buttons', 'view-only'],
+  });
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+})();
 
 /****************************************************
  * Launch a PowerForm

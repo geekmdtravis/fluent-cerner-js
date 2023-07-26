@@ -1,4 +1,7 @@
-import { launchClinicalNote, ClinicalNoteOpts } from './launchClinicalNote';
+import {
+  launchClinicalNoteAsync,
+  ClinicalNoteOpts,
+} from './launchClinicalNote';
 import { launchPowerForm, PowerFormOpts } from './launchPowerForm';
 import { launchPowerNoteAsync, PowerNoteOpts } from './launchPowerNote';
 import {
@@ -32,7 +35,7 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 // Export functions
 export {
-  launchClinicalNote,
+  launchClinicalNoteAsync,
   launchPowerForm,
   launchPowerNoteAsync,
   makeCclRequestAsync,

@@ -1,5 +1,5 @@
 import {
-  launchClinicalNote,
+  launchClinicalNoteAsync,
   launchPowerForm,
   launchPowerNoteAsync,
   makeCclRequestAsync,
@@ -24,7 +24,7 @@ import { MPageOrderEvent } from './MPageOrderEvent';
 import { MPageOrder, NewOrderOpts } from './MPageOrder';
 
 export {
-  launchClinicalNote,
+  launchClinicalNoteAsync,
   launchPowerForm,
   launchPowerNoteAsync,
   makeCclRequestAsync,

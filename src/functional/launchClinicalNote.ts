@@ -23,7 +23,12 @@ export type ViewOption =
  * preferences after. An invalid compName loads the clinical note with the default preferences.
  * @param {number} compSeq - 	The component sequence for the component-level preference of the tab to model
  * the preferences after. An invalid compSeq loads the clinical note with the default preferences.
- *
+ * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
+ * and `inPowerChart` values. Of note, we cannot provide additiona information about the
+ * success or failure of the invocation because this information is not provided by the
+ * underlying Discern native function call's return, which awlays returns `null` no matter
+ * the outcome of the call.
+ * @throw if an unexpected error has occurred.
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  */
 export type InheretanceProps = {
@@ -65,9 +70,9 @@ export type ClinicalNoteOpts = {
  *
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
-export const launchClinicalNote = (
+export const launchClinicalNoteAsync = async (
   opts: ClinicalNoteOpts
-): MPageEventReturn => {
+): Promise<MPageEventReturn> => {
   const {
     personId,
     encounterId,
@@ -95,7 +100,7 @@ export const launchClinicalNote = (
 
   const eventString = `${params.join('|')}`;
   try {
-    window.MPAGES_EVENT('CLINICALNOTE', eventString);
+    await window.MPAGES_EVENT('CLINICALNOTE', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
