@@ -53,7 +53,7 @@ const opts: CclOpts = {
   ],
 };
 
-makeCclRequest(opts)
+makeCclRequestAsync(opts)
   .then(data => setData(data))
   .catch(err => console.error(err))
   .finally(() => console.log("I'm done!"));
@@ -71,7 +71,7 @@ const opts: CclOpts = {
 };
 
 try {
-  const data = await makeCclRequest(opts);
+  const data = await makeCclRequestAsync(opts);
   setData(result);
 } catch (error) {
   console.error(error);
@@ -91,7 +91,7 @@ const opts: ClinicalNoteOpts = {
   viewOptionFlags: ['view-only'],
 };
 
-launchClinicalNote(opts);
+const { inPowerChart, eventString } = await launchClinicalNoteAsync(opts);
 ```
 
 ### Launch PowerForm
@@ -105,7 +105,7 @@ const opts: PowerFormOpts = {
   permissions: 'modify',
 };
 
-launchPowerForm(opts);
+const { inPowerChart, eventString } = await launchPowerFormAsync(opts);
 ```
 
 ### Launch a PowerNote
@@ -118,7 +118,7 @@ const opts: PowerNoteOpts = {
   targetId: 1337,
 };
 
-launchPowerNote(opts);
+const { inPowerChart, eventString } = await launchPowerNoteAsync(opts);
 ```
 
 ### Launch a Tab at the Organizer Level
@@ -126,7 +126,9 @@ launchPowerNote(opts);
 Open a tab at the organizer level (no patient context). Arguments provided are _tab name_.
 
 ```ts
-openOrganizerTab('Tab Name');
+const { inPowerChart, eventString, badInput } = await openOrganizerTabAsync(
+  'Tab Name'
+);
 ```
 
 ### Launch a Tab at the Patient Level
@@ -134,7 +136,12 @@ openOrganizerTab('Tab Name');
 Open a tab at the patient level (patient context is present). Arguments provided are _person ID_, _encounter ID_, _tab name_, and optional _boolean_ for whether or not attempt to open a _Quick Add_ tab (not available in all tabs).
 
 ```ts
-openPatientTab(12345, 51353, 'Tab Name', true);
+const { inPowerChart, eventString, badInput } = await openPatientTabAsync(
+  12345,
+  51353,
+  'Tab Name',
+  true
+);
 ```
 
 ### Verification and Context Validation
@@ -142,7 +149,16 @@ openPatientTab(12345, 51353, 'Tab Name', true);
 Each function will return an object `{eventString: string, inPowerChart: boolean}`. This object can be used to verify the event string and context of the application. `eventString` does not give information about the function called, but does give a final representation of the string that is being fed into the relevant function and is therefore useful for debugging. If you're developing outside of PowerChart the error generated will be caught and logged to the console along with returning the object with the `inPowerChart` property set to `false`.
 
 ```ts
-const { eventString, inPowerChart } = openPatientTab(0, 1, 'Tab Name', true);
+const { eventString, inPowerChart, badInput } = openPatientTabAsync(
+  0,
+  1,
+  'Tab Name',
+  true
+);
+
+if (badInput) {
+  dispatch(appWarning('Bad input was provided to the function!'));
+}
 
 if (!inPowerChart) {
   dispatch(
@@ -173,7 +189,7 @@ const MyComponent = ({ user }) => {
       params: [userPidParam],
     };
 
-    makeCclRequest<MyCustomResponse>(opts)
+    makeCclRequestAsync<MyCustomResponse>(opts)
       .then(data => setData(data))
       .catch(error => addErrorToast(error));
   };
