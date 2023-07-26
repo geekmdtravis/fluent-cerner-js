@@ -6,7 +6,8 @@ import { outsideOfPowerChartError } from '../utils';
  * @param pid {number} - the patient ID to get valid encounters for
  * @returns a `Promise` which resolves to an object containing an array of valid encounter IDs
  * and a boolean indicating whether the user is in PowerChart
- * @throws an error if an unexpected error occurs.
+ * @throws `Error` if an unexpected error occurs, and a `RangeError` if the provided
+ * patient ID is not a positive integer greater than zero.
  */
 export async function getValidEncountersAsync(
   pid: number
@@ -18,6 +19,9 @@ export async function getValidEncountersAsync(
     inPowerChart: true,
     encounterIds: [],
   };
+  if (pid < 1) {
+    throw new RangeError('The patient ID must be a positive integer.');
+  }
   try {
     const dcof = new window.DiscernObjectFactory('PVCONTXTMPAGE');
     const response = await dcof.GetValidEncounters(pid);
