@@ -1,3 +1,4 @@
+import { getValidEncountersAsync } from './getValidEncounters';
 import { launchClinicalNote, ClinicalNoteOpts } from './launchClinicalNote';
 import { launchPowerForm, PowerFormOpts } from './launchPowerForm';
 import { launchPowerNote, PowerNoteOpts } from './launchPowerNote';
@@ -33,6 +34,7 @@ export type MPageEventReturn = PowerChartReturn & {
 
 // Export functions
 export {
+  getValidEncountersAsync,
   launchClinicalNote,
   launchPowerForm,
   launchPowerNote,

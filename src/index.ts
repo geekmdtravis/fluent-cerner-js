@@ -1,4 +1,5 @@
 import {
+  getValidEncountersAsync,
   launchClinicalNote,
   launchPowerForm,
   launchPowerNote,
@@ -24,6 +25,7 @@ import { MPageOrderEvent } from './MPageOrderEvent';
 import { MPageOrder, NewOrderOpts } from './MPageOrder';
 
 export {
+  getValidEncountersAsync,
   launchClinicalNote,
   launchPowerForm,
   launchPowerNote,

@@ -7,7 +7,11 @@ const {
   launchClinicalNote,
   launchPowerForm,
   launchPowerNote,
+  getValidEncountersAsync,
 } = require('./dist/');
+
+// Define a 'window' object to simulate the browser environment
+window = {};
 
 /************************************************
  * Create and submit new orders to PowerChart
@@ -104,3 +108,13 @@ launchPowerNote({
   target: 'new',
   targetId: 'CKI!HAIR LOSS',
 });
+
+(async () => {
+  const { inPowerChart, encounterIds } = await getValidEncountersAsync(3);
+  console.log(`We are ${inPowerChart ? '' : 'not '}in PowerChart`);
+  console.log(
+    `We have ${
+      encounterIds.length
+    } valid encounters, with ID's: ${encounterIds.join(', ') || 'None'}`
+  );
+})();
