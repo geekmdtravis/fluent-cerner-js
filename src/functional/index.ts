@@ -1,3 +1,4 @@
+import { getValidEncountersAsync } from './getValidEncounters';
 import {
   launchClinicalNoteAsync,
   ClinicalNoteOpts,
@@ -21,20 +22,24 @@ import {
 } from './orderString';
 import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
 
+export type PowerChartReturn = {
+  inPowerChart: boolean;
+};
+
 /**
  * A type which represents the object to be returned from the launchClinicalNote() function.
  * @param {string} eventString - The string version of the MPageEvent
  * @param {boolean} inPowerChart - Returns `true` if being run from inside of PowerChart and returns `false` otherwise.
  **/
-export type MPageEventReturn = {
+export type MPageEventReturn = PowerChartReturn & {
   eventString: string;
-  inPowerChart: boolean;
 };
 
 export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 // Export functions
 export {
+  getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPowerFormAsync,
   launchPowerNoteAsync,

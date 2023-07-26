@@ -7,7 +7,11 @@ const {
   launchClinicalNoteAsync,
   launchPowerForm,
   launchPowerNoteAsync,
+  getValidEncountersAsync,
 } = require('./dist/');
+
+// Define a 'window' object to simulate the browser environment
+window = {};
 
 /************************************************
  * Create and submit new orders to PowerChart
@@ -153,4 +157,17 @@ let altResult = undefined;
   });
   console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
   console.log(`Event string: ${eventString}`);
+})();
+
+/**************************************************
+ * Get a list of valid encounters for a patient
+ **************************************************/
+(async () => {
+  const { inPowerChart, encounterIds } = await getValidEncountersAsync(3);
+  console.log(`We are ${inPowerChart ? '' : 'not '}in PowerChart`);
+  console.log(
+    `We have ${
+      encounterIds.length
+    } valid encounters, with ID's: ${encounterIds.join(', ') || 'None'}`
+  );
 })();

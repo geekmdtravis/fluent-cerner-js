@@ -144,29 +144,10 @@ const { inPowerChart, eventString, badInput } = await openPatientTabAsync(
 );
 ```
 
-### Verification and Context Validation
-
-Each function will return an object `{eventString: string, inPowerChart: boolean}`. This object can be used to verify the event string and context of the application. `eventString` does not give information about the function called, but does give a final representation of the string that is being fed into the relevant function and is therefore useful for debugging. If you're developing outside of PowerChart the error generated will be caught and logged to the console along with returning the object with the `inPowerChart` property set to `false`.
+### Get Valid Encounter ID's for a given patient
 
 ```ts
-const { eventString, inPowerChart, badInput } = openPatientTabAsync(
-  0,
-  1,
-  'Tab Name',
-  true
-);
-
-if (badInput) {
-  dispatch(appWarning('Bad input was provided to the function!'));
-}
-
-if (!inPowerChart) {
-  dispatch(
-    appWarning(
-      `You're not in PowerChart! The generated event string is ${eventString}`
-    )
-  );
-}
+const { inPowerChart, encounterIds } = await getValidEncountersAsync(1);
 ```
 
 ## TypeScript Support
