@@ -22,7 +22,9 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
  * Any tab with the term _power_ in it will enable both _PowerOrders_ and _PowerPlans_ in _PowerChart_.
  * @action `launchView` - (optional) Sets the view to be displayed.If not provided,
  * will default to `search` view.
- * @action `signSilently` - (optional) Signs the orders silently. Orders are not signed silently by default.
+ * @action `signSilently` - (optional) Attempts to sign the orders silently. Orders are not signed silently
+ * by default. If it's not possible for the system to complete a sileng sign directive,
+ * the MOEW will pop up.
  * @action `dryRun` - (optional) If set to true, will not submit the order.
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  * @warning Our internal testing suggests there is a _PowerChart_ bug relating to the use of power

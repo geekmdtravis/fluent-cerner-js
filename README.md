@@ -250,9 +250,9 @@ Read the above string to say:
 - With **PowerPlans** enabled,
 - Customizing the **Order List Profile** with **PowerOrder** functionality
 - Defaulting to the **Order Profile** view.
-- Placing orders **silently** (no confirmation dialog)
+  Will attempt placing orders **silently** (no confirmation dialog),if possible.
 
-When passed as the second argument to the `MPAGES_EVENT` function (first argument is the string `"ORDERS"`), this event string will instruct the Cerner Millennium application to silently place two orders, one with multiple `nomenclatureId`s and one with a single `nomenclatureId`, into the patient's order list.
+When passed as the second argument to the `MPAGES_EVENT` function (first argument is the string `"ORDERS"`), this event string will instruct the Cerner Millennium application to attempt to silently place two orders, one with multiple `nomenclatureId`s and one with a single `nomenclatureId`, into the patient's order list.
 
 Example raw usage of the `MPAGES_EVENT` function with a manually constructed string:
 
@@ -338,6 +338,6 @@ Where `tabList` is a single brace-contained, pip-delimited string that takes the
   - `8`: default to the order search.
   - `16`: default to the order profile.
   - `32`: default to the orders for signature.
-- `silentSignFlag`: A Boolean flag used to determine if the MOEW should sign orders silently. When this flag is set, and the required details on each new order are pre-populated, it causes the orders to be signed automatically without displaying the MOEW. Orders are signed automatically when existing orders are not already on the scratchpad and no other orderActions are present.
+- `silentSignFlag`: A Boolean flag used to determine if the MOEW should sign orders silently. When this flag is set, and the required details on each new order are pre-populated, it causes the orders to be signed automatically without displaying the MOEW. Orders are signed automatically when existing orders are not already on the scratchpad and no other orderActions are present. This is only an attempt; if it's not possible to silent sign, the MOEW will pop up.
   - `0`: do not sign orders silently.
   - `1`: sign orders silently.
