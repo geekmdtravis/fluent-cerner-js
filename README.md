@@ -228,7 +228,7 @@ Read the above string to say:
   - 123456
   - 654321
   - 987654
-- With **PowerPlans** enabled,
+- With (search for) **PowerPlans** enabled,
 - Customizing the **Order List Profile** with **PowerOrder** functionality
 - Defaulting to the **Order Profile** view.
 
@@ -247,7 +247,7 @@ Read the above string to say:
     - Having a single `nomenclatureId` of `961514` (e.g. a single diagnosis)
   - 654321
     - Having multiple `nomenclatureId`'s of `1029704`, `1029801`, and `961514` (e.g multiple diagnoses)
-- With **PowerPlans** enabled,
+- With (search for) **PowerPlans** enabled,
 - Customizing the **Order List Profile** with **PowerOrder** functionality
 - Defaulting to the **Order Profile** view.
   Will attempt placing orders **silently** (no confirmation dialog),if possible.
@@ -322,8 +322,8 @@ Where `tabList` is a single brace-contained, pip-delimited string that takes the
     - `nomenclatureId`: The optional `nomenclature_id` to be associated with the new order. This is generally a value that will be linked to an ICD code or SNOMED code. Thus the need to support multiple `nomenclatureId`'s for any given order.
     - `signTimeInterationFlag`: A Boolean flag to determine if interaction checking should only be performed at sign-time or not.
 - `customizeFlags`: A set of flags that can be used to define the style of the MOEW.
-  - `0`: no PowerPlans.
-  - `24`: enable PowerPlans.
+  - `0`: no search for PowerPlans.
+  - `24`: enable search for PowerPlans.
 - `tabList`: The customization data for the different tab(s) of the MOEW.
   - A set that must be enclosed by the `{` and `}` braces.
   - Parameters within the sets are pipe-delimited.

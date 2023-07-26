@@ -20,6 +20,8 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
  * @action `targetTab` - (optional) Sets the tab to be displayed, with and without power orders.
  * If not provided, will default to `orders`, that is the orders tab with _PowerOrders_ disabled.
  * Any tab with the term _power_ in it will enable both _PowerOrders_ and _PowerPlans_ in _PowerChart_.
+ * Also of note, enabling power plans via `power orders` or `power medications` simply means that
+ * a user can _search for_ Power Plans. It does not mean that the user can _create_ Power Plans.
  * @action `launchView` - (optional) Sets the view to be displayed.If not provided,
  * will default to `search` view.
  * @action `signSilently` - (optional) Attempts to sign the orders silently. Orders are not signed silently
@@ -56,7 +58,7 @@ export type SubmitOrderReturn = MPageEventReturn & {
 
 /**
  * Submit orders for a patient in a given encounter through the _Cerner PowerChart_ `MPAGES_EVENT` function.
- * By default, _PowerPlans_ are disabled (potential bug in _PowerChart_), _PowerOrders_ are disabled,
+ * By default, the seach for _PowerPlans_ are disabled (potential bug in _PowerChart_), _PowerOrders_ are disabled,
  * the target tab is set to orders, and will launch to the signature view.
  * @param {number} personId - The identifier for the patient to whom the note belongs.
  * Cerner context variable: PAT_PersonId.
