@@ -2,8 +2,8 @@ const {
   orderString,
   submitOrdersAsync,
   makeCclRequestAsync,
-  openPatientTab,
-  openOrganizerTab,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   launchClinicalNote,
   launchPowerForm,
   launchPowerNote,
@@ -88,13 +88,28 @@ let altResult = undefined;
  * Open a specific tab in a patients chart
  ********************************************************/
 
-openPatientTab(12345, 54321, 'Notes');
+(async () => {
+  const { inPowerChart, eventString, badInput } = await openPatientTabAsync(
+    12345,
+    54321,
+    'Notes'
+  );
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+  console.log(`Bad input: ${badInput}`);
+})();
 
 /********************************************************
  * Open a specific organizer level tab
  ********************************************************/
-
-openOrganizerTab('Message Center');
+(async () => {
+  const { inPowerChart, eventString, badInput } = await openOrganizerTabAsync(
+    'Message Center'
+  );
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+  console.log(`Bad input: ${badInput}`);
+})();
 
 /****************************************************
  * Launch a Clinical Note

@@ -28,8 +28,8 @@ export {
   launchPowerForm,
   launchPowerNote,
   makeCclRequestAsync,
-  openPatientTabAsync as openPatientTab,
-  openOrganizerTabAsync as openOrganizerTab,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   orderString,
   submitOrdersAsync,
 };
