@@ -26,21 +26,30 @@ export type PowerNoteOpts = {
 /**
  * Launch a PowerNote in Cerner's PowerChart.
  * @param {PowerNoteOpts} opts - The parameters passed, as specified in `PowerNoteOpts`
- * @returns {MPageEventReturn} - An object containing the `eventString` and `inPowerChart` values.
- * @throws {Error} - if there is a type mismatch between the provided option for `target` and `targetId`.
+ * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
+ * and `inPowerChart` values. Of note, we cannot provide additiona information about the
+ * success or failure of the invocation because this information is not provided by the
+ * underlying Discern native function call's return, which awlays returns `null` no matter
+ * the outcome of the call.
+ * @throws if there is a type mismatch between the provided option for `target` and `targetId`,
+ * or if an unexpected error has occured.
  *
  * @documentation [MPAGES_EVENT - POWERNOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERNOTE)
  **/
-export const launchPowerNote = (opts: PowerNoteOpts): MPageEventReturn => {
+export const launchPowerNoteAsync = async (
+  opts: PowerNoteOpts
+): Promise<MPageEventReturn> => {
   const { personId, encounterId, target, targetId } = opts;
 
   if (target === 'new' && typeof targetId !== 'string') {
-    throw new Error('CKI must be a string when launching a new PowerNote.');
+    throw new Error(
+      'targetId (for CKI) must be a string when launching a new PowerNote.'
+    );
   }
 
   if (target === 'existing' && typeof targetId !== 'number') {
     throw new Error(
-      'eventId must be a number when loading an existing PowerNote.'
+      'targetId must be a number when loading an existing PowerNote.'
     );
   }
   const params: Array<string> = [
@@ -53,7 +62,7 @@ export const launchPowerNote = (opts: PowerNoteOpts): MPageEventReturn => {
   const eventString = `${params.join('|')}`;
   let inPowerChart = true;
   try {
-    window.MPAGES_EVENT('POWERNOTE', eventString);
+    await window.MPAGES_EVENT('POWERNOTE', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;

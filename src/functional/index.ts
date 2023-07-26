@@ -1,6 +1,6 @@
 import { launchClinicalNote, ClinicalNoteOpts } from './launchClinicalNote';
 import { launchPowerForm, PowerFormOpts } from './launchPowerForm';
-import { launchPowerNote, PowerNoteOpts } from './launchPowerNote';
+import { launchPowerNoteAsync, PowerNoteOpts } from './launchPowerNote';
 import {
   makeCclRequestAsync,
   CclCallParam,
@@ -34,7 +34,7 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 export {
   launchClinicalNote,
   launchPowerForm,
-  launchPowerNote,
+  launchPowerNoteAsync,
   makeCclRequestAsync,
   openPatientTabAsync,
   openOrganizerTabAsync,
