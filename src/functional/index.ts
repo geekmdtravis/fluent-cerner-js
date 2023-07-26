@@ -18,14 +18,17 @@ import {
 } from './orderString';
 import { submitOrders, SubmitOrderOpts } from './submitOrders';
 
+export type PowerChartReturn = {
+  inPowerChart: boolean;
+};
+
 /**
  * A type which represents the object to be returned from the launchClinicalNote() function.
  * @param {string} eventString - The string version of the MPageEvent
  * @param {boolean} inPowerChart - Returns `true` if being run from inside of PowerChart and returns `false` otherwise.
  **/
-export type MPageEventReturn = {
+export type MPageEventReturn = PowerChartReturn & {
   eventString: string;
-  inPowerChart: boolean;
 };
 
 // Export functions
