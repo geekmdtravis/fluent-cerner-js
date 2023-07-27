@@ -8,7 +8,7 @@
     "src"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   },
   "scripts": {
     "ver:a:patch": "npm version prepatch --preid=alpha",
@@ -25,8 +25,9 @@
     "ver:stable:major": "npm version major",
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test --watch",
-    "test:all": "tsdx test --watchAll",
+    "test": "tsdx test --silent",
+    "test:watch": "tsdx test --watch",
+    "test:watchall": "tsdx test --watchAll",
     "lint": "tsdx lint src",
     "prepare": "tsdx build",
     "size": "size-limit",
