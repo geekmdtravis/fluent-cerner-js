@@ -25,7 +25,8 @@
     "ver:stable:major": "npm version major",
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test",
+    "test": "tsdx test --watch",
+    "test:all": "tsdx test --watchAll",
     "lint": "tsdx lint src",
     "prepare": "tsdx build",
     "size": "size-limit",
@@ -68,5 +69,16 @@
   },
   "dependencies": {
     "fast-xml-parser": "^4.2.6"
+  },
+  "jest": {
+    "verbose": true,
+    "silent": true,
+    "collectCoverage": true,
+    "testPathIgnorePatterns": [
+      "index.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "index.ts"
+    ]
   }
 }

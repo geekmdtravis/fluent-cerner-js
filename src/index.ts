@@ -21,9 +21,6 @@ import {
   XmlCclStatus,
 } from './functional';
 
-import { MPageOrderEvent } from './MPageOrderEvent';
-import { MPageOrder, NewOrderOpts } from './MPageOrder';
-
 export {
   getValidEncountersAsync,
   launchClinicalNoteAsync,
@@ -37,9 +34,6 @@ export {
 };
 
 export {
-  MPageOrder,
-  MPageOrderEvent,
-  NewOrderOpts,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
