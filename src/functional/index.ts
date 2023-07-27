@@ -1,43 +1,53 @@
-import { launchClinicalNote, ClinicalNoteOpts } from './launchClinicalNote';
-import { launchPowerForm, PowerFormOpts } from './launchPowerForm';
-import { launchPowerNote, PowerNoteOpts } from './launchPowerNote';
+import { getValidEncountersAsync } from './getValidEncounters';
 import {
-  makeCclRequest,
+  launchClinicalNoteAsync,
+  ClinicalNoteOpts,
+} from './launchClinicalNote';
+import { launchPowerFormAsync, PowerFormOpts } from './launchPowerForm';
+import { launchPowerNoteAsync, PowerNoteOpts } from './launchPowerNote';
+import {
+  makeCclRequestAsync,
   CclCallParam,
   CclOpts,
   XmlCclStatus,
   CclRequestResponse,
 } from './makeCclRequest';
-import { openPatientTab } from './openPatientTab';
-import { openOrganizerTab } from './openOrganizerTab';
+import { openPatientTabAsync } from './openPatientTab';
+import { openOrganizerTabAsync } from './openOrganizerTab';
 import {
   orderString,
   OrderAction,
   OrderStrOpts,
   NewOrderStrOpts,
 } from './orderString';
-import { submitOrders, SubmitOrderOpts } from './submitOrders';
+import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
+
+export type PowerChartReturn = {
+  inPowerChart: boolean;
+};
 
 /**
  * A type which represents the object to be returned from the launchClinicalNote() function.
  * @param {string} eventString - The string version of the MPageEvent
  * @param {boolean} inPowerChart - Returns `true` if being run from inside of PowerChart and returns `false` otherwise.
  **/
-export type MPageEventReturn = {
+export type MPageEventReturn = PowerChartReturn & {
   eventString: string;
-  inPowerChart: boolean;
 };
+
+export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 // Export functions
 export {
-  launchClinicalNote,
-  launchPowerForm,
-  launchPowerNote,
-  makeCclRequest,
-  openPatientTab,
-  openOrganizerTab,
+  getValidEncountersAsync,
+  launchClinicalNoteAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
 };
 
 // Export types; cannot use the `export type` syntax.

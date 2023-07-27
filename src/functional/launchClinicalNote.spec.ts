@@ -1,7 +1,10 @@
-import { launchClinicalNote, ClinicalNoteOpts } from './launchClinicalNote';
+import {
+  launchClinicalNoteAsync,
+  ClinicalNoteOpts,
+} from './launchClinicalNote';
 
 describe('launchPowerNote', () => {
-  it('properly constructs a valid multiple clinical note request', () => {
+  it('properly constructs a valid multiple clinical note request', async () => {
     const expected =
       '8316243|12575702|[155543|345623]|Clinical Notes|31|CLINNOTES|341|CLINNOTES|1';
 
@@ -25,11 +28,11 @@ describe('launchPowerNote', () => {
       },
     };
 
-    const result = launchClinicalNote(opts);
+    const result = await launchClinicalNoteAsync(opts);
     expect(result.eventString).toEqual(expected);
   });
 
-  it('properly constructs a valid single clinical note request', () => {
+  it('properly constructs a valid single clinical note request', async () => {
     const expected =
       '8316243|12575702|[155543]|Clinical Notes Title|17|CLINNOTES5|143|CLINNOTES5|18';
 
@@ -47,11 +50,11 @@ describe('launchPowerNote', () => {
       },
     };
 
-    const result = launchClinicalNote(opts);
+    const result = await launchClinicalNoteAsync(opts);
     expect(result.eventString).toEqual(expected);
   });
 
-  it('empty viewOptions defaults to `view-only` with no other options', () => {
+  it('empty viewOptions defaults to `view-only` with no other options', async () => {
     const expected =
       '8316243|12575702|[155543]|Clinical Notes Title|16|CLINNOTES5|143|CLINNOTES5|18';
 
@@ -69,11 +72,11 @@ describe('launchPowerNote', () => {
       },
     };
 
-    const result = launchClinicalNote(opts);
+    const result = await launchClinicalNoteAsync(opts);
     expect(result.eventString).toEqual(expected);
   });
 
-  it('undefined viewOptions defaults to `view-only` with no other options', () => {
+  it('undefined viewOptions defaults to `view-only` with no other options', async () => {
     const expected =
       '8316243|12575702|[155543]|Clinical Notes Title|16|CLINNOTES5|143|CLINNOTES5|18';
 
@@ -90,11 +93,11 @@ describe('launchPowerNote', () => {
       },
     };
 
-    const result = launchClinicalNote(opts);
+    const result = await launchClinicalNoteAsync(opts);
     expect(result.eventString).toEqual(expected);
   });
 
-  it('undefined `inheritanceProps` will leave the last four fields empty', () => {
+  it('undefined `inheritanceProps` will leave the last four fields empty', async () => {
     const expected = '8316243|12575702|[155543]|Clinical Notes Title|16||||';
 
     const opts: ClinicalNoteOpts = {
@@ -105,7 +108,7 @@ describe('launchPowerNote', () => {
       viewOptionFlags: ['view-only'],
     };
 
-    const result = launchClinicalNote(opts);
+    const result = await launchClinicalNoteAsync(opts);
     expect(result.eventString).toEqual(expected);
   });
 });

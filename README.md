@@ -53,7 +53,7 @@ const opts: CclOpts = {
   ],
 };
 
-makeCclRequest(opts)
+makeCclRequestAsync(opts)
   .then(data => setData(data))
   .catch(err => console.error(err))
   .finally(() => console.log("I'm done!"));
@@ -71,7 +71,7 @@ const opts: CclOpts = {
 };
 
 try {
-  const data = await makeCclRequest(opts);
+  const data = await makeCclRequestAsync(opts);
   setData(result);
 } catch (error) {
   console.error(error);
@@ -91,7 +91,7 @@ const opts: ClinicalNoteOpts = {
   viewOptionFlags: ['view-only'],
 };
 
-launchClinicalNote(opts);
+const { inPowerChart, eventString } = await launchClinicalNoteAsync(opts);
 ```
 
 ### Launch PowerForm
@@ -105,7 +105,7 @@ const opts: PowerFormOpts = {
   permissions: 'modify',
 };
 
-launchPowerForm(opts);
+const { inPowerChart, eventString } = await launchPowerFormAsync(opts);
 ```
 
 ### Launch a PowerNote
@@ -118,7 +118,7 @@ const opts: PowerNoteOpts = {
   targetId: 1337,
 };
 
-launchPowerNote(opts);
+const { inPowerChart, eventString } = await launchPowerNoteAsync(opts);
 ```
 
 ### Launch a Tab at the Organizer Level
@@ -126,7 +126,9 @@ launchPowerNote(opts);
 Open a tab at the organizer level (no patient context). Arguments provided are _tab name_.
 
 ```ts
-openOrganizerTab('Tab Name');
+const { inPowerChart, eventString, badInput } = await openOrganizerTabAsync(
+  'Tab Name'
+);
 ```
 
 ### Launch a Tab at the Patient Level
@@ -134,23 +136,18 @@ openOrganizerTab('Tab Name');
 Open a tab at the patient level (patient context is present). Arguments provided are _person ID_, _encounter ID_, _tab name_, and optional _boolean_ for whether or not attempt to open a _Quick Add_ tab (not available in all tabs).
 
 ```ts
-openPatientTab(12345, 51353, 'Tab Name', true);
+const { inPowerChart, eventString, badInput } = await openPatientTabAsync(
+  12345,
+  51353,
+  'Tab Name',
+  true
+);
 ```
 
-### Verification and Context Validation
-
-Each function will return an object `{eventString: string, inPowerChart: boolean}`. This object can be used to verify the event string and context of the application. `eventString` does not give information about the function called, but does give a final representation of the string that is being fed into the relevant function and is therefore useful for debugging. If you're developing outside of PowerChart the error generated will be caught and logged to the console along with returning the object with the `inPowerChart` property set to `false`.
+### Get Valid Encounter ID's for a given patient
 
 ```ts
-const { eventString, inPowerChart } = openPatientTab(0, 1, 'Tab Name', true);
-
-if (!inPowerChart) {
-  dispatch(
-    appWarning(
-      `You're not in PowerChart! The generated event string is ${eventString}`
-    )
-  );
-}
+const { inPowerChart, encounterIds } = await getValidEncountersAsync(1);
 ```
 
 ## TypeScript Support
@@ -173,7 +170,7 @@ const MyComponent = ({ user }) => {
       params: [userPidParam],
     };
 
-    makeCclRequest<MyCustomResponse>(opts)
+    makeCclRequestAsync<MyCustomResponse>(opts)
       .then(data => setData(data))
       .catch(error => addErrorToast(error));
   };
@@ -212,7 +209,7 @@ Read the above string to say:
   - 123456
   - 654321
   - 987654
-- With **PowerPlans** enabled,
+- With (search for) **PowerPlans** enabled,
 - Customizing the **Order List Profile** with **PowerOrder** functionality
 - Defaulting to the **Order Profile** view.
 
@@ -231,12 +228,12 @@ Read the above string to say:
     - Having a single `nomenclatureId` of `961514` (e.g. a single diagnosis)
   - 654321
     - Having multiple `nomenclatureId`'s of `1029704`, `1029801`, and `961514` (e.g multiple diagnoses)
-- With **PowerPlans** enabled,
+- With (search for) **PowerPlans** enabled,
 - Customizing the **Order List Profile** with **PowerOrder** functionality
 - Defaulting to the **Order Profile** view.
-- Placing orders **silently** (no confirmation dialog)
+  Will attempt placing orders **silently** (no confirmation dialog),if possible.
 
-When passed as the second argument to the `MPAGES_EVENT` function (first argument is the string `"ORDERS"`), this event string will instruct the Cerner Millennium application to silently place two orders, one with multiple `nomenclatureId`s and one with a single `nomenclatureId`, into the patient's order list.
+When passed as the second argument to the `MPAGES_EVENT` function (first argument is the string `"ORDERS"`), this event string will instruct the Cerner Millennium application to attempt to silently place two orders, one with multiple `nomenclatureId`s and one with a single `nomenclatureId`, into the patient's order list.
 
 Example raw usage of the `MPAGES_EVENT` function with a manually constructed string:
 
@@ -306,8 +303,8 @@ Where `tabList` is a single brace-contained, pip-delimited string that takes the
     - `nomenclatureId`: The optional `nomenclature_id` to be associated with the new order. This is generally a value that will be linked to an ICD code or SNOMED code. Thus the need to support multiple `nomenclatureId`'s for any given order.
     - `signTimeInterationFlag`: A Boolean flag to determine if interaction checking should only be performed at sign-time or not.
 - `customizeFlags`: A set of flags that can be used to define the style of the MOEW.
-  - `0`: no PowerPlans.
-  - `24`: enable PowerPlans.
+  - `0`: no search for PowerPlans.
+  - `24`: enable search for PowerPlans.
 - `tabList`: The customization data for the different tab(s) of the MOEW.
   - A set that must be enclosed by the `{` and `}` braces.
   - Parameters within the sets are pipe-delimited.
@@ -322,6 +319,6 @@ Where `tabList` is a single brace-contained, pip-delimited string that takes the
   - `8`: default to the order search.
   - `16`: default to the order profile.
   - `32`: default to the orders for signature.
-- `silentSignFlag`: A Boolean flag used to determine if the MOEW should sign orders silently. When this flag is set, and the required details on each new order are pre-populated, it causes the orders to be signed automatically without displaying the MOEW. Orders are signed automatically when existing orders are not already on the scratchpad and no other orderActions are present.
+- `silentSignFlag`: A Boolean flag used to determine if the MOEW should sign orders silently. When this flag is set, and the required details on each new order are pre-populated, it causes the orders to be signed automatically without displaying the MOEW. Orders are signed automatically when existing orders are not already on the scratchpad and no other orderActions are present. This is only an attempt; if it's not possible to silent sign, the MOEW will pop up.
   - `0`: do not sign orders silently.
   - `1`: sign orders silently.

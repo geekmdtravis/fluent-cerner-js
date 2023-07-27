@@ -1,12 +1,13 @@
 import {
-  launchClinicalNote,
-  launchPowerForm,
-  launchPowerNote,
-  makeCclRequest,
-  openPatientTab,
-  openOrganizerTab,
+  getValidEncountersAsync,
+  launchClinicalNoteAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
@@ -24,14 +25,15 @@ import { MPageOrderEvent } from './MPageOrderEvent';
 import { MPageOrder, NewOrderOpts } from './MPageOrder';
 
 export {
-  launchClinicalNote,
-  launchPowerForm,
-  launchPowerNote,
-  makeCclRequest,
-  openPatientTab,
-  openOrganizerTab,
+  getValidEncountersAsync,
+  launchClinicalNoteAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
   orderString,
-  submitOrders,
+  submitOrdersAsync,
 };
 
 export {
@@ -86,7 +88,43 @@ declare global {
     send(data: string): void;
     setRequestHeader: (name: string, value: string) => void;
   }
+
+  /**
+   * A type which ensures that only valid DiscernCOMObjects can be
+   * passed to the DiscernObjectFactory constructor.
+   */
+  type DiscernCOMObjects =
+    | 'INFOBUTTONLINK'
+    | 'DISCHARGEPROCESS'
+    | 'DYNDOC'
+    | 'KIACROSSMAPPING'
+    | 'ORDERS'
+    | 'PATIENTEDUCATION'
+    | 'PEXAPPLICATIONSTATUS'
+    | 'PEXSCHEDULINGACTIONS'
+    | 'PMLISTMAINTENANCE'
+    | 'POWERFORM'
+    | 'POWERNOTE'
+    | 'POWERORDERS'
+    | 'PREGNANCY'
+    | 'PVCONTXTMPAGE'
+    | 'PVFRAMEWORKLINK'
+    | 'PVPATIENTFOCUS'
+    | 'PVPATIENTSEARCHMPAGE'
+    | 'PVVIEWERMPAGE'
+    | 'TASKDOC';
+  /**
+   * Interface for the Cerner Windows COM Object DiscernObjectFactory,
+   * which provides access to various functionalities such as the ability to
+   * create and place Power Orders, get valid encounters, and more.
+   */
+  interface DiscernObjectFactory {
+    new (type: DiscernCOMObjects): DiscernObjectFactory;
+    GetValidEncounters: (pid: number) => Promise<string>;
+  }
+
   interface Window {
+    DiscernObjectFactory: DiscernObjectFactory;
     /**
      * Interface for the Cerner Windows COM object for an XMLCclRequest.
      * Useful for development but not intended for production use. Use of
@@ -96,12 +134,9 @@ declare global {
      */
     XMLCclRequest: XMLCclRequest;
     /**
-     * Interface for the Cerner Windows COM object which provides the function
+     * Interface for the Cerner Discern native function which provides the function
      * responsible for opening an application, chart tab, or organization level tab.
-     * Useful for development but not intended for production use. Use of
-     * this method in that context requires the following meta tag in the
-     * head of the HTML document: `<META content='APPLINK' name='discern'>`
-     * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
+     * Useful for development but not intended for production use.
      * @param {0 | 1 | 100} mode - The _linkmode_ parameter for the APPLINK function.The value 0
      * is used for starting a solution by application name (e.g. Powerchart.exe), the value 1
      * is used for starting a solution by solution object (e.g. DiscernAnalytics.Application),
@@ -115,18 +150,16 @@ declare global {
      */
     APPLINK: (mode: 0 | 1 | 100, target: string, args: string) => void;
     /**
-     * Interface for the Cerner Windows COM object which provides the function
+     * Interface for the Cerner Discern native function which provides the function
      * responsible for engaging in special Cerneer _conversation events_ within the
      * web page (MPage) with the Cerner PowerChart application. Useful for development
-     * but not intended for production use. Use of this method in that context requires
-     * the following meta tag in the head of the HTML document:
-     * `<META content='MPAGES_EVENT' name='discern'>` [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT)
+     * but not intended for production use.
      * @param {string} type - The type of event to be triggered. Can by `'ALLERGY' | 'POWERFORM' | 'POWERNOTE' | 'ORDERS' | 'CLINICALNOTE'`
      * @param {string} args - Argument data passed to the event, specific to the event type.
      */
     MPAGES_EVENT: (
       type: 'ALLERGY' | 'POWERFORM' | 'POWERNOTE' | 'ORDERS' | 'CLINICALNOTE',
       args: string
-    ) => void;
+    ) => Promise<any>;
   }
 }

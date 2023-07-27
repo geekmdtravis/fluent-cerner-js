@@ -1,13 +1,17 @@
 const {
   orderString,
-  submitOrders,
-  makeCclRequest,
-  openPatientTab,
-  openOrganizerTab,
-  launchClinicalNote,
+  submitOrdersAsync,
+  makeCclRequestAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
+  launchClinicalNoteAsync,
   launchPowerForm,
-  launchPowerNote,
+  launchPowerNoteAsync,
+  getValidEncountersAsync,
 } = require('./dist/');
+
+// Define a 'window' object to simulate the browser environment
+window = {};
 
 /************************************************
  * Create and submit new orders to PowerChart
@@ -34,73 +38,136 @@ const orderStr3 = orderString('new order', {
   },
 });
 
-submitOrders(123, 456, [orderStr1, orderStr2, orderStr3]);
+(async function() {
+  const {
+    ordersPlaced,
+    status,
+    response,
+    inPowerChart,
+    eventString,
+  } = await submitOrdersAsync(123, 456, [orderStr1, orderStr2, orderStr3]);
+
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(
+    `Status: ${status} for orders placed with event string: ${eventString}`
+  );
+  ordersPlaced?.forEach(({ name, oid, display }) => {
+    console.log(`Order${name} (ID: ${oid}) - ${display}`);
+  });
+  response?.Orders.Order.forEach(o => console.log(o.ProviderName));
+})();
 
 /********************************************************
  * Make a CCL request to the server and retrieve the data
  ********************************************************/
 let result = undefined;
-makeCclRequest({
-  prg: 'MP_GET_ORDER_LIST',
-  params: [
-    { type: 'number', param: 12345 },
-    { type: 'string', param: 'joe' },
-  ],
-})
-  .then(data => (result = data))
-  .catch(console.error)
-  .finally(() => console.log(result));
+(async function() {
+  makeCclRequestAsync({
+    prg: 'MP_GET_ORDER_LIST',
+    params: [
+      { type: 'number', param: 12345 },
+      { type: 'string', param: 'joe' },
+    ],
+  })
+    .then(data => (result = data))
+    .catch(console.error)
+    .finally(() => console.log(result));
+})();
 
 /********************************************************
  * Alternative example, where the parameter types are inferred
  ********************************************************/
 let altResult = undefined;
-makeCclRequest({
-  prg: 'MP_GET_ORDER_LIST',
-  params: [12345, 'joe'],
-})
-  .then(data => (altResult = data))
-  .catch(console.error)
-  .finally(() => console.log(altResult));
+(async function() {
+  makeCclRequestAsync({
+    prg: 'MP_GET_ORDER_LIST',
+    params: [12345, 'joe'],
+  })
+    .then(data => (altResult = data))
+    .catch(console.error)
+    .finally(() => console.log(altResult));
+})();
 
 /********************************************************
  * Open a specific tab in a patients chart
  ********************************************************/
 
-openPatientTab(12345, 54321, 'Notes');
+(async () => {
+  const { inPowerChart, eventString, badInput } = await openPatientTabAsync(
+    12345,
+    54321,
+    'Notes'
+  );
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+  console.log(`Bad input: ${badInput}`);
+})();
 
 /********************************************************
  * Open a specific organizer level tab
  ********************************************************/
-
-openOrganizerTab('Message Center');
+(async () => {
+  const { inPowerChart, eventString, badInput } = await openOrganizerTabAsync(
+    'Message Center'
+  );
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+  console.log(`Bad input: ${badInput}`);
+})();
 
 /****************************************************
  * Launch a Clinical Note
  ***************************************************/
-launchClinicalNote({
-  patientId: 12345,
-  encounterId: 54321,
-  eventIds: [123, 456, 789],
-  windowTitle: 'My Note',
-  viewOptionFlags: ['buttons', 'view-only'],
-});
+(async () => {
+  const { inPowerChart, eventString } = await launchClinicalNoteAsync({
+    patientId: 12345,
+    encounterId: 54321,
+    eventIds: [123, 456, 789],
+    windowTitle: 'My Note',
+    viewOptionFlags: ['buttons', 'view-only'],
+  });
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+})();
 
 /****************************************************
  * Launch a PowerForm
  ***************************************************/
-launchPowerForm({
-  personId: 12345,
-  encounterId: 54321,
-  target: 'new form search',
-});
+
+(async () => {
+  const { inPowerChart, eventString } = await launchPowerForm({
+    personId: 12345,
+    encounterId: 54321,
+    target: 'new form search',
+  });
+
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+})();
 
 /****************************************************
  * Launch a PowerNote
  ***************************************************/
-launchPowerNote({
-  personId: 12345,
-  encounterId: 54321,
-  target: 'new',
-  targetId: 'CKI!HAIR LOSS',
-});
+(async () => {
+  const { inPowerChart, eventString } = await launchPowerNoteAsync({
+    personId: 12345,
+    encounterId: 54321,
+    target: 'new',
+    targetId: 'CKI!HAIR LOSS',
+  });
+  console.log(inPowerChart ? 'Currently in PowerChart' : 'NOT in PowerChart');
+  console.log(`Event string: ${eventString}`);
+})();
+
+/**************************************************
+ * Get a list of valid encounters for a patient
+ **************************************************/
+(async () => {
+  const { inPowerChart, encounterIds } = await getValidEncountersAsync(3);
+  console.log(`We are ${inPowerChart ? '' : 'not '}in PowerChart`);
+  console.log(
+    `We have ${
+      encounterIds.length
+    } valid encounters, with ID's: ${encounterIds.join(', ') || 'None'}`
+  );
+})();
