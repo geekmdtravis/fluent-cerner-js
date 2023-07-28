@@ -22,10 +22,10 @@ A modern API for interacting with the Cerner Millennium application. Modern Type
 | `DiscernObjectFactory("POWERFORM")`        | `launchPowerFormAsync`        | Launch a PowerForm in Cerner's PowerChart.                      |
 | `DiscernObjectFactory("POWERNOTE")`        | `launchPowerNoteAsync`        | Launch a PowerNote in Cerner's PowerChart.                      |
 | `DiscernObjectFactory("POWERPLANS")`       | `submitPowerPlansAsync`       | Submits one or more powerplans to MOEW.                         |
-|                                            | &rdsh; `orderString`          | Creates a valid order string, for use with `submitOrdersAsync`. |
 | `DiscernObjectFactory("PVCONTXTMPAGE")`    | `getValidEncountersAsync`     | Gets an array valid encounter ID's for a given patient.         |
 | `MPAGE_EVENT:CLINICALNOTE`                 | `launchClinicalNoteAsync`     | Launch a clinical note in Cerner's PowerChart.                  |
 | `MPAGE_EVENT:ORDERS`                       | `submitOrdersAsync`           | Submits one or more orders to MOEW.                             |
+|                                            | &rdsh; `orderString`          | Creates a valid order string, for use with `submitOrdersAsync`. |
 | `XMLCclRequest`                            | `makeCclRequestAsync`         | Makes an AJAX call to a CCL end-point.                          |
 
 ## API In Action
