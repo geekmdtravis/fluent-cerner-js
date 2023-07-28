@@ -1,6 +1,7 @@
 import {
   getValidEncountersAsync,
   launchClinicalNoteAsync,
+  launchPatientEducationAsync,
   launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
@@ -24,6 +25,7 @@ import {
 export {
   getValidEncountersAsync,
   launchClinicalNoteAsync,
+  launchPatientEducationAsync,
   launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
@@ -117,7 +119,7 @@ declare global {
      */
     DiscernObjectFactory: (
       comObject: DiscernCOMObjects
-    ) => {
+    ) => Promise<{
       /**
        * Get valid encounter ID's for a given patient.
        * @param pid {number} - the patient ID of the patient to get encounters for.
@@ -127,9 +129,10 @@ declare global {
       /**
        * Provide patient context to the Discern COM object.
        * @param pid {number} - the patient ID of the patient provided for context.
+       *
        * @returns a `Promise` which always returns `null`.
        */
-      SetPatient(pid: number): Promise<null>;
+      SetPatient(pid: number, eid: number): Promise<null>;
       /**
        * Provide patient context to the Discern COM object.
        * @param tab {0 | 1} - the tab to target upon opening. Instruction component is `0` and
@@ -142,7 +145,7 @@ declare global {
        * @returns a `Promise` which always returns `null`.
        */
       DoModal(): Promise<null>;
-    };
+    }>;
     /**
      * Interface for the Cerner Windows COM object for an XMLCclRequest.
      * Useful for development but not intended for production use. Use of
