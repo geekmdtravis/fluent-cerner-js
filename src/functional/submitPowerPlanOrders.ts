@@ -88,6 +88,8 @@ export const submitPowerPlanOrdersAsync = async (
 
   inputOpts.forEach(option => {
     switch (option) {
+
+      // Calculate the dwCustomizeFlagParamater
       case 'sign later':
         dwCustomizeFlag += 1;
         break;
@@ -179,7 +181,6 @@ export const submitPowerPlanOrdersAsync = async (
         break;
     }
   });
-
 
   
 };
