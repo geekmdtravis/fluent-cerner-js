@@ -42,7 +42,7 @@ export function outsideOfPowerChartError(e: unknown) {
     (e instanceof TypeError &&
       e.message === 'window.APPLINK is not a function') ||
     (e instanceof TypeError &&
-      e.message === 'window.DiscernObjectFactory is not a constructor')
+      e.message === 'window.DiscernObjectFactory is not a function')
   );
 }
 

@@ -3,6 +3,7 @@ import {
   launchClinicalNoteAsync,
   ClinicalNoteOpts,
 } from './launchClinicalNote';
+import { launchPatientEducationAsync } from './launchPatientEducation';
 import { launchPowerFormAsync, PowerFormOpts } from './launchPowerForm';
 import { launchPowerNoteAsync, PowerNoteOpts } from './launchPowerNote';
 import {
@@ -41,6 +42,7 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 export {
   getValidEncountersAsync,
   launchClinicalNoteAsync,
+  launchPatientEducationAsync,
   launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
