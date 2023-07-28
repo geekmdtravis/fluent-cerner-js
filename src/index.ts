@@ -110,7 +110,7 @@ declare global {
     | 'PVVIEWERMPAGE'
     | 'TASKDOC';
 
-  interface Window {
+  interface External {
     /**
      * A factory function which returns a Discern COM object.
      * @param comObject {DiscernCOMObjects} - a string representing the Discern

@@ -62,7 +62,7 @@ export const launchPowerNoteAsync = async (
   const eventString = `${params.join('|')}`;
   let inPowerChart = true;
   try {
-    await window.MPAGES_EVENT('POWERNOTE', eventString);
+    await window.external.MPAGES_EVENT('POWERNOTE', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;

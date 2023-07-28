@@ -104,7 +104,7 @@ export const launchClinicalNoteAsync = async (
 
   const eventString = `${params.join('|')}`;
   try {
-    await window.MPAGES_EVENT('CLINICALNOTE', eventString);
+    await window.external.MPAGES_EVENT('CLINICALNOTE', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
