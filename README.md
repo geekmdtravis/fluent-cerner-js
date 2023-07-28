@@ -184,3 +184,18 @@ const MyComponent = ({ user }) => {
   );
 };
 ```
+
+## Utility Map
+
+| Discern                                 | _fluent-cerner-js_        | Description                                                      |
+| --------------------------------------- | ------------------------- | ---------------------------------------------------------------- |
+| &mdash;                                 | `orderString`             | Creates a valid order string, for use with `submitOrdersAsync``. |
+| `APPLINK`                               | `openOrganizeTabAsync`    | Opens a tab at the organizer level.                              |
+| `APPLINK`                               | `openPatientTabAsync`     | Opens a tab at the patient level.                                |
+| `DiscernObjectFactory("POWERFORM")`     | `launchPowerFormAsync`    | Launch a PowerForm in Cerner's PowerChart.                       |
+| `DiscernObjectFactory("POWERNOTE")`     | `launchPowerNoteAsync`    | Launch a PowerNote in Cerner's PowerChart.                       |
+| `DiscernObjectFactory("POWERPLANS")`    | `submitPowerPlansAsync`   | Submits one or more powerplans to MOEW.                          |
+| `DiscernObjectFactory("PVCONTXTMPAGE")` | `getValidEncountersAsync` | Gets an array valid encounter ID's for a given patient.          |
+| `MPAGE_EVENT:CLINICALNOTE`              | `launchClinicalNoteAsync` | Launch a clinical note in Cerner's PowerChart.                   |
+| `MPAGE_EVENT:ORDERS`                    | `submitOrdersAsync`       | Submits one or more orders to MOEW.                              |
+| `XMLCclRequest`                         | `makeCclRequestAsync`     | Makes an AJAX call to a CCL end-point.                           |
