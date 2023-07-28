@@ -107,18 +107,42 @@ declare global {
     | 'PVPATIENTSEARCHMPAGE'
     | 'PVVIEWERMPAGE'
     | 'TASKDOC';
-  /**
-   * Interface for the Cerner Windows COM Object DiscernObjectFactory,
-   * which provides access to various functionalities such as the ability to
-   * create and place Power Orders, get valid encounters, and more.
-   */
-  interface DiscernObjectFactory {
-    new (type: DiscernCOMObjects): DiscernObjectFactory;
-    GetValidEncounters: (pid: number) => Promise<string>;
-  }
 
   interface Window {
-    DiscernObjectFactory: DiscernObjectFactory;
+    /**
+     * A factory function which returns a Discern COM object.
+     * @param comObject {DiscernCOMObjects} - a string representing the Discern
+     * COM object to be created.
+     * @returns the COM object the user will interact with.
+     */
+    DiscernObjectFactory: (
+      comObject: DiscernCOMObjects
+    ) => {
+      /**
+       * Get valid encounter ID's for a given patient.
+       * @param pid {number} - the patient ID of the patient to get encounters for.
+       * @returns a `Promise` of a string representing the valid encounter ID's for the patient.
+       */
+      GetValidEncounters: (pid: number) => Promise<string>;
+      /**
+       * Provide patient context to the Discern COM object.
+       * @param pid {number} - the patient ID of the patient provided for context.
+       * @returns a `Promise` which always returns `null`.
+       */
+      SetPatient(pid: number): Promise<null>;
+      /**
+       * Provide patient context to the Discern COM object.
+       * @param tab {0 | 1} - the tab to target upon opening. Instruction component is `0` and
+       * Follow-up component is `1`.
+       * @returns a `Promise` which always returns `null`.
+       */
+      SetDefaultTab(tab: 0 | 1): Promise<null>;
+      /**
+       * Open the modal for the targeted COM object.
+       * @returns a `Promise` which always returns `null`.
+       */
+      DoModal(): Promise<null>;
+    };
     /**
      * Interface for the Cerner Windows COM object for an XMLCclRequest.
      * Useful for development but not intended for production use. Use of
