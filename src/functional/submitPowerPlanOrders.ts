@@ -1,59 +1,57 @@
 /**
- * MOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
- * This is optional and, if not provided, the values will default to the recommended values for the MOEW
+ * PowerPlanMOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
+ * These parameters, passed as an array, are optional and, if not provided, the values will default to the recommended values for the MOEW
  * with Power Plan support. If any values are provided, those will be the only values used.
  *
- * @action `sign later` - Sign later functionality will be allowed from the MOEW.
- * @action `read only` - The MEOW will be read only.
- * @action `allow power plans` - Allows PowerPlans to be used from the MOEW.
- * @action `allow power plan doc` - Enables PowerPlan documentation.
- * @action `allow only inpatient and outpatient orders` - Only inpatient and ambulatory venue ordering will be allowed.
- * @action `show refresh and print buttons` - Will show the refresh and print buttons in the MOEW.
- * @action `documented meds only` - Restricts the MOEW to only perform actions on documented medications.
- * @action `hide med rec` - Hides medication reconiciliation controls.
- * @action `disallow EOL` - This option forces edit-on-line mode (which allows multi-selection) to be disabled.
- * @action `hide demographics` - Hides the demographics bar.
  * @action `add rx filter` - Sets the prescription indicator to the default filter.
- * @action `disable auto search` - Disables auto search.
+ * @action `allow only inpatient and outpatient orders` - Only inpatient and ambulatory venue ordering will be allowed.
+ * @action `allow power plan doc` - Enables PowerPlan documentation.
+ * @action `allow power plans` - Allows PowerPlans to be used from the MOEW.
  * @action `allow regimen` - Ensures that regimens are enabled.
- *
- * @action `customize orders` - States that orders are being customized. Either this or "customize meds" must be present (if parameters are provided), but not both.
  * @action `customize meds` - States that medications are being customized. Either this or "customize orders" must be present (if parameters are provided), but not both.
- *
- * @action `show nav tree` - Configures the MOEW such that the navigator tree control is displayed.
+ * @action `customize orders` - States that orders are being customized. Either this or "customize meds" must be present (if parameters are provided), but not both.
+ * @action `disable auto search` - Disables auto search.
+ * @action `disallow EOL` - This option forces edit-on-line mode (which allows multi-selection) to be disabled.
+ * @action `documented meds only` - Restricts the MOEW to only perform actions on documented medications.
+ * @action `hide demographics` - Hides the demographics bar.
+ * @action `hide med rec` - Hides medication reconiciliation controls.
+ * @action `read only` - The MEOW will be read only.
  * @action `show diag and probs` -  Configures the MOEW such that the diagnoses/problem control menu is displayed.
- * @action `show related res` -  Configures the MOEW such that the related results control is displayed.
- * @action `show orders search` -  Configures the MOEW such that the order search menu is displayed. Note that this is required if adding any orders (if parameters are provided).
- * @action `show order profile` -  Configures the MOEW such that the order profile is displayed.
- * @action `show scratchpad` -  Configures the MOEW such that the scratchpad is displayed. Note that this is required if adding any orders (if parameters are provided).
  * @action `show list details` -  Configures the MOEW such that the order detail control is enabled. Note that this is required if adding any orders (if parameters are provided).
+ * @action `show nav tree` - Configures the MOEW such that the navigator tree control is displayed.
+ * @action `show order profile` -  Configures the MOEW such that the order profile is displayed.
+ * @action `show orders search` -  Configures the MOEW such that the order search menu is displayed. Note that this is required if adding any orders (if parameters are provided).
+ * @action `show refresh and print buttons` - Will show the refresh and print buttons in the MOEW.
+ * @action `show related res` -  Configures the MOEW such that the related results control is displayed.
+ * @action `show scratchpad` -  Configures the MOEW such that the scratchpad is displayed. Note that this is required if adding any orders (if parameters are provided).
+ * @action `sign later` - Sign later functionality will be allowed from the MOEW.
  *
  * @documentation [POWERORDERS - CREATEMOEW](https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
  **/
 
 export type PowerPlanMOEWOpts =
-  | 'sign later'
-  | 'read only'
-  | 'allow power plans'
-  | 'allow power plan doc'
-  | 'allow only inpatient and outpatient orders'
-  | 'show refresh and print buttons'
-  | 'documented meds only'
-  | 'hide med rec'
-  | 'disallow EOL'
-  | 'hide demographics'
   | 'add rx filter'
-  | 'disable auto search'
+  | 'allow only inpatient and outpatient orders'
+  | 'allow power plan doc'
+  | 'allow power plans'
   | 'allow regimen'
-  | 'customize order'
   | 'customize meds'
-  | 'show nav tree'
+  | 'customize order'
+  | 'disable auto search'
+  | 'disallow EOL'
+  | 'documented meds only'
+  | 'hide demographics'
+  | 'hide med rec'
+  | 'read only'
   | 'show diag and probs'
-  | 'show related res'
-  | 'show orders search'
+  | 'show list details'
+  | 'show nav tree'
   | 'show order profile'
+  | 'show orders search'
+  | 'show refresh and print buttons'
+  | 'show related res'
   | 'show scratchpad'
-  | 'show list details';
+  | 'sign later';
 
 /**
  * PowerPlanOrderOpts is a type which represents the parameters to be be passed into the AddPowerPlanWithDetails() function.
@@ -88,7 +86,6 @@ export const submitPowerPlanOrdersAsync = async (
 
   inputOpts.forEach(option => {
     switch (option) {
-
       // Calculate the dwCustomizeFlagParamater
       case 'sign later':
         dwCustomizeFlag += 1;
@@ -181,6 +178,7 @@ export const submitPowerPlanOrdersAsync = async (
         break;
     }
   });
+
 
   
 };
