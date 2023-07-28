@@ -1,60 +1,59 @@
 /**
  * MOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
+ * This is optional and, if not provided, the values will default to the recommended values for the MOEW
+ * with Power Plan support. If any values are provided, those will be the only values used.
  *
- * @param {boolean} signLater - Determines whether sign later functionality will be allowed from the MOEW.
- * @param {boolean} readOnly - Determines whether the MEOW will be read only.
- * @param {boolean} allowPowerPlan - Determines whether the MOEW allows PowerPlans to be used.
- * @param {boolean} allowPowerPlanDoc - Determines whether PowerPlan documentation is enabled.
- * @param {boolean} allowOnlyInptOutptOrders - Determines whether only inpatient and ambulatory venue ordering is allowed.
- * @param {boolean} showRefreshPrint - Determines whether the banner bar, which shows refresh and print buttons, is displayed.
- * @param {boolean} documentedMedsOnly - Determines whether or not the user can only perform actions on documented medications.
- * @param {boolean} hideMedRec - Determines whether medication reconiciliation controls are hidden.
- * @param {boolean} disallowEOL - Determines whether edit-on-line mode (which allows multi-selection) is disabled.
- * @param {boolean} hideDemo - Determines whether the demographics bar is hidden.
- * @param {boolean} addRxFilter - Determines whether the prescription indicator is set to the default filter.
- * @param {boolean} disableAutoSearch - Determines whether auto search is disabled.
- * @param {boolean} allowRegimen - Determines whether regimens are enabled.
+ * @action `sign later` - Sign later functionality will be allowed from the MOEW.
+ * @action `read only` - The MEOW will be read only.
+ * @action `allow power plans` - Allows PowerPlans to be used from the MOEW.
+ * @action `allow power plan doc` - Enables PowerPlan documentation.
+ * @action `allow only inpatient and outpatient orders` - Only inpatient and ambulatory venue ordering will be allowed.
+ * @action `show refresh and print buttons` - Will show the refresh and print buttons in the MOEW.
+ * @action `documented meds only` - Restricts the MOEW to only perform actions on documented medications.
+ * @action `hide med rec` - Hides medication reconiciliation controls.
+ * @action `disallow EOL` - This option forces edit-on-line mode (which allows multi-selection) to be disabled.
+ * @action `hide demographics` - Hides the demographics bar.
+ * @action `add rx filter` - Sets the prescription indicator to the default filter.
+ * @action `disable auto search` - Disables auto search.
+ * @action `allow regimen` - Ensures that regimens are enabled.
  *
- * @param {boolean} customizeOrder - Determines whether orders are being customized. Either this or customizeMeds must be true, but not both.
- * @param {boolean} customizeMeds - Determines whether medications are being customized. Either this or customizeOrder must be true, but not both.
+ * @action `customize orders` - States that orders are being customized. Either this or "customize meds" must be present (if parameters are provided), but not both.
+ * @action `customize meds` - States that medications are being customized. Either this or "customize orders" must be present (if parameters are provided), but not both.
  *
- * @param {boolean} showNavTree - Determines whether the order navigator tree control is displayed.
- * @param {boolean} showDiagProb - Determines whether the diagnoses/problem control menu is displayed.
- * @param {boolean} showRelatedRes - Determines whether the related results control is displayed.
- * @param {boolean} showOrderSearch - Determines whether the order search menu is displayed. Note that this is required to be true if adding any orders.
- * @param {boolean} showOrderProfile - Determines whether the order profile is displayed.
- * @param {boolean} showScratchpad - Determines whether the scratchpad is displayed. Note that this is required to be true if adding any orders.
- * @param {boolean} showListDetails - Determines whether the order detail control is enabled. Note that this is required to be true if adding any orders.
+ * @action `show nav tree` - Configures the MOEW such that the navigator tree control is displayed.
+ * @action `show diag and probs` -  Configures the MOEW such that the diagnoses/problem control menu is displayed.
+ * @action `show related res` -  Configures the MOEW such that the related results control is displayed.
+ * @action `show orders search` -  Configures the MOEW such that the order search menu is displayed. Note that this is required if adding any orders (if parameters are provided).
+ * @action `show order profile` -  Configures the MOEW such that the order profile is displayed.
+ * @action `show scratchpad` -  Configures the MOEW such that the scratchpad is displayed. Note that this is required if adding any orders (if parameters are provided).
+ * @action `show list details` -  Configures the MOEW such that the order detail control is enabled. Note that this is required if adding any orders (if parameters are provided).
  *
  * @documentation [POWERORDERS - CREATEMOEW](https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
  **/
 
-export type MOEWOpts = {
-  signLater: boolean;
-  readOnly: boolean;
-  allowPowerPlan: boolean;
-  allowPowerPlanDoc: boolean;
-  allowOnlyInptOutptOrders: boolean;
-  showRefreshPrint: boolean;
-  documentedMedsOnly: boolean;
-  hideMedRec: boolean;
-  disallowEOL: boolean;
-  hideDemo: boolean;
-  addRxFilter: boolean;
-  disableAutoSearch: boolean;
-  allowRegimen: boolean;
-
-  customizeOrder: boolean;
-  customizeMeds: boolean;
-
-  showNavTree: boolean;
-  showDiagProb: boolean;
-  showRelatedRes: boolean;
-  showOrderSearch: boolean;
-  showOrderProfile: boolean;
-  showScratchpad: boolean;
-  showListDetails: boolean;
-};
+export type PowerPlanMOEWOpts =
+  | 'sign later'
+  | 'read only'
+  | 'allow power plans'
+  | 'allow power plan doc'
+  | 'allow only inpatient and outpatient orders'
+  | 'show refresh and print buttons'
+  | 'documented meds only'
+  | 'hide med rec'
+  | 'disallow EOL'
+  | 'hide demographics'
+  | 'add rx filter'
+  | 'disable auto search'
+  | 'allow regimen'
+  | 'customize order'
+  | 'customize meds'
+  | 'show nav tree'
+  | 'show diag and probs'
+  | 'show related res'
+  | 'show orders search'
+  | 'show order profile'
+  | 'show scratchpad'
+  | 'show list details';
 
 /**
  * PowerPlanOrderOpts is a type which represents the parameters to be be passed into the AddPowerPlanWithDetails() function.
@@ -72,129 +71,115 @@ export type PowerPlanOrderOpts = {
   encounterId: number;
 };
 
-export const submitPowerPlanOrdersAsync = async (opts: MOEWOpts): boolean => {
+export const submitPowerPlanOrdersAsync = async (
+  moewOpts?: Array<PowerPlanMOEWOpts>
+): Promise<T> => {
   // Destructure input, assign default values
-  const {
-    signLater = false,
-    readOnly = false,
-    allowPowerPlan = true,
-    allowPowerPlanDoc = true,
-    allowOnlyInptOutptOrders = false,
-    showRefreshPrint = false,
-    documentedMedsOnly = false,
-    hideMedRec = false,
-    disallowEOL = false,
-    hideDemo = false,
-    addRxFilter = false,
-    disableAutoSearch = false,
-    allowRegimen = false,
 
-    customizeOrder = true,
-    customizeMeds = false,
+  //Either use the options provided by the user, or if none or provided, set default PowerPlan options
+  const inputOpts: Array<PowerPlanMOEWOpts> = moewOpts
+    ? moewOpts
+    : ['allow power plans', 'allow power plan doc'];
 
-    showNavTree = true,
-    showDiagProb = true,
-    showRelatedRes = true,
-    showOrderSearch = true,
-    showOrderProfile = true,
-    showScratchpad = true,
-    showListDetails = true,
-  } = opts;
+  // Initialize and calculate the CreateMOEW() parameters
+  let dwCustomizeFlag: number = 0;
+  let dwTabFlag: number = 0;
+  let dwTabDisplayOptionsFlag: number = 0;
 
-  // Calculate the dwCustomizeFlag parameter
-  let dwCustomizeFlag = 0;
+  inputOpts.forEach(option => {
+    switch (option) {
+      case 'sign later':
+        dwCustomizeFlag += 1;
+        break;
 
-  if (signLater) {
-    dwCustomizeFlag += 1;
-  }
+      case 'read only':
+        dwCustomizeFlag += 4;
+        break;
 
-  if (readOnly) {
-    dwCustomizeFlag += 4;
-  }
+      case 'allow power plans':
+        dwCustomizeFlag += 8;
+        break;
 
-  if (allowPowerPlan) {
-    dwCustomizeFlag += 8;
-  }
+      case 'allow power plan doc':
+        dwCustomizeFlag += 16;
+        break;
 
-  if (allowPowerPlanDoc) {
-    dwCustomizeFlag += 16;
-  }
+      case 'allow only inpatient and outpatient orders':
+        dwCustomizeFlag += 32;
+        break;
 
-  if (allowOnlyInptOutptOrders) {
-    dwCustomizeFlag += 32;
-  }
+      case 'show refresh and print buttons':
+        dwCustomizeFlag += 128;
+        break;
 
-  if (showRefreshPrint) {
-    dwCustomizeFlag += 128;
-  }
+      case 'documented meds only':
+        dwCustomizeFlag += 256;
+        break;
 
-  if (documentedMedsOnly) {
-    dwCustomizeFlag += 256;
-  }
+      case 'hide med rec':
+        dwCustomizeFlag += 512;
+        break;
 
-  if (hideMedRec) {
-    dwCustomizeFlag += 512;
-  }
+      case 'disallow EOL':
+        dwCustomizeFlag += 1024;
+        break;
 
-  if (disallowEOL) {
-    dwCustomizeFlag += 1024;
-  }
+      case 'hide demographics':
+        dwCustomizeFlag += 2048;
+        break;
 
-  if (hideDemo) {
-    dwCustomizeFlag += 2048;
-  }
+      case 'add rx filter':
+        dwCustomizeFlag += 4096;
+        break;
 
-  if (addRxFilter) {
-    dwCustomizeFlag += 4096;
-  }
+      case 'disable auto search':
+        dwCustomizeFlag += 8192;
+        break;
 
-  if (disableAutoSearch) {
-    dwCustomizeFlag += 8192;
-  }
+      case 'allow regimen':
+        dwCustomizeFlag += 16384;
+        break;
 
-  if (allowRegimen) {
-    dwCustomizeFlag += 16384;
-  }
+      // Calculate the dwTabFlag parameter
+      case 'customize order':
+        dwTabFlag = 2;
+        break;
 
-  // Calculate the dwTabFlag parameter
-  let dwTabFlag = 0;
+      case 'customize meds':
+        dwTabFlag = 3;
+        break;
 
-  if (customizeOrder) {
-    dwTabFlag = 2;
-  }
+      // Calculate the dwTabDisplayOptionsFlag parameter
+      case 'show nav tree':
+        dwTabDisplayOptionsFlag += 1;
+        break;
 
-  if (customizeMeds) {
-    dwTabFlag = 3;
-  }
+      case 'show diag and probs':
+        dwTabDisplayOptionsFlag += 2;
+        break;
 
-  // Calculate the dwTabDisplayOptionsFlag parameter
-  let dwTabDisplayOptionsFlag = 0;
+      case 'show related res':
+        dwTabDisplayOptionsFlag += 4;
+        break;
 
-  if (showNavTree) {
-    dwTabDisplayOptionsFlag += 1;
-  }
+      case 'show orders search':
+        dwTabDisplayOptionsFlag += 8;
+        break;
 
-  if (showDiagProb) {
-    dwTabDisplayOptionsFlag += 2;
-  }
+      case 'show order profile':
+        dwTabDisplayOptionsFlag += 16;
+        break;
 
-  if (showRelatedRes) {
-    dwTabDisplayOptionsFlag += 4;
-  }
+      case 'show scratchpad':
+        dwTabDisplayOptionsFlag += 32;
+        break;
 
-  if (showOrderSearch) {
-    dwTabDisplayOptionsFlag += 8;
-  }
+      case 'show list details':
+        dwTabDisplayOptionsFlag += 64;
+        break;
+    }
+  });
 
-  if (showOrderProfile) {
-    dwTabDisplayOptionsFlag += 16;
-  }
 
-  if (showScratchpad) {
-    dwTabDisplayOptionsFlag += 32;
-  }
-
-  if (showListDetails) {
-    dwTabDisplayOptionsFlag += 64;
-  }
+  
 };
