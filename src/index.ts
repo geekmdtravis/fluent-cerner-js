@@ -109,7 +109,9 @@ declare global {
     | 'PVPATIENTSEARCHMPAGE'
     | 'PVVIEWERMPAGE'
     | 'TASKDOC';
-
+  interface Window {
+    readonly external: External;
+  }
   interface External {
     /**
      * A factory function which returns a Discern COM object.

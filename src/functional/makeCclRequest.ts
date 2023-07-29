@@ -117,7 +117,7 @@ export async function makeCclRequestAsync<T>(
   return new Promise((resolve, reject) => {
     try {
       // @ts-ignore - From Powerchart context
-      const request: XMLCclRequest = await window.external.XMLCclRequest();
+      const request: XMLCclRequest = window.external.XMLCclRequest();
 
       request.open('GET', `${prg}`);
       request.send(paramsList);
