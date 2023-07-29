@@ -29,7 +29,7 @@ export async function openOrganizerTabAsync(
     inPowerChart: true,
   };
   try {
-    const response = await window.APPLINK(
+    const response = await window.external.APPLINK(
       0,
       'Powerchart.exe',
       retVal.eventString

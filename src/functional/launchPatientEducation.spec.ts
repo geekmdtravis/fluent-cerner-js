@@ -28,21 +28,23 @@ describe('launchPatientEducationAsync', () => {
     expect(result).toHaveProperty('inPowerChart', false);
   });
   test('returns an object with inPowerChart set to true if inside of PowerChart', async () => {
-    Object.defineProperty(window, 'DiscernObjectFactory', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest.fn().mockImplementation(() => ({
-        SetPatient: async (pid: number, eid: number) => {
-          console.debug('SetPatient', pid, eid);
-          Promise.resolve(null);
-        },
-        SetDefaultTab: async (tabNum: 0 | 1) => {
-          console.debug('SetDefaultTab', tabNum);
-          Promise.resolve(null);
-        },
-        DoModal: async () => {
-          Promise.resolve(null);
-        },
-      })),
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          SetPatient: async (pid: number, eid: number) => {
+            console.debug('SetPatient', pid, eid);
+            Promise.resolve(null);
+          },
+          SetDefaultTab: async (tabNum: 0 | 1) => {
+            console.debug('SetDefaultTab', tabNum);
+            Promise.resolve(null);
+          },
+          DoModal: async () => {
+            Promise.resolve(null);
+          },
+        })),
+      },
     });
     const { inPowerChart } = await launchPatientEducationAsync(
       1,
@@ -52,21 +54,23 @@ describe('launchPatientEducationAsync', () => {
     expect(inPowerChart).toBe(true);
   });
   test('throws an error if an unexpected error occurs', async () => {
-    Object.defineProperty(window, 'DiscernObjectFactory', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest.fn().mockImplementation(() => ({
-        SetPatient: async (pid: number, eid: number) => {
-          console.debug('SetPatient', pid, eid);
-          Promise.resolve(null);
-        },
-        SetDefaultTab: async (tabNum: 0 | 1) => {
-          console.debug('SetDefaultTab', tabNum);
-          Promise.resolve(null);
-        },
-        DoModal: async () => {
-          throw new Error('test');
-        },
-      })),
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          SetPatient: async (pid: number, eid: number) => {
+            console.debug('SetPatient', pid, eid);
+            Promise.resolve(null);
+          },
+          SetDefaultTab: async (tabNum: 0 | 1) => {
+            console.debug('SetDefaultTab', tabNum);
+            Promise.resolve(null);
+          },
+          DoModal: async () => {
+            throw new Error('test');
+          },
+        })),
+      },
     });
     try {
       await launchPatientEducationAsync(1, 1, 'instruction');

@@ -26,7 +26,7 @@ export async function launchPatientEducationAsync(
     throw new RangeError('The encounter ID must be a positive integer.');
   }
   try {
-    const dcof = await window.DiscernObjectFactory('PATIENTEDUCATION');
+    const dcof = await window.external.DiscernObjectFactory('PATIENTEDUCATION');
     await dcof.SetPatient(pid, eid);
     await dcof.SetDefaultTab(tab === 'instruction' ? 0 : 1);
     await dcof.DoModal();

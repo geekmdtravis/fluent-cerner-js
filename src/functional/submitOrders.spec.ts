@@ -5,9 +5,9 @@ const order = orderString('launch moew');
 
 describe('submitOrders', () => {
   afterEach(() => {
-    Object.defineProperty(window, 'MPAGES_EVENT', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: null,
+      value: { MPAGES_EVENT: null },
     });
   });
   test('returns an object with a string and a boolean', async () => {
@@ -21,6 +21,12 @@ describe('submitOrders', () => {
     expect(() => submitOrdersAsync(1, 2, [order])).not.toThrow();
   });
   test('being called outside of PowerChart environment will return the inPowerChart flag as false', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        MPAGES_EVENT: undefined,
+      },
+    });
     const { inPowerChart } = await submitOrdersAsync(1, 2, [order]);
     expect(inPowerChart).toBe(false);
   });
@@ -139,17 +145,18 @@ describe('submitOrders', () => {
     expect(eventString).toBe(expectedString);
   });
   test('orderId, status, and response are successfully parsed from the response text with a single order', async () => {
-    Object.defineProperty(window, 'MPAGES_EVENT', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<string> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve =>
-            resolve(`<?xml version="1.0"?>
+      value: {
+        MPAGES_EVENT: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<string> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve =>
+              resolve(`<?xml version="1.0"?>
               <?xml-stylesheet type='text/xml' href='dom.xsl'?>
               <Orders>
               <OrderVersion>1</OrderVersion>
@@ -165,8 +172,9 @@ describe('submitOrders', () => {
               <ClinDisplayLine type="string">0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT</ClinDisplayLine>
               </Order>
               </Orders>`)
-          );
-        }),
+            );
+          }),
+      },
     });
 
     const {
@@ -188,17 +196,18 @@ describe('submitOrders', () => {
     expect(response).toBeInstanceOf(Object);
   });
   test('orderId, status, and response are successfully parsed from the response text with more than one orders', async () => {
-    Object.defineProperty(window, 'MPAGES_EVENT', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<string> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve =>
-            resolve(`<?xml version="1.0"?>
+      value: {
+        MPAGES_EVENT: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<string> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve =>
+              resolve(`<?xml version="1.0"?>
               <?xml-stylesheet type='text/xml' href='dom.xsl'?>
               <Orders>
               <OrderVersion>1</OrderVersion>
@@ -225,8 +234,9 @@ describe('submitOrders', () => {
               <ClinDisplayLine type="string">0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT</ClinDisplayLine>
               </Order>
               </Orders>`)
-          );
-        }),
+            );
+          }),
+      },
     });
 
     const {
@@ -259,68 +269,76 @@ describe('submitOrders', () => {
     expect(status).toBe('invalid data returned');
   });
   test('returns status "invalid data returned" when the response is not a string', async () => {
-    Object.defineProperty(window, 'MPAGES_EVENT', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<Object> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve({}));
-        }),
+      value: {
+        MPAGE_EVENT: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<Object> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve => resolve({}));
+          }),
+      },
     });
     const { status } = await submitOrdersAsync(1, 2, [order]);
 
     expect(status).toBe('invalid data returned');
   });
   test('returns "cancelled" when an empty string is returned', async () => {
-    Object.defineProperty(window, 'MPAGES_EVENT', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<string> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(''));
-        }),
+      value: {
+        MPAGES_EVENT: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<string> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve => resolve(''));
+          }),
+      },
     });
     const { status } = await submitOrdersAsync(1, 2, [order]);
 
     expect(status).toBe('cancelled');
   });
   test('returns "xml parse error" when an string that is not a valid XML string is returned', async () => {
-    Object.defineProperty(window, 'MPAGES_EVENT', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<string> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve('<xml>'));
-        }),
+      value: {
+        MPAGES_EVENT: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<string> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve => resolve('<xml>'));
+          }),
+      },
     });
     const { status } = await submitOrdersAsync(1, 2, [order]);
 
     expect(status).toBe('xml parse error');
   });
   test('returns "failed" when a null response is returned', async () => {
-    Object.defineProperty(window, 'MPAGES_EVENT', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(null));
-        }),
+      value: {
+        MPAGES_EVENT: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<null> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve => resolve(null));
+          }),
+      },
     });
     const { status } = await submitOrdersAsync(1, 2, [order]);
 
@@ -328,7 +346,7 @@ describe('submitOrders', () => {
   });
 
   test('throws an error when the error type is not one expected to be generated as an "out-of-powerchart" error.', async () => {
-    Object.defineProperty(window, 'MPAGES_EVENT', {
+    Object.defineProperty(window.external, 'MPAGES_EVENT', {
       writable: true,
       value: jest
         .fn()
