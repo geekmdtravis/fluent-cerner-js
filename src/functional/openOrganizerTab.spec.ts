@@ -16,34 +16,38 @@ describe('openOrganizerTab', () => {
     expect(eventString).toBe(`/ORGANIZERTAB=^Tab Name^`);
   });
   test('badInput returns false if response is anything other than null', async () => {
-    Object.defineProperty(window, 'APPLINK', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null | ''> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(''));
-        }),
+      value: {
+        APPLINK: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<null | ''> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve => resolve(''));
+          }),
+      },
     });
 
     const { badInput } = await openOrganizerTabAsync('Tab Name');
     expect(badInput).toBe(false);
   });
   test('badInput returns true if response is null', async () => {
-    Object.defineProperty(window, 'APPLINK', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null | ''> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(null));
-        }),
+      value: {
+        APPLINK: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<null | ''> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve => resolve(null));
+          }),
+      },
     });
 
     const { badInput } = await openOrganizerTabAsync('Tab Name');

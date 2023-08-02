@@ -43,7 +43,7 @@ export async function openPatientTabAsync(
   };
 
   try {
-    const response = await window.APPLINK(
+    const response = await window.external.APPLINK(
       1,
       '$APP_APPNAME$',
       retVal.eventString

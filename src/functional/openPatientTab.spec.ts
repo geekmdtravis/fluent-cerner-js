@@ -21,51 +21,57 @@ describe('openPatientTab', () => {
     expect(eventString).toBe(`/PERSONID=0 /ENCNTRID=1 /FIRSTTAB=^TAB NAME+^`);
   });
   test('badInput returns false if response is anything other than null', async () => {
-    Object.defineProperty(window, 'APPLINK', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null | ''> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(''));
-        }),
+      value: {
+        APPLINK: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<null | ''> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve => resolve(''));
+          }),
+      },
     });
 
     const { badInput } = await openPatientTabAsync(0, 1, 'Tab Name');
     expect(badInput).toBe(false);
   });
   test('badInput returns true if response is null', async () => {
-    Object.defineProperty(window, 'APPLINK', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null | ''> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(null));
-        }),
+      value: {
+        APPLINK: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<null | ''> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return new Promise(resolve => resolve(null));
+          }),
+      },
     });
 
     const { badInput } = await openPatientTabAsync(0, 1, 'Tab Name');
     expect(badInput).toBe(true);
   });
   test('throws an error when the error type is not one expected to be generated as an "out-of-powerchart" error.', async () => {
-    Object.defineProperty(window, 'APPLINK', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<Error> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return Promise.reject(new Error('unexpected error'));
-        }),
+      value: {
+        APPLINK: jest
+          .fn()
+          .mockImplementation(async function(
+            a: string,
+            b: string
+          ): Promise<Error> {
+            console.debug(`a: ${a}, b: ${b}`);
+            return Promise.reject(new Error('unexpected error'));
+          }),
+      },
     });
 
     try {

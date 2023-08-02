@@ -18,24 +18,28 @@ describe('getValidEncountersAsync', () => {
     expect(encounterIds).toEqual([]);
   });
   it('returns an object with an array of encounter IDs if the user is in PowerChart', async () => {
-    Object.defineProperty(window, 'DiscernObjectFactory', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest.fn().mockImplementation(() => ({
-        GetValidEncounters: async () => Promise.resolve('1,2,3'),
-      })),
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          GetValidEncounters: async () => Promise.resolve('1,2,3'),
+        })),
+      },
     });
     const { inPowerChart, encounterIds } = await getValidEncountersAsync(1);
     expect(inPowerChart).toBe(true);
     expect(encounterIds).toEqual([1, 2, 3]);
   });
   it('throws an error if an unexpected error occurs', async () => {
-    Object.defineProperty(window, 'DiscernObjectFactory', {
+    Object.defineProperty(window, 'external', {
       writable: true,
-      value: jest.fn().mockImplementation(() => ({
-        GetValidEncounters: async () => {
-          throw new Error('test');
-        },
-      })),
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          GetValidEncounters: async () => {
+            throw new Error('test');
+          },
+        })),
+      },
     });
     try {
       await getValidEncountersAsync(1);

@@ -36,13 +36,13 @@ export const processXmlCclReqResponseText = (
 export function outsideOfPowerChartError(e: unknown) {
   return (
     (e instanceof TypeError &&
-      e.message === 'window.MPAGES_EVENT is not a function') ||
+      e.message === 'window.external.MPAGES_EVENT is not a function') ||
     (e instanceof TypeError &&
-      e.message === 'window.XMLCclRequest is not a function') ||
+      e.message === 'window.external.XMLCclRequest is not a function') ||
     (e instanceof TypeError &&
-      e.message === 'window.APPLINK is not a function') ||
+      e.message === 'window.external.APPLINK is not a function') ||
     (e instanceof TypeError &&
-      e.message === 'window.DiscernObjectFactory is not a constructor')
+      e.message === 'window.external.DiscernObjectFactory is not a function')
   );
 }
 

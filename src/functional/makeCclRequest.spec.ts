@@ -11,7 +11,7 @@ describe('makeCclRequest', () => {
         prg: 'TEST',
         params: [{ type: 'string', param: 'param1' }],
       })
-    ).rejects.toEqual('window.XMLCclRequest is not a function');
+    ).rejects.toEqual('window.external.XMLCclRequest is not a function');
   });
 });
 

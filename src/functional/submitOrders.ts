@@ -123,7 +123,7 @@ export const submitOrdersAsync = async (
   }
 
   try {
-    const response = await window.MPAGES_EVENT('ORDERS', eventString);
+    const response = await window.external.MPAGES_EVENT('ORDERS', eventString);
 
     // 'null' must be checked for explicitly, as it is a valid response
     // '!response' will return true for null, undefined, and empty string.

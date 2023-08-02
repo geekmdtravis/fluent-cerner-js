@@ -23,7 +23,7 @@ export async function getValidEncountersAsync(
     throw new RangeError('The patient ID must be a positive integer.');
   }
   try {
-    const dcof = new window.DiscernObjectFactory('PVCONTXTMPAGE');
+    const dcof = await window.external.DiscernObjectFactory('PVCONTXTMPAGE');
     const response = await dcof.GetValidEncounters(pid);
     response.split(',').forEach(e => retData.encounterIds.push(parseFloat(e)));
   } catch (e) {

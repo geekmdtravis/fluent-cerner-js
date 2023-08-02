@@ -68,7 +68,7 @@ export const launchPowerFormAsync = async (
   const eventString = `${params.join('|')}`;
 
   try {
-    await window.MPAGES_EVENT('POWERFORM', eventString);
+    await window.external.MPAGES_EVENT('POWERFORM', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
