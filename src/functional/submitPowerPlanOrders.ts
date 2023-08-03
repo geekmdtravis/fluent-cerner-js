@@ -218,7 +218,7 @@ export const submitPowerPlanOrdersAsync = async (
 
   if (orderOpts.powerPlanOrders && orderOpts.powerPlanOrders.length >= 1) {
     orderOpts.powerPlanOrders.forEach(powerPlanOrder => {
-      powerPlanOrdersXML += `<Plan><PathwayCatalogId>33877129.00</PathwayCatalogId><PersonalizedPlanId>0.0</PersonalizedPlanId><Diagnoses></Diagnoses></Plan><Plan><PathwayCatalogId>${powerPlanOrder}</PathwayCatalogId><PersonalizedPlanId>0.0</PersonalizedPlanId><Diagnoses></Diagnoses></Plan>`;
+      powerPlanOrdersXML += `<Plan><PathwayCatalogId>${powerPlanOrder}</PathwayCatalogId><PersonalizedPlanId>0.0</PersonalizedPlanId><Diagnoses></Diagnoses></Plan>`;
     });
 
     //Add <Plans> to beginning & end of PowerPlan XML
@@ -236,7 +236,7 @@ export const submitPowerPlanOrdersAsync = async (
     //Enable interaction checking (will always set to true for safety)
     const m_bSignTimeInteractionChecking = true;
 
-    //m_hMOEW = await dcof.CreateMOEW()
+    m_hMOEW = await dcof.CreateMOEW()
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;
