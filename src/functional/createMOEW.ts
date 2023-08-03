@@ -9,7 +9,7 @@ import { PowerPlanMOEWOpts } from './submitPowerPlanOrders';
  * @param moewOpts {Array<PowerPlanMOEWOpts>} - the optional parameters to be be passed into the CreateMOEW() function.
  * These parameters, passed as an array, are optional and, if not provided, the values will default to the recommended values for the MOEW
  * with Power Plan support. If any values are provided, those will be the only values used.
- * @returns a `Promise` which resolves to an integer representing a handle to the MOEW instance. 0 indicates an invalid call or call from outside PowerChart.
+ * @returns a `Promise` which resolves to an integer representing a handle to the MOEW instance. `null` indicates an invalid call or call from outside PowerChart.
  *
  * @throws `Error` if an unexpected error occurs
  */
@@ -17,13 +17,13 @@ async function createMOEWAsync(
   pid: number,
   eid: number,
   moewOpts?: Array<PowerPlanMOEWOpts>
-): Promise<PowerChartReturn & { m_hMOEW: number }> {
+): Promise<PowerChartReturn & { handleIDMOEW: number | null}> {
   let retData: {
     inPowerChart: boolean;
-    m_hMOEW: number;
+    handleIDMOEW: number | null;
   } = {
     inPowerChart: true,
-    m_hMOEW: 0,
+    handleIDMOEW: 0,
   };
 
   const inputOpts: Array<PowerPlanMOEWOpts> = moewOpts
@@ -139,12 +139,12 @@ async function createMOEWAsync(
       dwTabFlag,
       dwTabDisplayOptionsFlag
     );
-    retData.m_hMOEW = response;
+    retData.handleIDMOEW = (response === 0) ? null : response;
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       return {
         inPowerChart: false,
-        m_hMOEW: 0,
+        handleIDMOEW: null,
       };
     } else {
       throw e;
