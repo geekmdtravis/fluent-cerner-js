@@ -1,5 +1,4 @@
 import {
-  createMOEWAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
@@ -24,7 +23,6 @@ import {
 } from './functional';
 
 export {
-  createMOEWAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,

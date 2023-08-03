@@ -1,5 +1,4 @@
 import { getValidEncountersAsync } from './getValidEncounters';
-import { createMOEWAsync } from './CreateMOEW';
 import {
   launchClinicalNoteAsync,
   ClinicalNoteOpts,
@@ -41,7 +40,6 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 // Export functions
 export {
-  createMOEWAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
