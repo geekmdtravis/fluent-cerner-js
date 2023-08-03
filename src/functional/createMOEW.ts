@@ -17,13 +17,13 @@ async function createMOEWAsync(
   pid: number,
   eid: number,
   moewOpts?: Array<PowerPlanMOEWOpts>
-): Promise<PowerChartReturn & { handleIDMOEW: number | null}> {
+): Promise<PowerChartReturn & { moewHandle: number | null }> {
   let retData: {
     inPowerChart: boolean;
-    handleIDMOEW: number | null;
+    moewHandle: number | null;
   } = {
     inPowerChart: true,
-    handleIDMOEW: 0,
+    moewHandle: null,
   };
 
   const inputOpts: Array<PowerPlanMOEWOpts> = moewOpts
@@ -139,13 +139,11 @@ async function createMOEWAsync(
       dwTabFlag,
       dwTabDisplayOptionsFlag
     );
-    retData.handleIDMOEW = (response === 0) ? null : response;
+    retData.moewHandle = response === 0 ? null : response;
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-      return {
-        inPowerChart: false,
-        handleIDMOEW: null,
-      };
+      retData.inPowerChart = true;
+      retData.moewHandle = null;
     } else {
       throw e;
     }
