@@ -1,3 +1,5 @@
+import { outsideOfPowerChartError } from '../utils';
+
 /**
  * PowerPlanMOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
  * These parameters, passed as an array, are optional and, if not provided, the values will default to the recommended values for the MOEW
@@ -28,7 +30,6 @@
  *
  * @documentation [POWERORDERS - CREATEMOEW](https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
  **/
-
 export type PowerPlanMOEWOpts =
   | 'add rx filter'
   | 'allow only inpatient and outpatient orders'
@@ -53,6 +54,14 @@ export type PowerPlanMOEWOpts =
   | 'show scratchpad'
   | 'sign later';
 
+export type StandaloneOrder = {
+  synonymID: number;
+};
+
+export type PowerPlanOrder = {
+  pathwayCatalogID: number;
+};
+
 /**
  * PowerPlanOrderOpts is a type which represents the parameters to be be passed into the AddPowerPlanWithDetails() function.
  * @param {number} personId - The identifier for the patient.
@@ -61,19 +70,23 @@ export type PowerPlanMOEWOpts =
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this order will be placed. Cerner context variable: VIS_EncntrId.
  *
+ * @param {Array<StandaloneOrder>} standaloneOrders - An array of synonym IDs for individual orders to be placed. Either this, `powerPlanOrders,` or both, should be present.
+ *
+ * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of pathway catalog IDs for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
+ *
  * @documentation [POWERORDERS - AddPowerPlanWithDetails](https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
  **/
-
 export type PowerPlanOrderOpts = {
   personId: number;
   encounterId: number;
+  standaloneOrders?: Array<StandaloneOrder>;
+  powerPlanOrders?: Array<PowerPlanOrder>;
 };
 
 export const submitPowerPlanOrdersAsync = async (
+  orderOpts: PowerPlanOrderOpts,
   moewOpts?: Array<PowerPlanMOEWOpts>
-): Promise<T> => {
-  // Destructure input, assign default values
-
+): Promise<SubmitPowerPlanOrderReturn> => {
   //Either use the options provided by the user, or if none or provided, set default PowerPlan options
   const inputOpts: Array<PowerPlanMOEWOpts> = moewOpts
     ? moewOpts
@@ -179,6 +192,261 @@ export const submitPowerPlanOrdersAsync = async (
     }
   });
 
+  //Create the return object with default values
+  let retVal: SubmitPowerPlanOrderReturn = {
+    inPowerChart: true,
+    status: 'success',
+    response: null,
+    ordersPlaced: null,
+  };
 
-  
+  //Hold information regarding any standalone or PowerPlan orders
+  let standaloneOrdersXML: string = '';
+
+  let powerPlanOrdersXML: string = '';
+
+  //Prepare the XML strings for input to AddNewOrderToScatchPadAddPowerPlanWithDetails()
+  if (orderOpts.standaloneOrders && orderOpts.standaloneOrders.length >= 1) {
+    orderOpts.standaloneOrders.forEach(standaloneOrder => {
+      standaloneOrdersXML += `<Order><EOrderOriginationFlag>0</EOrderOriginationFlag><SynonymId>${standaloneOrder}</SynonymId><\OrderSentenceId></OrderSentenceId></Order>`;
+    });
+
+    //Add <Orders> to beginning & end of the Standalone Order XML
+    standaloneOrdersXML = '<Orders>' + standaloneOrdersXML;
+    standaloneOrdersXML += '</Orders>';
+  }
+
+  if (orderOpts.powerPlanOrders && orderOpts.powerPlanOrders.length >= 1) {
+    orderOpts.powerPlanOrders.forEach(powerPlanOrder => {
+      powerPlanOrdersXML += `<Plan><PathwayCatalogId>33877129.00</PathwayCatalogId><PersonalizedPlanId>0.0</PersonalizedPlanId><Diagnoses></Diagnoses></Plan><Plan><PathwayCatalogId>${powerPlanOrder}</PathwayCatalogId><PersonalizedPlanId>0.0</PersonalizedPlanId><Diagnoses></Diagnoses></Plan>`;
+    });
+
+    //Add <Plans> to beginning & end of PowerPlan XML
+    powerPlanOrdersXML = '<Plans>' + powerPlanOrdersXML;
+    powerPlanOrdersXML += '</Plans>';
+  }
+
+  try {
+    //Create the DiscernObjectFactory - POWERORDERS object
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+
+    //Initialize the MOEW handle
+    let m_hMOEW = 0;
+
+    //Enable interaction checking (will always set to true for safety)
+    const m_bSignTimeInteractionChecking = true;
+
+    //m_hMOEW = await dcof.CreateMOEW()
+  } catch (e) {
+    if (outsideOfPowerChartError(e)) {
+      retVal.inPowerChart = false;
+    } else {
+      throw e;
+    }
+  }
+
+  return retVal;
+};
+
+// Return type to signifiy status of order placing
+export type SubmitOrdersStatus =
+  | 'success'
+  | 'cancelled'
+  | 'failed'
+  | 'invalid data returned'
+  | 'xml parse error'
+  | 'dry run';
+
+// Return type to contain the orders placed and associated XML data
+export type OrdersReturnXML = {
+  Orders: {
+    OrderVersion: number;
+    Order: Array<PowerPlanReturnOrderXML>;
+  };
+};
+
+// Return type of XML data
+export type PowerPlanReturnOrderXML = {
+  OrderableType: number;
+  OrderId: number;
+  SynonymId: number;
+  ClinCatCd: number;
+  CatalogTypeCd: number;
+  ActivityTypeCd: number;
+  OrderSentenceId: number;
+  RxMask: number;
+  HnaOrderMnemonic: string;
+  OrderedAsMnemonic: string;
+  OrderDtTm: string;
+  OrigOrderDtTm: string;
+  OrderMnemonic: string;
+  OrderStatusCd: number;
+  OrderStatusDisp: string;
+  ClinDisplayLine: string;
+  SimpleDisplayLine: string;
+  DeptStatusCd: number;
+  NeedDoctorCosignInd: number;
+  NeedPhysicianValidateInd: number;
+  NeedNurseReviewInd: number;
+  CommInd: number;
+  IngredientInd: number;
+  LastUpdtCnt: number;
+  MultipleOrdSentInd: number;
+  OrderActionId: number;
+  TemplateOrderFlag: number;
+  TemplateOrderId: number;
+  CsFlag: number;
+  CsOrderId: number;
+  OrderStatus: number;
+  SuspendInd: number;
+  ResumeInd: number;
+  OrderableTypeFlag: number;
+  RequiredInd: number;
+  ConstantInd: number;
+  PrnInd: number;
+  FreqTypeFlag: number;
+  HybridInd: number;
+  NeedRxVerifyFlag: number;
+  MedTypeCd: number;
+  LastActionSeq: number;
+  CommentTypeMask: number;
+  StopTypeCd: number;
+  ProviderId: number;
+  ProviderName: string;
+  CommunicationTypeCd: number;
+  CurrentStartDtTm: string;
+  ProjectedStopDtTm: string;
+  TimeZone: number;
+  OrigOrdAsFlag: number;
+  OrdCommentTemplateId: number;
+  DisableOrdCommentInd: number;
+  SuspendEffectiveDtTm: string;
+  ResumeEffectiveDtTm: string;
+  AdditiveCnt: number;
+  ClinSigDiluentCnt: number;
+  LinkNbr: number;
+  LinkTypeFlag: number;
+  SuperviseProviderId: number;
+  SuperviseProviderName: string;
+  BillingProvider: string;
+  RelatedOrderObjId: number;
+  ActionDtTm: string;
+  OeFormatId: number;
+  FmtActionCd: number;
+  SignedActionCd: number;
+  ActionType: number;
+  EncntrId: number;
+  ProcessMask: number;
+  CatalogCd: number;
+  ParentId: number;
+  ProjectedOrderId: number;
+  ProposalAcceptance: string;
+  ProposalId: number;
+  SignDtTm: string;
+  ActionDisplay: string;
+  SignedOrderStatusCd: number;
+  LastActionPrsnlId: number;
+  LastActionPrsnlName: string;
+  LastActionDtTm: string;
+  DetailList: DetailList;
+  ComplianceDetailList: string;
+  CommentList: CommentList;
+  AdHocFreqList: AdHocFreqList;
+  DiagnosisList: DiagnosisList;
+  CurrSchedExceptionList: string;
+  PrevSchedExceptionList: string;
+  OrigSchedExceptionList: string;
+  ResponsibleProviderId: number;
+  ResponsibleProviderName: string;
+  SuspendedDtTm: string;
+  RelatedFromOrderId: number;
+  OrderRelationTypeCd: number;
+  OrderRelationTypeMeaning: string;
+  OrderRelationTypeDisplay: string;
+  ProposalRejectReasonCd: number;
+  ProposalRejectReasonDisplay: string;
+  ProposalFreetextRejectReason: string;
+};
+
+//XML data return subtype
+export type FieldValueList = {
+  ListValues: {
+    FieldValue: number;
+    FieldDisplayValue: number;
+    FieldDtTmValue: string;
+  };
+};
+
+//XML data return subtype
+export type Detail = {
+  FieldValueList: FieldValueList;
+  OeFieldId: number;
+  OeFieldMeaning: string;
+  OeFieldMeaningId: number;
+  ValueRequiredInd: number;
+  GroupSeq: number;
+  FieldSeq: number;
+  ModifiedInd: number;
+  DetailAlterFlag: number;
+};
+
+//XML data return subtype
+export type DetailList = {
+  STRENGTHDOSE: Detail;
+  STRENGTHDOSEUNIT: Detail;
+  RXROUTE: Detail;
+  DRUGFORM: Detail;
+  FREQ: Detail;
+  'SCH.PRN': Detail;
+  OTHER: Detail[];
+  DURATION: Detail;
+  DURATIONUNIT: Detail;
+  REQSTARTDTTM: Detail;
+  STOPDTTM: Detail;
+  STOPTYPE: Detail;
+  FREQSCHEDID: Detail;
+  ADHOCFREQINSTANCE: Detail;
+  NEXTDOSEDTTM: Detail;
+  PHARMORDERTYPE: Detail;
+  DIFFINMIN: Detail;
+  ICD9: Detail;
+  INSTREPLACEREQUIREDDETS: Detail;
+  REFERENCESTARTDTTM: Detail;
+  DetailListCount: number;
+};
+
+//XML data return subtype
+export type CommentList = {
+  CommentValues: {
+    CommentType: number;
+    CommentText: string;
+  };
+};
+
+//XML data return subtype
+export type AdHocFreqList = {
+  CurrSchedList: string;
+  OrigSchedList: string;
+  PrevSchedList: string;
+};
+
+//XML data return subtype
+export type DiagnosisList = {
+  Diagnosis: {
+    DiagnosisId: number;
+    NomenclatureId: number;
+    SourceVocabularyCd: number;
+    SourceIdentifier: string;
+    DiagnosisDescription: string;
+    DiagnosisRanking: number;
+    SearchNomenclatureId: number;
+  };
+};
+
+//Return type of the entire function
+export type SubmitPowerPlanOrderReturn = {
+  inPowerChart: boolean;
+  status: SubmitOrdersStatus;
+  response: OrdersReturnXML | null;
+  ordersPlaced: Array<{ name: string; oid: number; display: string }> | null;
 };

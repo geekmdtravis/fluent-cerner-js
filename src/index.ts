@@ -1,4 +1,5 @@
 import {
+  createMOEWAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
@@ -23,6 +24,7 @@ import {
 } from './functional';
 
 export {
+  createMOEWAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
@@ -122,6 +124,24 @@ declare global {
     DiscernObjectFactory: (
       comObject: DiscernCOMObjects
     ) => Promise<{
+      /**
+       * Creates an MOEW handle.
+       * @param dPersonId {number} - the patient ID
+       * @param dEncntrId {number} - the encounter ID in which orders would be placed
+       * @param dwCustomizeFlag {number} - mask used to determine options available within the MOEW
+       * @param dwTabFlag {number} - the type of list being customized (2 for orders, 3 for medications).
+       * @param dwTabDisplayOptionsFlag {number} - mask specifying the components to display on the list.
+       * @returns a `Promise` which resolves to an integer representing a handle to the MOEW instance. 0 indicates an invalid call or call from outside PowerChart.
+       * @throws `Error` if an unexpected error occurs
+       */
+      CreateMOEW: (
+        dPersonId: number,
+        dEncntrId: number,
+        dwCustomizeFlag: number,
+        dwTabFlag: number,
+        dwTabDisplayOptionsFlag: number
+      ) => Promise<number>;
+
       /**
        * Get valid encounter ID's for a given patient.
        * @param pid {number} - the patient ID of the patient to get encounters for.
