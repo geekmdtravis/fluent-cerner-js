@@ -149,13 +149,13 @@ declare global {
       DoModal(): Promise<null>;
     }>;
     /**
-     * Interface for the Cerner Windows COM object for an XMLCclRequest.
+     * Funtion that returns a Cerner Windows COM object for an XMLCclRequest.
      * Useful for development but not intended for production use. Use of
      * this method in that context requires the following meta tag in the
      * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
      * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/XMLCCLREQUEST)
      */
-    XMLCclRequest: XMLCclRequest;
+    XMLCclRequest: () => Promise<XMLCclRequest>;
     /**
      * Interface for the Cerner Discern native function which provides the function
      * responsible for opening an application, chart tab, or organization level tab.

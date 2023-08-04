@@ -70,7 +70,7 @@ export type CclRequestResponse<T> = {
     statusDetails: string;
     prgName: string;
     prgArguments: string;
-    __original: XMLCclRequest;
+    __original: XMLCclRequest | null;
   };
   data: T | undefined;
 };
@@ -114,49 +114,54 @@ export async function makeCclRequestAsync<T>(
   const { prg, excludeMine, params } = opts;
   const paramsList = processCclRequestParams(params, excludeMine || false);
 
-  return new Promise((resolve, reject) => {
-    try {
-      // @ts-ignore - From Powerchart context
-      const request: XMLCclRequest = window.external.XMLCclRequest();
+  let response: CclRequestResponse<T> = {
+    meta: {
+      responseText: '',
+      status: 0,
+      statusText: 'invalid state',
+      statusDetails: '',
+      prgName: '',
+      prgArguments: '',
+      __original: null,
+    },
+    data: undefined,
+  };
 
-      request.open('GET', `${prg}`);
-      request.send(paramsList);
-      request.onreadystatechange = function() {
-        const readyState = readyStateMap.get(request.readyState);
+  try {
+    const request = await window.external.XMLCclRequest();
 
-        if (readyState !== 'completed') return;
+    request.open('GET', `${prg}`);
+    request.send(paramsList);
+    request.onreadystatechange = function() {
+      const readyState = readyStateMap.get(request.readyState);
 
-        const statusText = statusCodeMap.get(request.status);
-        const responseText = processXmlCclReqResponseText(request.responseText);
-        const data: T | undefined = responseText && JSON.parse(responseText);
+      if (readyState !== 'completed') return;
 
-        const response: CclRequestResponse<T> = {
-          meta: {
-            responseText: responseText || 'no response text',
-            status: request.status,
-            statusText: statusText || 'status refers to unknown error',
-            statusDetails: request.statusText,
-            prgName: request.url,
-            prgArguments: request.requestText,
-            __original: request,
-          },
-          data,
-        };
+      const statusText = statusCodeMap.get(request.status);
+      const responseText = processXmlCclReqResponseText(request.responseText);
+      const data: T | undefined = responseText && JSON.parse(responseText);
 
-        if (statusText === 'success') {
-          resolve(response);
-        } else {
-          reject(composeXmlCclReqRejectMsg(request, prg, paramsList));
-        }
-      };
-    } catch (e) {
-      if (outsideOfPowerChartError(e)) {
-        reject((e as Error).message);
-      } else {
-        throw e;
-      }
+      response.meta.responseText = responseText || 'no response text';
+      response.meta.status = request.status;
+      response.meta.statusText = statusText || 'status refers to unknown error';
+      response.meta.statusDetails = request.statusText;
+      response.meta.prgName = request.url;
+      response.meta.prgArguments = request.requestText;
+      response.meta.__original = request;
+      response.data = data;
+    };
+
+    if (response.meta.statusText !== 'success') {
+      throw new Error(composeXmlCclReqRejectMsg(request, prg, paramsList));
     }
-  });
+    return response;
+  } catch (e) {
+    if (outsideOfPowerChartError(e)) {
+      throw new Error((e as Error).message);
+    } else {
+      throw e;
+    }
+  }
 }
 
 /**
