@@ -114,47 +114,22 @@ export async function makeCclRequestAsync<T>(
   const { prg, excludeMine, params } = opts;
   const paramsList = processCclRequestParams(params, excludeMine || false);
 
-  let response: CclRequestResponse<T> = {
-    meta: {
-      responseText: '',
-      status: 0,
-      statusText: 'invalid state',
-      statusDetails: '',
-      prgName: '',
-      prgArguments: '',
-      __original: null,
-    },
-    data: undefined,
-  };
-
+  let response: CclRequestResponse<T> | undefined = undefined;
   try {
     const request = await window.external.XMLCclRequest();
 
     request.open('GET', `${prg}`);
     request.send(paramsList);
     request.onreadystatechange = function() {
-      const readyState = readyStateMap.get(request.readyState);
+      const _response = handleReadyStateChange<T>(request);
 
-      if (readyState !== 'completed') return;
+      if (!_response) return;
 
-      const statusText = statusCodeMap.get(request.status);
-      const responseText = processXmlCclReqResponseText(request.responseText);
-      const data: T | undefined = responseText && JSON.parse(responseText);
-
-      response.meta.responseText = responseText || 'no response text';
-      response.meta.status = request.status;
-      response.meta.statusText = statusText || 'status refers to unknown error';
-      response.meta.statusDetails = request.statusText;
-      response.meta.prgName = request.url;
-      response.meta.prgArguments = request.requestText;
-      response.meta.__original = request;
-      response.data = data;
+      if (_response.meta.statusText !== 'success') {
+        throw new Error(composeXmlCclReqRejectMsg(request, prg, paramsList));
+      }
+      response = _response;
     };
-
-    if (response.meta.statusText !== 'success') {
-      throw new Error(composeXmlCclReqRejectMsg(request, prg, paramsList));
-    }
-    return response;
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       throw new Error((e as Error).message);
@@ -162,6 +137,14 @@ export async function makeCclRequestAsync<T>(
       throw e;
     }
   }
+
+  if (!response) {
+    throw new Error(
+      'An unexpected error occurred and the CCL response returned undefined.'
+    );
+  }
+
+  return response;
 }
 
 /**
@@ -201,4 +184,35 @@ export function processCclRequestParams(
     .join(',');
 
   return paramString;
+}
+
+/**
+ * A function which processes the response text from an XmlCclRequest, mapping
+ * the contents to a JavaScript object of type `CclRequestResponse<T>`.
+ * @param request {XMLCclRequest} - the request object that is updated when the
+ * state of the request changes. Contents are not guaranteed to be valid until
+ * the request is in the "completed" state.
+ * @returns an object of type `CclRequestResponse<T>` where `T` is the type.
+ */
+function handleReadyStateChange<T>(
+  request: XMLCclRequest
+): CclRequestResponse<T> {
+  // const readyState = readyStateMap.get(request.readyState);
+
+  const statusText = statusCodeMap.get(request.status);
+  const responseText = processXmlCclReqResponseText(request.responseText);
+  const data: T | undefined = responseText && JSON.parse(responseText);
+
+  return {
+    meta: {
+      responseText: responseText || 'no response text',
+      status: request.status,
+      statusText: statusText || 'status refers to unknown error',
+      statusDetails: request.statusText,
+      prgName: request.url,
+      prgArguments: request.requestText,
+      __original: request,
+    },
+    data,
+  };
 }
