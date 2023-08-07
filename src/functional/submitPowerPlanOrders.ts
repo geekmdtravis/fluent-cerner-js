@@ -236,7 +236,9 @@ export const submitPowerPlanOrdersAsync = async (
     //Enable interaction checking (will always set to true for safety)
     const m_bSignTimeInteractionChecking = true;
 
-    m_hMOEW = await dcof.CreateMOEW()
+    //m_hMOEW = await dcof.CreateMOEW()
+
+    
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;
