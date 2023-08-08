@@ -19,6 +19,41 @@ describe('makeCclRequestAsync', () => {
       );
     }
   });
+
+  it('throws an error when the response returns undefined or null', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        XMLCclRequest: jest.fn().mockImplementation(() => ({
+          response: null,
+          open: function(a: string, b: string): Promise<null> {
+            console.debug('open', a, b);
+            return Promise.resolve(null);
+          },
+          send: function(a: string): Promise<null> {
+            console.debug('send', a);
+            return Promise.resolve(null);
+          },
+          onreadystatechange: function(): Promise<null> {
+            console.debug('onreadystatechange');
+            return Promise.resolve(null);
+          },
+        })),
+      },
+    });
+    try {
+      await makeCclRequestAsync({
+        prg: 'TEST',
+        params: [{ type: 'string', param: 'param1' }],
+      });
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+      expect(e).toHaveProperty(
+        'message',
+        'An unexpected error occurred and the CCL response returned undefined or null.'
+      );
+    }
+  });
   it('throws an error when an unexpected error occurs', async () => {
     Object.defineProperty(window, 'external', {
       writable: true,

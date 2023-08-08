@@ -140,7 +140,7 @@ export async function makeCclRequestAsync<T>(
 
   if (!response) {
     throw new Error(
-      'An unexpected error occurred and the CCL response returned undefined.'
+      'An unexpected error occurred and the CCL response returned undefined or null.'
     );
   }
 
