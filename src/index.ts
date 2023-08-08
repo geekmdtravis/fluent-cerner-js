@@ -141,6 +141,18 @@ declare global {
       ) => Promise<number>;
 
       /**
+       * Creates PowerPlan objects from the pathway catalog IDs. CreateMOEW() must be called first.
+       * @param lMOEWHandle {number} - the handle to the MOEW
+       * @param planDetailsXMLBstr {string} - XML string containing the plan/pathway catalog IDs
+       * @returns a `Promise` which resolves to an integer: 1 if the plan was addedd successfully, and 0 otherwise.
+       * @throws `Error` if an unexpected error occurs
+       */
+      AddPowerPlanWithDetails: (
+        lMOEWHandle: number,
+        planDetailsXMLBstr: string
+      ) => Promise<number>;
+
+      /**
        * Get valid encounter ID's for a given patient.
        * @param pid {number} - the patient ID of the patient to get encounters for.
        * @returns a `Promise` of a string representing the valid encounter ID's for the patient.
