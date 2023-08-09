@@ -22,16 +22,16 @@ export type CclCallParam = {
  * A type which represents the full set of data required to make an XmlCclRequest, which is wrapped
  * by `makeCclRequest`.
  * @param {string} prg - The name of the CCL program to run, e.g. 12_USER_DETAILS.
+ * @param {CclCallParam[]} params - An array of CclCallParam objects, each of which represents
+ * a strongly typed parameter.
  * @param {boolean?} excludeMine - Determines whether or not to include the "MINE" parameter as the
  * first parameter in the CCL call. This defaults to `false`, and almost all cases will require
  * the "MINE" parameter to be included.
- * @param {CclCallParam[]} params - An array of CclCallParam objects, each of which represents
- * a strongly typed parameter.
  */
 export type CclOpts = {
   prg: string;
-  excludeMine?: boolean;
   params: Array<CclCallParam>;
+  excludeMine?: boolean;
 };
 
 /**
@@ -91,8 +91,9 @@ statusCodeMap.set(493, 'memory error');
 statusCodeMap.set(500, 'internal server exception');
 
 /**
- * A generic wrapper function for `XMLCclRequest`, which is a native function
- * in Cerner's Discern platform, which simplifies it's use.
+ * Make AJAX calls to CCL end-points to retrieve data from the Cerner PowerChart
+ * application. This function is a wrapper around the `XMLCclRequest` function
+ * provided by the Cerner PowerChart application that greatly simplifies it's use.
  * @param {CclOpts} opts - Required options for the CCL request.
  * @returns a `Promise` of type `CclRequestResponse<T>` where `T` is the type
  * or interface which represents the resolved data from the CCL request. If
@@ -114,7 +115,7 @@ export async function makeCclRequestAsync<T>(
   const { prg, excludeMine, params } = opts;
   const paramsList = processCclRequestParams(params, excludeMine || false);
 
-  let response: CclRequestResponse<T> | undefined = undefined;
+  let response: CclRequestResponse<T> | undefined;
   try {
     const request = await window.external.XMLCclRequest();
 
