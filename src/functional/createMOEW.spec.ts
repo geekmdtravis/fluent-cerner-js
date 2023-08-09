@@ -1,15 +1,9 @@
-import { createMOEWAsync } from './createMOEW';
-import { PowerChartReturn } from '.';
+import { CreateMOEWReturn, createMOEWAsync } from './createMOEW';
 
-describe('getValidEncountersAsync', () => {
+describe('createMOEWAsync()', () => {
   it('runs with minimal (and invalid) paramaters outside of powerchart', async () => {
     const result = await createMOEWAsync(0, 0);
-    const expectedObj: PowerChartReturn & {
-      moewHandle: number | null;
-      customizeFlag: number;
-      tabFlag: number;
-      tabDisplayOptionsFlag: number;
-    } = {
+    const expectedObj: CreateMOEWReturn = {
       inPowerChart: false,
       moewHandle: null,
       customizeFlag: 24,
@@ -45,12 +39,7 @@ describe('getValidEncountersAsync', () => {
       'show list details',
     ]);
 
-    const expectedObj: PowerChartReturn & {
-      moewHandle: number | null;
-      customizeFlag: number;
-      tabFlag: number;
-      tabDisplayOptionsFlag: number;
-    } = {
+    const expectedObj: CreateMOEWReturn = {
       inPowerChart: false,
       moewHandle: null,
       customizeFlag: 32701,
@@ -75,12 +64,7 @@ describe('getValidEncountersAsync', () => {
 
   it('correctly handles `customize meds` (`customize order` tested previously)', async () => {
     const result = await createMOEWAsync(0, 0, ['customize meds']);
-    const expectedObj: PowerChartReturn & {
-      moewHandle: number | null;
-      customizeFlag: number;
-      tabFlag: number;
-      tabDisplayOptionsFlag: number;
-    } = {
+    const expectedObj: CreateMOEWReturn = {
       inPowerChart: false,
       moewHandle: null,
       customizeFlag: 0,

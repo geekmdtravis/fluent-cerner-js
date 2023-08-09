@@ -13,17 +13,9 @@ import { PowerPlanOrder } from './submitPowerPlanOrders';
 export async function addPowerPlanWithDetailsAsync(
   moewHandle: number,
   powerPlanOrders: Array<PowerPlanOrder>
-): Promise<
-  PowerChartReturn & {
-    powerPlanAdded: boolean;
-  }
-> {
-
+): Promise<AddPowerPlanWithDetailsReturn> {
   //Prepare the default return data
-  let retData: {
-    inPowerChart: boolean;
-    powerPlanAdded: boolean;
-  } = {
+  let retData: AddPowerPlanWithDetailsReturn = {
     inPowerChart: true,
     powerPlanAdded: true,
   };
@@ -56,15 +48,12 @@ export async function addPowerPlanWithDetailsAsync(
 
     // Set the `powerPlanAdded` boolean to be true if the orders were added, and false otherwise
     retData.powerPlanAdded = response === 0 ? false : true;
-
   } catch (e) {
-
     // If outside of PowerChart, set the output to reflect that
     if (outsideOfPowerChartError(e)) {
       retData.inPowerChart = false;
       retData.powerPlanAdded = false;
-    } 
-    else {
+    } else {
       // If some other error was encountered, throw that error
       throw e;
     }
@@ -73,3 +62,7 @@ export async function addPowerPlanWithDetailsAsync(
   // Return the retData object when complete
   return retData;
 }
+
+export type AddPowerPlanWithDetailsReturn = PowerChartReturn & {
+  powerPlanAdded: boolean;
+};

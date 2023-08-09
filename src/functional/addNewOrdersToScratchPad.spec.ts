@@ -1,14 +1,14 @@
-import { PowerChartReturn } from '.';
-import { addNewOrdersToScratchpadAsync } from './addNewOrdersToScratchPad';
+import {
+  AddNewOrdersToScratchpadReturn,
+  addNewOrdersToScratchpadAsync,
+} from './addNewOrdersToScratchPad';
 import { StandaloneOrder } from './submitPowerPlanOrders';
 
 describe('addNewOrdersToScratchpadAsync', () => {
   it('runs outside of powerchart and correctly outputs as such', async () => {
     const orders: Array<StandaloneOrder> = [{ synonymID: 1337 }];
 
-    const expectedObj: PowerChartReturn & {
-      standaloneOrdersAdded: boolean;
-    } = {
+    const expectedObj: AddNewOrdersToScratchpadReturn = {
       inPowerChart: false,
       standaloneOrdersAdded: false,
     };

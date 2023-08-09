@@ -14,16 +14,9 @@ export async function addNewOrdersToScratchpadAsync(
   moewHandle: number,
   standaloneOrders: Array<StandaloneOrder>,
   interactionChecking: boolean
-): Promise<
-  PowerChartReturn & {
-    standaloneOrdersAdded: boolean;
-  }
-> {
+): Promise<AddNewOrdersToScratchpadReturn> {
   //Prepare the default return data
-  let retData: {
-    inPowerChart: boolean;
-    standaloneOrdersAdded: boolean;
-  } = {
+  let retData: AddNewOrdersToScratchpadReturn = {
     inPowerChart: true,
     standaloneOrdersAdded: true,
   };
@@ -71,3 +64,7 @@ export async function addNewOrdersToScratchpadAsync(
   // Return the retData object when complete
   return retData;
 }
+
+export type AddNewOrdersToScratchpadReturn = PowerChartReturn & {
+  standaloneOrdersAdded: boolean;
+};

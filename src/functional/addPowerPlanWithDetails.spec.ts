@@ -1,14 +1,14 @@
-import { PowerChartReturn } from '.';
-import { addPowerPlanWithDetailsAsync } from './addPowerPlanWithDetails';
+import {
+  AddPowerPlanWithDetailsReturn,
+  addPowerPlanWithDetailsAsync,
+} from './addPowerPlanWithDetails';
 import { PowerPlanOrder } from './submitPowerPlanOrders';
 
 describe('addPowerPlanWithDetailsAsync', () => {
   it('runs outside of powerchart and correctly outputs as such', async () => {
     const orders: Array<PowerPlanOrder> = [{ pathwayCatalogID: 1337 }];
 
-    const expectedObj: PowerChartReturn & {
-      powerPlanAdded: boolean;
-    } = {
+    const expectedObj: AddPowerPlanWithDetailsReturn = {
       inPowerChart: false,
       powerPlanAdded: false,
     };
