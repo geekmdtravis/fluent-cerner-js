@@ -60,6 +60,8 @@ export type StandaloneOrder = {
 
 export type PowerPlanOrder = {
   pathwayCatalogID: number;
+  personalizedPlanID?: number;
+  diagnoses?: Array<number>;
 };
 
 /**
@@ -72,7 +74,7 @@ export type PowerPlanOrder = {
  *
  * @param {Array<StandaloneOrder>} standaloneOrders - An array of synonym IDs for individual orders to be placed. Either this, `powerPlanOrders,` or both, should be present.
  *
- * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of pathway catalog IDs for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
+ * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog IDs and, optionally, personalized plan IDs and diagnosis code IDs, for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
  *
  * @documentation [POWERORDERS - AddPowerPlanWithDetails](https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
  **/
@@ -218,7 +220,25 @@ export const submitPowerPlanOrdersAsync = async (
 
   if (orderOpts.powerPlanOrders && orderOpts.powerPlanOrders.length >= 1) {
     orderOpts.powerPlanOrders.forEach(powerPlanOrder => {
-      powerPlanOrdersXML += `<Plan><PathwayCatalogId>${powerPlanOrder}</PathwayCatalogId><PersonalizedPlanId>0.0</PersonalizedPlanId><Diagnoses></Diagnoses></Plan>`;
+      powerPlanOrdersXML += `<Plan><PathwayCatalogId>${
+        powerPlanOrder.pathwayCatalogID
+      }</PathwayCatalogId><PersonalizedPlanId>${
+        powerPlanOrder.personalizedPlanID
+          ? powerPlanOrder.personalizedPlanID
+          : ''
+      }</PersonalizedPlanId><Diagnoses>
+      
+      
+      ${
+        powerPlanOrder.diagnoses
+          ? powerPlanOrder.diagnoses.map(diagnosis => {
+              return '<DiagnosisId>' + diagnosis + '</DiagnosisId>';
+            })
+          : ''
+      }
+      
+      
+      </Diagnoses></Plan>`;
     });
 
     //Add <Plans> to beginning & end of PowerPlan XML
@@ -237,8 +257,6 @@ export const submitPowerPlanOrdersAsync = async (
     const m_bSignTimeInteractionChecking = true;
 
     //m_hMOEW = await dcof.CreateMOEW()
-
-    
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;

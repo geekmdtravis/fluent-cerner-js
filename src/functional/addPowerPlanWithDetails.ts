@@ -5,7 +5,7 @@ import { PowerPlanOrder } from './submitPowerPlanOrders';
 /**
  * Attempts to add a PowerPlan and creates PowerPlan objects from the pathway catalog IDs. CreateMOEW() must be called first.
  * @param {number} moewHandle - the handle to the MOEW.
- * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of pathway catalog IDs for PowerPlan orders to be placed.
+ * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog IDs and, optionally, personalized plan IDs and diagnosis code IDs, for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
  * @returns a `Promise` which resolves to a boolean, indicating whether or not the PowerPlan orders were successfully added
  * @throws `Error` if an unexpected error occurs or if the array provided is empty
  */
@@ -31,7 +31,23 @@ export async function addPowerPlanWithDetailsAsync(
   let powerPlanOrdersXML: string = '';
 
   powerPlanOrders.forEach(powerPlanOrder => {
-    powerPlanOrdersXML += `<Plan><PathwayCatalogId>${powerPlanOrder.pathwayCatalogID}</PathwayCatalogId><PersonalizedPlanId>0.0</PersonalizedPlanId><Diagnoses></Diagnoses></Plan>`;
+    powerPlanOrdersXML += `<Plan><PathwayCatalogId>${
+      powerPlanOrder.pathwayCatalogID
+    }</PathwayCatalogId><PersonalizedPlanId>${
+      powerPlanOrder.personalizedPlanID ? powerPlanOrder.personalizedPlanID : ''
+    }</PersonalizedPlanId><Diagnoses>
+    
+    
+    ${
+      powerPlanOrder.diagnoses
+        ? powerPlanOrder.diagnoses.map(diagnosis => {
+            return '<DiagnosisId>' + diagnosis + '</DiagnosisId>';
+          })
+        : ''
+    }
+    
+    
+    </Diagnoses></Plan>`;
   });
 
   // Add <Plans> to beginning & end of PowerPlan XML
