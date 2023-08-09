@@ -147,6 +147,48 @@ declare global {
        * @returns a `Promise` which always returns `null`.
        */
       DoModal(): Promise<null>;
+      /**
+       * Launches a dialog to check in the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      CheckInAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Launches a dialog to check out the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      CheckOutAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Launches a dialog to cancel the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      CancelAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Launches a dialog to put a hold on the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      HoldAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Launches a dialog to mark the specified appointment as 'no show'.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      NoShowAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Display the appointment view dialog for the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      ShowView(eventId: number): Promise<0 | 1>;
+      /**
+       * Display the appointment history view dialog for the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      ShowHistoryView(eventId: number): Promise<0 | 1>;
     }>;
     /**
      * Funtion that returns a Cerner Windows COM object for an XMLCclRequest.
