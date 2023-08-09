@@ -6,49 +6,11 @@ describe('createMOEWAsync()', () => {
     const expectedObj: CreateMOEWReturn = {
       inPowerChart: false,
       moewHandle: null,
-      customizeFlag: 24,
-      tabFlag: 2,
-      tabDisplayOptionsFlag: 127,
     };
 
     expect(result).toEqual(expectedObj);
   });
 
-  it('accepts all paramaters and yields expected flag values', async () => {
-    const result = await createMOEWAsync(0, 0, [
-      'sign later',
-      'read only',
-      'allow power plans',
-      'allow power plan doc',
-      'allow only inpatient and outpatient orders',
-      'show refresh and print buttons',
-      'documented meds only',
-      'hide med rec',
-      'disallow EOL',
-      'hide demographics',
-      'add rx filter',
-      'disable auto search',
-      'allow regimen',
-      'customize order',
-      'show nav tree',
-      'show diag and probs',
-      'show related res',
-      'show orders search',
-      'show order profile',
-      'show scratchpad',
-      'show list details',
-    ]);
-
-    const expectedObj: CreateMOEWReturn = {
-      inPowerChart: false,
-      moewHandle: null,
-      customizeFlag: 32701,
-      tabFlag: 2,
-      tabDisplayOptionsFlag: 127,
-    };
-
-    expect(result).toEqual(expectedObj);
-  });
 
   it('throws the expected error if `customize meds` and `customize order` are both chosen', async () => {
     try {
@@ -60,18 +22,6 @@ describe('createMOEWAsync()', () => {
         'The MOEW must be configured to customize orders or medications, but cannot be configured to customize both.'
       );
     }
-  });
-
-  it('correctly handles `customize meds` (`customize order` tested previously)', async () => {
-    const result = await createMOEWAsync(0, 0, ['customize meds']);
-    const expectedObj: CreateMOEWReturn = {
-      inPowerChart: false,
-      moewHandle: null,
-      customizeFlag: 0,
-      tabFlag: 3,
-      tabDisplayOptionsFlag: 0,
-    };
-    expect(result).toEqual(expectedObj);
   });
 
   it('throws an error if an unexpected error occurs', async () => {

@@ -1,5 +1,6 @@
 import { PowerChartReturn } from '.';
-import { calculateMOEWBitmask, outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from '../utils';
+import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
 import { PowerPlanMOEWOpts } from './submitPowerPlanOrders';
 
 /**
@@ -21,9 +22,6 @@ export async function createMOEWAsync(
   let retData: CreateMOEWReturn = {
     inPowerChart: true,
     moewHandle: null,
-    customizeFlag: 0,
-    tabFlag: 0,
-    tabDisplayOptionsFlag: 0,
   };
 
   // Definite the recommended input optinons, to be used if none entered by the user
@@ -41,16 +39,6 @@ export async function createMOEWAsync(
         'show scratchpad',
         'show list details',
       ];
-
-  // Check for the inclusion of both 'customize order' and 'customize meds' and throw an error if so
-  if (
-    inputOpts.includes('customize order') &&
-    inputOpts.includes('customize meds')
-  ) {
-    throw new SyntaxError(
-      'The MOEW must be configured to customize orders or medications, but cannot be configured to customize both.'
-    );
-  }
 
   // Calculate the bitmask via utility function
   const {
@@ -83,18 +71,10 @@ export async function createMOEWAsync(
     }
   }
 
-  // We also return the actual bitmask flags, primarily for testing purposes & verification
-  retData.customizeFlag = dwCustomizeFlag;
-  retData.tabFlag = dwTabFlag;
-  retData.tabDisplayOptionsFlag = dwTabDisplayOptionsFlag;
-
   // Return the retData object when complete
   return retData;
 }
 
 export type CreateMOEWReturn = PowerChartReturn & {
   moewHandle: number | null;
-  customizeFlag: number;
-  tabFlag: number;
-  tabDisplayOptionsFlag: number;
 };
