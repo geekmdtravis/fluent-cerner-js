@@ -4,14 +4,84 @@ import {
   makeCclRequestAsync,
 } from './makeCclRequest';
 
-describe('makeCclRequest', () => {
-  it('rejects when outside of PowerChart', async () => {
-    return expect(
-      makeCclRequestAsync({
+describe('makeCclRequestAsync', () => {
+  it('throws Error when outside of PowerChart', async () => {
+    try {
+      await makeCclRequestAsync({
         prg: 'TEST',
         params: [{ type: 'string', param: 'param1' }],
-      })
-    ).rejects.toEqual('window.external.XMLCclRequest is not a function');
+      });
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+      expect(e).toHaveProperty(
+        'message',
+        'window.external.XMLCclRequest is not a function'
+      );
+    }
+  });
+
+  it('throws an error when the response returns undefined or null', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        XMLCclRequest: jest.fn().mockImplementation(() => ({
+          response: null,
+          open: function(a: string, b: string): Promise<null> {
+            console.debug('open', a, b);
+            return Promise.resolve(null);
+          },
+          send: function(a: string): Promise<null> {
+            console.debug('send', a);
+            return Promise.resolve(null);
+          },
+          onreadystatechange: function(): Promise<null> {
+            console.debug('onreadystatechange');
+            return Promise.resolve(null);
+          },
+        })),
+      },
+    });
+    try {
+      await makeCclRequestAsync({
+        prg: 'TEST',
+        params: [{ type: 'string', param: 'param1' }],
+      });
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+      expect(e).toHaveProperty(
+        'message',
+        'An unexpected error occurred and the CCL response returned undefined or null.'
+      );
+    }
+  });
+  it('throws an error when an unexpected error occurs', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        XMLCclRequest: jest.fn().mockImplementation(() => ({
+          open: function(a: string, b: string): Promise<null> {
+            console.debug('open', a, b);
+            throw new Error('test error');
+          },
+          send: function(a: string): Promise<null> {
+            console.debug('send', a);
+            throw new Error('test error');
+          },
+          onreadystatechange: function(): Promise<null> {
+            console.debug('onreadystatechange');
+            throw new Error('test error');
+          },
+        })),
+      },
+    });
+    try {
+      await makeCclRequestAsync({
+        prg: 'TEST',
+        params: [{ type: 'string', param: 'param1' }],
+      });
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 });
 
