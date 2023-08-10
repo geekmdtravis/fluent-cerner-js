@@ -14,7 +14,9 @@ export type AppointmentReturn = PowerChartReturn & {
 };
 
 /**
- *
+ * Managed appointments in PowerChart. For any given appointment ID, the
+ * following actions can be performed: check in, check out, cancel, no show,
+ * view appointment dialog, and view appointment history.
  * @param id {number} - the event ID of the appointment to check in.
  * @param action {string} - the action to perform on the appointment. The available
  * actions are: 'check in', 'check out', 'cancel', 'no show', 'view appt dialog',

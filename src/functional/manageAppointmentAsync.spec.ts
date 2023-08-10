@@ -1,4 +1,4 @@
-import { manageAppointmentAsync } from './handleAppointmentAsync';
+import { manageAppointmentAsync } from './manageAppointmentAsync';
 
 describe('manageAppointmentAsync', () => {
   beforeEach(() => {
