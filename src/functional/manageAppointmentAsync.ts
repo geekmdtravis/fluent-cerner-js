@@ -22,10 +22,11 @@ export type AppointmentReturn = PowerChartReturn & {
  * @resolves an `AppointmentReturn` object with the following properties:
  * - `success` - `true` if the action was successful, `false` otherwise.
  * - `inPowerChart` - `true` if the action was successful, `false` otherwise.
+ * @throws a `RangeError` if the provided appointment ID is less than 1.
  * @throws an `Error` if the action is invalid.
  * @throws an `Error` if an unexpected error occurs.
  */
-export async function handleAppointmentAsync(
+export async function manageAppointmentAsync(
   id: number,
   action: AppointmentAction
 ): Promise<AppointmentReturn> {
