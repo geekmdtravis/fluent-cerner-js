@@ -5,7 +5,7 @@ import { PowerPlanOrder } from './submitPowerPlanOrders';
 /**
  * Attempts to add a PowerPlan and creates PowerPlan objects from the pathway catalog IDs. CreateMOEW() must be called first.
  * @param {number} moewHandle - the handle to the MOEW.
- * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog IDs and, optionally, personalized plan IDs and diagnosis code IDs, for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
+ * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog IDs and, optionally, personalized plan IDs and diagnosis code IDs, for PowerPlan orders to be placed.
  * @returns a `Promise` which resolves to a boolean, indicating whether or not the PowerPlan orders were successfully added
  * @throws `Error` if an unexpected error occurs or if the array provided is empty
  */

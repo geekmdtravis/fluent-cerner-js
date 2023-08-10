@@ -56,6 +56,8 @@ export type PowerPlanMOEWOpts =
 
 export type StandaloneOrder = {
   synonymID: number;
+  orderOrigination: 'inpatient order' | 'prescription order';
+  sentenceID?: number;
 };
 
 export type PowerPlanOrder = {
@@ -72,7 +74,7 @@ export type PowerPlanOrder = {
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this order will be placed. Cerner context variable: VIS_EncntrId.
  *
- * @param {Array<StandaloneOrder>} standaloneOrders - An array of synonym IDs for individual orders to be placed. Either this, `powerPlanOrders,` or both, should be present.
+ * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym IDs, order origination flags and, optionally, sentence IDs, for standalone orders to be placed. Either this, `powerPlanOrders,` or both, should be present.
  *
  * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog IDs and, optionally, personalized plan IDs and diagnosis code IDs, for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
  *

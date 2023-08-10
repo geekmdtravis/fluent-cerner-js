@@ -5,9 +5,9 @@ import { StandaloneOrder } from './submitPowerPlanOrders';
 /**
  * Attempts to add new standalone orders to the scratchpad.
  * @param {number} moewHandle - the handle to the MOEW.
- * @param {Array<StandaloneOrder>} standaloneOrders - An array of synonym IDs for individual orders to be placed.
+ * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym IDs, order origination flags and, optionally, sentence IDs, for standalone orders to be placed.
  * @param {boolean} interactionChecking - A boolean value indicating whether or not order interaction checking should be performed. Strongly recommended to be true.
- * @returns a `Promise` which resolves to a boolean, indicating whether or not the standalone orders were successfully added
+ * @returns a `Promise` which resolves to a string, indicating the status or not the standalone orders were successfully added
  * @throws `Error` if an unexpected error occurs or if the array provided is empty
  */
 export async function addNewOrdersToScratchpadAsync(
@@ -18,7 +18,7 @@ export async function addNewOrdersToScratchpadAsync(
   //Prepare the default return data
   let retData: AddNewOrdersToScratchpadReturn = {
     inPowerChart: true,
-    standaloneOrdersAdded: true,
+    result: 'successfully added',
   };
 
   // Check for to make sure the array of orders provided is not empty
@@ -32,7 +32,12 @@ export async function addNewOrdersToScratchpadAsync(
   let standaloneOrdersXML: string = '';
 
   standaloneOrders.forEach(standaloneOrder => {
-    standaloneOrdersXML += `<Order><EOrderOriginationFlag>0</EOrderOriginationFlag><SynonymId>${standaloneOrder.synonymID}</SynonymId><\OrderSentenceId></OrderSentenceId></Order>`;
+    standaloneOrdersXML += `<Order><EOrderOriginationFlag>${
+      standaloneOrder.orderOrigination === 'inpatient order' ? 0 : 1
+    }</EOrderOriginationFlag><SynonymId>${standaloneOrder.synonymID}</SynonymId>
+    <OrderSentenceId>${
+      standaloneOrder.sentenceID ? standaloneOrder.sentenceID : ''
+    }</OrderSentenceId></Order>`;
   });
 
   //Add <Orders> to beginning & end of the Standalone Order XML
@@ -48,13 +53,29 @@ export async function addNewOrdersToScratchpadAsync(
       interactionChecking
     );
 
-    // Set the `standaloneOrdersAdded` boolean to be true if the orders were added, and false otherwise
-    retData.standaloneOrdersAdded = response === 0 ? false : true;
+    // Set the `result value` equal to a string describing the number that PowerChart returns
+    switch (response) {
+      case 0:
+        retData.result = 'successfully added';
+        break;
+
+      case 1:
+        retData.result = 'added and signed';
+        break;
+
+      case 2:
+        retData.result = 'cancelled by user';
+        break;
+
+      case 3:
+        retData.result = 'add failed';
+        break;
+    }
   } catch (e) {
     // If outside of PowerChart, set the output to reflect that
     if (outsideOfPowerChartError(e)) {
       retData.inPowerChart = false;
-      retData.standaloneOrdersAdded = false;
+      retData.result = 'add failed';
     } else {
       // If some other error was encountered, throw that error
       throw e;
@@ -66,5 +87,11 @@ export async function addNewOrdersToScratchpadAsync(
 }
 
 export type AddNewOrdersToScratchpadReturn = PowerChartReturn & {
-  standaloneOrdersAdded: boolean;
+  result: AddNewOrdersToScratchpadResult;
 };
+
+export type AddNewOrdersToScratchpadResult =
+  | 'successfully added'
+  | 'added and signed'
+  | 'cancelled by user'
+  | 'add failed';

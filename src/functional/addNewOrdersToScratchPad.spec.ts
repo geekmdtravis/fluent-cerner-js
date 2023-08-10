@@ -6,11 +6,17 @@ import { StandaloneOrder } from './submitPowerPlanOrders';
 
 describe('addNewOrdersToScratchpadAsync', () => {
   it('runs outside of powerchart and correctly outputs as such', async () => {
-    const orders: Array<StandaloneOrder> = [{ synonymID: 1337 }];
+    const orders: Array<StandaloneOrder> = [
+      {
+        synonymID: 1337,
+        orderOrigination: 'inpatient order',
+        sentenceID: 31337,
+      },
+    ];
 
     const expectedObj: AddNewOrdersToScratchpadReturn = {
       inPowerChart: false,
-      standaloneOrdersAdded: false,
+      result: 'add failed',
     };
 
     const resultObj = await addNewOrdersToScratchpadAsync(0, orders, true);
@@ -32,23 +38,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     }
   });
 
-  it('runs inside of powerchart and correctly sets `standaloneOrdersAdded` if executed correctly in PowerChart', async () => {
-    Object.defineProperty(window, 'external', {
-      writable: true,
-      value: {
-        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
-          AddNewOrdersToScratchpad: async () => Promise.resolve(1),
-        })),
-      },
-    });
-
-    const orders: Array<StandaloneOrder> = [{ synonymID: 1337 }];
-
-    const result = await addNewOrdersToScratchpadAsync(0, orders, true);
-    expect(result.standaloneOrdersAdded).toEqual(true);
-  });
-
-  it('sets `standaloneOrdersAdded` correctly if orders could not be added', async () => {
+  it('runs inside of powerchart and correctly sets `result` if executed correctly in PowerChart successfully', async () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
@@ -58,14 +48,48 @@ describe('addNewOrdersToScratchpadAsync', () => {
       },
     });
 
-    const orders: Array<StandaloneOrder> = [{ synonymID: 1337 }];
+    const orders: Array<StandaloneOrder> = [
+      {
+        synonymID: 1337,
+        orderOrigination: 'inpatient order',
+        sentenceID: 31337,
+      },
+    ];
 
     const result = await addNewOrdersToScratchpadAsync(0, orders, true);
-    expect(result.standaloneOrdersAdded).toEqual(false);
+    expect(result.result).toEqual('successfully added');
+  });
+
+  it('sets `result` correctly if orders could not be added', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          AddNewOrdersToScratchpad: async () => Promise.resolve(3),
+        })),
+      },
+    });
+
+    const orders: Array<StandaloneOrder> = [
+      {
+        synonymID: 1337,
+        orderOrigination: 'inpatient order',
+        sentenceID: 31337,
+      },
+    ];
+
+    const result = await addNewOrdersToScratchpadAsync(0, orders, true);
+    expect(result.result).toEqual('add failed');
   });
 
   it('throws an error if an unexpected error occurs', async () => {
-    const orders: Array<StandaloneOrder> = [{ synonymID: 1337 }];
+    const orders: Array<StandaloneOrder> = [
+      {
+        synonymID: 1337,
+        orderOrigination: 'inpatient order',
+        sentenceID: 31337,
+      },
+    ];
 
     Object.defineProperty(window, 'external', {
       writable: true,
