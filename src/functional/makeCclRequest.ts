@@ -1,3 +1,4 @@
+import { PowerChartError } from '../lib/PowerChartError';
 import {
   composeXmlCclReqRejectMsg,
   outsideOfPowerChartError,
@@ -133,7 +134,9 @@ export async function makeCclRequestAsync<T>(
     };
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-      throw new Error((e as Error).message);
+      throw new PowerChartError(
+        `call to ${prg} with params ${paramsList} failed as a result of being outside the PowerChart environment`
+      );
     } else {
       throw e;
     }

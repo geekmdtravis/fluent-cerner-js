@@ -1,3 +1,4 @@
+import { PowerChartError } from '../lib/PowerChartError';
 import {
   processCclRequestParams,
   CclCallParam,
@@ -5,18 +6,20 @@ import {
 } from './makeCclRequest';
 
 describe('makeCclRequestAsync', () => {
-  it('throws Error when outside of PowerChart', async () => {
+  it('throws PowerChartError when outside of PowerChart', async () => {
     try {
       await makeCclRequestAsync({
         prg: 'TEST',
         params: [{ type: 'string', param: 'param1' }],
       });
     } catch (e) {
-      expect(e).toBeInstanceOf(Error);
+      expect(e).toBeInstanceOf(PowerChartError);
       expect(e).toHaveProperty(
         'message',
-        'window.external.XMLCclRequest is not a function'
+        `call to TEST with params 'MINE','param1' failed as a result of being outside the PowerChart environment`
       );
+      expect(e).toHaveProperty('name', 'PowerChartError');
+      console.error(e);
     }
   });
 

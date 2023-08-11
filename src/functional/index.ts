@@ -1,3 +1,4 @@
+import { manageAppointmentAsync } from './manageAppointmentAsync';
 import { getValidEncountersAsync } from './getValidEncounters';
 import {
   launchClinicalNoteAsync,
@@ -46,6 +47,7 @@ export {
   launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
+  manageAppointmentAsync,
   openPatientTabAsync,
   openOrganizerTabAsync,
   orderString,

@@ -5,13 +5,14 @@ const {
   openPatientTabAsync,
   openOrganizerTabAsync,
   launchClinicalNoteAsync,
-  launchPowerForm,
+  manageAppointmentAsync,
+  launchPowerFormAsync,
   launchPowerNoteAsync,
   getValidEncountersAsync,
 } = require('./dist/');
 
 // Define a 'window' object to simulate the browser environment
-window = {};
+window = { external: {} };
 
 /************************************************
  * Create and submit new orders to PowerChart
@@ -70,22 +71,24 @@ let result = undefined;
     ],
   })
     .then(data => (result = data))
-    .catch(console.error)
+    .catch(err => console.log(`Whoops: ${err.message}`))
     .finally(() => console.log(result));
 })();
 
 /********************************************************
  * Alternative example, where the parameter types are inferred
+ * and using the async/await syntax.
  ********************************************************/
-let altResult = undefined;
 (async function() {
-  makeCclRequestAsync({
-    prg: 'MP_GET_ORDER_LIST',
-    params: [12345, 'joe'],
-  })
-    .then(data => (altResult = data))
-    .catch(console.error)
-    .finally(() => console.log(altResult));
+  try {
+    const data = await makeCclRequestAsync({
+      prg: 'MP_GET_ORDER_LIST_2',
+      params: [12345, 'joe'],
+    });
+    console.log(data);
+  } catch (err) {
+    console.log(`Whoops: ${err.message}`);
+  }
 })();
 
 /********************************************************
@@ -135,7 +138,7 @@ let altResult = undefined;
  ***************************************************/
 
 (async () => {
-  const { inPowerChart, eventString } = await launchPowerForm({
+  const { inPowerChart, eventString } = await launchPowerFormAsync({
     personId: 12345,
     encounterId: 54321,
     target: 'new form search',
@@ -169,5 +172,21 @@ let altResult = undefined;
     `We have ${
       encounterIds.length
     } valid encounters, with ID's: ${encounterIds.join(', ') || 'None'}`
+  );
+})();
+
+/***************************************************
+ * Manage an appointment
+ ***************************************************/
+
+(async () => {
+  const { inPowerChart, success } = await manageAppointmentAsync(
+    1,
+    'view appt dialog'
+  );
+  console.log(
+    `We are ${inPowerChart ? '' : 'not '}in PowerChart and the operation was ${
+      success ? 'successful' : 'unsuccessful'
+    }`
   );
 })();
