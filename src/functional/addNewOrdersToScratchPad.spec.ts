@@ -82,6 +82,93 @@ describe('addNewOrdersToScratchpadAsync', () => {
     expect(result.result).toEqual('add failed');
   });
 
+  it('sets `result` correctly if orders are added and signed', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          AddNewOrdersToScratchpad: async () => Promise.resolve(1),
+        })),
+      },
+    });
+
+    const orders: Array<StandaloneOrder> = [
+      {
+        synonymID: 1337,
+        orderOrigination: 'inpatient order',
+        sentenceID: 31337,
+      },
+    ];
+
+    const result = await addNewOrdersToScratchpadAsync(0, orders, true);
+    expect(result.result).toEqual('added and signed');
+  });
+
+  it('sets `result` correctly if orders are cancelled by the user', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          AddNewOrdersToScratchpad: async () => Promise.resolve(2),
+        })),
+      },
+    });
+
+    const orders: Array<StandaloneOrder> = [
+      {
+        synonymID: 1337,
+        orderOrigination: 'inpatient order',
+        sentenceID: 31337,
+      },
+    ];
+
+    const result = await addNewOrdersToScratchpadAsync(0, orders, true);
+    expect(result.result).toEqual('cancelled by user');
+  });
+
+  it('sets `result` correctly if orders are added and signed', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          AddNewOrdersToScratchpad: async () => Promise.resolve(1),
+        })),
+      },
+    });
+
+    const orders: Array<StandaloneOrder> = [
+      {
+        synonymID: 1337,
+        orderOrigination: 'inpatient order',
+        sentenceID: 31337,
+      },
+    ];
+
+    const result = await addNewOrdersToScratchpadAsync(0, orders, true);
+    expect(result.result).toEqual('added and signed');
+  });
+
+  it('can handle an outpatient order with no sentence ID', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          AddNewOrdersToScratchpad: async () => Promise.resolve(0),
+        })),
+      },
+    });
+
+    const orders: Array<StandaloneOrder> = [
+      {
+        synonymID: 1337,
+        orderOrigination: 'prescription order',
+      },
+    ];
+
+    const result = await addNewOrdersToScratchpadAsync(0, orders, true);
+    expect(result.result).toEqual('successfully added');
+  });
+
   it('throws an error if an unexpected error occurs', async () => {
     const orders: Array<StandaloneOrder> = [
       {

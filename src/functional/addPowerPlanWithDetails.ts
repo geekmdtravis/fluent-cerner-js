@@ -36,8 +36,6 @@ export async function addPowerPlanWithDetailsAsync(
     }</PathwayCatalogId><PersonalizedPlanId>${
       powerPlanOrder.personalizedPlanID ? powerPlanOrder.personalizedPlanID : ''
     }</PersonalizedPlanId><Diagnoses>
-    
-    
     ${
       powerPlanOrder.diagnoses
         ? powerPlanOrder.diagnoses.map(diagnosis => {
@@ -45,8 +43,6 @@ export async function addPowerPlanWithDetailsAsync(
           })
         : ''
     }
-    
-    
     </Diagnoses></Plan>`;
   });
 

@@ -48,6 +48,24 @@ describe('addPowerPlanWithDetailsAsync', () => {
     expect(result.powerPlanAdded).toEqual(true);
   });
 
+  it('can create a powerplan with a personalized plan ID and a diagnosis code', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          AddPowerPlanWithDetails: async () => Promise.resolve(1),
+        })),
+      },
+    });
+
+    const orders: Array<PowerPlanOrder> = [
+      { pathwayCatalogID: 1337, personalizedPlanID: 31337, diagnoses: [12] },
+    ];
+
+    const result = await addPowerPlanWithDetailsAsync(0, orders);
+    expect(result.powerPlanAdded).toEqual(true);
+  });
+
   it('sets `powerPlanAdded` correctly if plans could not be added', async () => {
     Object.defineProperty(window, 'external', {
       writable: true,
