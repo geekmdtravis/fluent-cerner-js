@@ -123,7 +123,7 @@ declare global {
       comObject: DiscernCOMObjects
     ) => Promise<{
       /**
-       * Creates an MOEW handle.
+       * Creates the MOEW handle.
        * @param dPersonId {number} - the patient ID
        * @param dEncntrId {number} - the encounter ID in which orders would be placed
        * @param dwCustomizeFlag {number} - mask used to determine options available within the MOEW
@@ -183,6 +183,14 @@ declare global {
        * @returns a `Promise` which resolves to a string containing prior order information. If none or invalid, the string will be empty.
        */
       GetXMLOrdersMOEW: (lMOEWHandle: number) => Promise<string>;
+
+      /**
+       * Destroys the modal order entry window (MOEW).
+       * @param {number} lMOEWHandle - the handle to the MOEW.
+       * @returns a `Promise` which resolves to null. This appears to be returned upon either a successful or unsuccessful destruction.
+       * @throws `Error` if an unexpected error occurs.
+       */
+      DestroyMOEW: (lMOEWHandle: number) => Promise<null>;
 
       /**
        * Get valid encounter ID's for a given patient.
