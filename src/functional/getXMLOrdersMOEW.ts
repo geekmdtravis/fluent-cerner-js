@@ -21,7 +21,7 @@ export async function getXMLOrdersMOEWAsync(
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     const response = await dcof.GetXMLOrdersMOEW(moewHandle);
 
-    // Set the retValue equal to the return XML
+    // Set the return object XML equal to the return XML from PowerChart
     retData.XML === response;
   } catch (e) {
     //If outside of PowerChart, set the output to reflect that
