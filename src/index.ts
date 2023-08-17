@@ -130,7 +130,6 @@ declare global {
        * @param dwTabFlag {number} - the type of list being customized (2 for orders, 3 for medications).
        * @param dwTabDisplayOptionsFlag {number} - mask specifying the components to display on the list.
        * @returns a `Promise` which resolves to an integer representing a handle to the MOEW instance. 0 indicates an invalid call or call from outside PowerChart.
-       * @throws `Error` if an unexpected error occurs
        */
       CreateMOEW: (
         dPersonId: number,
@@ -145,7 +144,6 @@ declare global {
        * @param lMOEWHandle {number} - the handle to the MOEW
        * @param planDetailsXMLBstr {string} - XML string containing the plan/pathway catalog IDs
        * @returns a `Promise` which resolves to an integer: 1 if the plan was added successfully, and 0 otherwise.
-       * @throws `Error` if an unexpected error occurs
        */
       AddPowerPlanWithDetails: (
         lMOEWHandle: number,
@@ -158,7 +156,6 @@ declare global {
        * @param newOrdersXMLBstr {string} - XML string containing the order details, including synonym IDs
        * @param bSignTimeInteractionChecking {boolean} - indicates if interaction checking should be performed at order sign time.
        * @returns a `Promise` which resolves to an integer: 1 if the orders were added successfully, and 0 otherwise.
-       * @throws `Error` if an unexpected error occurs
        */
       AddNewOrdersToScratchpad: (
         lMOEWHandle: number,
@@ -168,11 +165,17 @@ declare global {
 
       /**
        * Displays the modal order entry window (MOEW).
-       * @param {number} moewHandle - the handle to the MOEW.
+       * @param {number} lMOEWHandle - the handle to the MOEW.
        * @returns a `Promise` which resolves to an integer (0). This appears to be returned upon either a successful or unsuccessful launch.
-       * @throws `Error` if an unexpected error occurs.
        */
       DisplayMOEW: (lMOEWHandle: number) => Promise<number>;
+
+      /**
+       * Attempts to silently sign orders on the scratchpad. If the orders cannot be signed silently, will display the MOEW.
+       * @param {number} lMOEWHandle - the handle to the MOEW.
+       * @returns a `Promise` which resolves to an integer: 0 if called with invalid/improperly structured paramters, and 1 otherwise.
+       */
+      SignOrders: (lMOEWHandle: number) => Promise<number>;
 
       /**
        * Get valid encounter ID's for a given patient.
