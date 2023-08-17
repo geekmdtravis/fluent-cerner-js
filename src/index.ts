@@ -167,6 +167,14 @@ declare global {
       ) => Promise<number>;
 
       /**
+       * Displays the modal order entry window (MOEW).
+       * @param {number} moewHandle - the handle to the MOEW.
+       * @returns a `Promise` which resolves to an integer (0). This appears to be returned upon either a successful or unsuccessful launch.
+       * @throws `Error` if an unexpected error occurs.
+       */
+      DisplayMOEW: (lMOEWHandle: number) => Promise<number>;
+
+      /**
        * Get valid encounter ID's for a given patient.
        * @param pid {number} - the patient ID of the patient to get encounters for.
        * @returns a `Promise` of a string representing the valid encounter ID's for the patient.
