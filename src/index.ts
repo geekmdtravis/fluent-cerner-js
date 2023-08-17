@@ -178,6 +178,13 @@ declare global {
       SignOrders: (lMOEWHandle: number) => Promise<number>;
 
       /**
+       * Retrieves the XML representation of the order information signed during the previous MOEW invocation.
+       * @param {number} lMOEWHandle - the handle to the MOEW.
+       * @returns a `Promise` which resolves to a string containing prior order information. If none or invalid, the string will be empty.
+       */
+      GetXMLOrdersMOEW: (lMOEWHandle: number) => Promise<string>;
+
+      /**
        * Get valid encounter ID's for a given patient.
        * @param pid {number} - the patient ID of the patient to get encounters for.
        * @returns a `Promise` of a string representing the valid encounter ID's for the patient.
