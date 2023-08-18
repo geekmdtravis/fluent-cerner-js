@@ -1,4 +1,5 @@
 import { outsideOfPowerChartError } from '../utils';
+import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
 
 /**
  * PowerPlanMOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
@@ -96,105 +97,12 @@ export const submitPowerPlanOrdersAsync = async (
     ? moewOpts
     : ['allow power plans', 'allow power plan doc'];
 
-  // Initialize and calculate the CreateMOEW() parameters
-  let dwCustomizeFlag: number = 0;
-  let dwTabFlag: number = 0;
-  let dwTabDisplayOptionsFlag: number = 0;
-
-  inputOpts.forEach(option => {
-    switch (option) {
-      // Calculate the dwCustomizeFlagParamater
-      case 'sign later':
-        dwCustomizeFlag += 1;
-        break;
-
-      case 'read only':
-        dwCustomizeFlag += 4;
-        break;
-
-      case 'allow power plans':
-        dwCustomizeFlag += 8;
-        break;
-
-      case 'allow power plan doc':
-        dwCustomizeFlag += 16;
-        break;
-
-      case 'allow only inpatient and outpatient orders':
-        dwCustomizeFlag += 32;
-        break;
-
-      case 'show refresh and print buttons':
-        dwCustomizeFlag += 128;
-        break;
-
-      case 'documented meds only':
-        dwCustomizeFlag += 256;
-        break;
-
-      case 'hide med rec':
-        dwCustomizeFlag += 512;
-        break;
-
-      case 'disallow EOL':
-        dwCustomizeFlag += 1024;
-        break;
-
-      case 'hide demographics':
-        dwCustomizeFlag += 2048;
-        break;
-
-      case 'add rx filter':
-        dwCustomizeFlag += 4096;
-        break;
-
-      case 'disable auto search':
-        dwCustomizeFlag += 8192;
-        break;
-
-      case 'allow regimen':
-        dwCustomizeFlag += 16384;
-        break;
-
-      // Calculate the dwTabFlag parameter
-      case 'customize order':
-        dwTabFlag = 2;
-        break;
-
-      case 'customize meds':
-        dwTabFlag = 3;
-        break;
-
-      // Calculate the dwTabDisplayOptionsFlag parameter
-      case 'show nav tree':
-        dwTabDisplayOptionsFlag += 1;
-        break;
-
-      case 'show diag and probs':
-        dwTabDisplayOptionsFlag += 2;
-        break;
-
-      case 'show related res':
-        dwTabDisplayOptionsFlag += 4;
-        break;
-
-      case 'show orders search':
-        dwTabDisplayOptionsFlag += 8;
-        break;
-
-      case 'show order profile':
-        dwTabDisplayOptionsFlag += 16;
-        break;
-
-      case 'show scratchpad':
-        dwTabDisplayOptionsFlag += 32;
-        break;
-
-      case 'show list details':
-        dwTabDisplayOptionsFlag += 64;
-        break;
-    }
-  });
+  // Calculate the CreateMOEW() parameters
+  let {
+    dwCustomizeFlag,
+    dwTabFlag,
+    dwTabDisplayOptionsFlag,
+  } = calculateMOEWBitmask(inputOpts);
 
   //Create the return object with default values
   let retVal: SubmitPowerPlanOrderReturn = {
@@ -255,13 +163,17 @@ export const submitPowerPlanOrdersAsync = async (
     //Initialize the MOEW handle
     let m_hMOEW = 0;
 
-    //Enable interaction checking (will always set to true for safety)
+    //Enable interaction checking (will set to true for safety)
     const m_bSignTimeInteractionChecking = true;
 
-    //m_hMOEW = await dcof.CreateMOEW()
+    //Create the MOEW
+    m_hMOEW = await dcof.CreateMOEW();
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;
+      retVal.ordersPlaced = [];
+      retVal.response = null;
+      retVal.status = 'dry run';
     } else {
       throw e;
     }
