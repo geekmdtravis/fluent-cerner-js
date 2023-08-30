@@ -23,6 +23,8 @@ import {
   NewOrderStrOpts,
 } from './orderString';
 import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
+import { createNewDocumentAsync } from './createNewDocumentAsync';
+import { openDocumentAsync } from './openDocumentAsync';
 
 export type PowerChartReturn = {
   inPowerChart: boolean;
@@ -41,6 +43,7 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 // Export functions
 export {
+  createNewDocumentAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
@@ -48,6 +51,7 @@ export {
   launchPowerNoteAsync,
   makeCclRequestAsync,
   manageAppointmentAsync,
+  openDocumentAsync,
   openPatientTabAsync,
   openOrganizerTabAsync,
   orderString,
