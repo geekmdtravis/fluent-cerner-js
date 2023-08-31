@@ -51,7 +51,7 @@ export {
   launchPowerNoteAsync,
   makeCclRequestAsync,
   manageAppointmentAsync,
-  addAddendumToDocumentAsync as openDocumentAsync,
+  addAddendumToDocumentAsync,
   openPatientTabAsync,
   openOrganizerTabAsync,
   orderString,

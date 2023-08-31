@@ -1,4 +1,6 @@
 import {
+  addAddendumToDocumentAsync,
+  createNewDocumentAsync,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
@@ -24,6 +26,8 @@ import {
 } from './functional';
 
 export {
+  addAddendumToDocumentAsync,
+  createNewDocumentAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,

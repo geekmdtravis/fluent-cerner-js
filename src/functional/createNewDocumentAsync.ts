@@ -73,11 +73,10 @@ export async function createNewDocumentAsync(
     success: false,
   };
 
-  const dcof = await window.external.DiscernObjectFactory('DYNDOC');
-  let response: 0 | 1 | null = null;
-
   if (method === 'by workflow' && workflowId) {
     try {
+      const dcof = await window.external.DiscernObjectFactory('DYNDOC');
+      let response: 0 | 1 | null = null;
       response = await dcof.OpenDynDocByWorkFlowId(pid, eid, workflowId);
       if (response === 1) {
         retVal.success = true;
@@ -95,6 +94,8 @@ export async function createNewDocumentAsync(
 
   if (method === 'by reference template' && refTemplateId) {
     try {
+      const dcof = await window.external.DiscernObjectFactory('DYNDOC');
+      let response: 0 | 1 | null = null;
       if (noteTypeCd) {
         response = await dcof.OpenNewDocumentByReferenceTemplateIdAndNoteType(
           pid,

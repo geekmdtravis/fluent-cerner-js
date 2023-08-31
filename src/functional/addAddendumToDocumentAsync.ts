@@ -24,11 +24,11 @@ export async function addAddendumToDocumentAsync(
     success: false,
   };
 
-  const dcof = await window.external.DiscernObjectFactory('DYNDOC');
-  let response: 0 | 1 | null = null;
-
   try {
+    const dcof = await window.external.DiscernObjectFactory('DYNDOC');
+    let response: 0 | 1 | null = null;
     response = await dcof.ModifyExistingDocumentByEventId(pid, eid, eventId);
+    retVal.success = response === 1;
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;
@@ -40,5 +40,3 @@ export async function addAddendumToDocumentAsync(
 
   return retVal;
 }
-
-
