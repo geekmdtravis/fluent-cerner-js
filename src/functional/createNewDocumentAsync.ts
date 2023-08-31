@@ -62,11 +62,6 @@ export async function createNewDocumentAsync(
     );
   }
 
-  if (method === 'by reference template' && workflowId) {
-    console.warn(
-      'A workflow ID was provided, but it will be ignored when creating a document by reference template'
-    );
-  }
 
   let retVal: PowerChartReturn & { success: boolean } = {
     inPowerChart: true,
