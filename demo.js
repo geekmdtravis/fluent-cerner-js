@@ -190,3 +190,32 @@ let result = undefined;
     }`
   );
 })();
+
+/**
+ * Create a new document (DYNDOC)
+ */
+(async () => {
+  await createNewDocumentAsync('by workflow', {
+    eid: 123,
+    pid: 456,
+    workflowId: 123,
+  });
+  await createNewDocumentAsync('by reference template', {
+    eid: 123,
+    pid: 456,
+    refTemplateId: 123,
+  });
+  await createNewDocumentAsync('by reference template', {
+    eid: 123,
+    pid: 456,
+    refTemplateId: 123,
+    noteTypeCd: 123,
+  });
+})();
+
+/**
+ * Add an addendum to a document (DYNDOC)
+ */
+(async () => {
+  await addAddendumToDocumentAsync(1, 1, 1);
+})();

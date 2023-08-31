@@ -24,7 +24,7 @@ import {
 } from './orderString';
 import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
 import { createNewDocumentAsync } from './createNewDocumentAsync';
-import { openDocumentAsync } from './openDocumentAsync';
+import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
 
 export type PowerChartReturn = {
   inPowerChart: boolean;
@@ -51,7 +51,7 @@ export {
   launchPowerNoteAsync,
   makeCclRequestAsync,
   manageAppointmentAsync,
-  openDocumentAsync,
+  addAddendumToDocumentAsync as openDocumentAsync,
   openPatientTabAsync,
   openOrganizerTabAsync,
   orderString,
