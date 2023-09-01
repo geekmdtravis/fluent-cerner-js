@@ -14,22 +14,49 @@ A modern API for interacting with the Cerner Millennium application. Modern Type
 
 ## Utility Map
 
-| Discern                                        | _fluent-cerner-js_            | Description                                                      |
-| ---------------------------------------------- | ----------------------------- | ---------------------------------------------------------------- |
-| `APPLINK`                                      | `openOrganizeTabAsync`        | Opens a tab at the organizer level.                              |
-| `APPLINK`                                      | `openPatientTabAsync`         | Opens a tab at the patient level.                                |
-| `DiscernObjectFactory("DYNDOC")`               | `createNewDocumentAsync`      | Create a new document, launching the DYNDOC modal.               |
-| `DiscernObjectFactory("DYNDOC")`               | `addAddendumToDocumentAsync`  | Add an addendum to an existing document.                         |
-| `DiscernObjectFactory("PATIENTEDUCATION")`     | `launchPatientEducationAsync` | Launches patient education in Cerner's PowerChart.               |
-| `DiscernObjectFactory("PEXSCHEDULINGACTIONS")` | `manageAppointmentAsync`      | Launches the appointment management tool in Cerner's PowerChart. |
-| `DiscernObjectFactory("POWERFORM")`            | `launchPowerFormAsync`        | Launch a PowerForm in Cerner's PowerChart.                       |
-| `DiscernObjectFactory("POWERNOTE")`            | `launchPowerNoteAsync`        | Launch a PowerNote in Cerner's PowerChart.                       |
-| `DiscernObjectFactory("POWERPLANS")`           | `submitPowerPlansAsync`       | Submits one or more powerplans to MOEW.                          |
-| `DiscernObjectFactory("PVCONTXTMPAGE")`        | `getValidEncountersAsync`     | Gets an array valid encounter ID's for a given patient.          |
-| `MPAGE_EVENT:CLINICALNOTE`                     | `launchClinicalNoteAsync`     | Launch a clinical note in Cerner's PowerChart.                   |
-| `MPAGE_EVENT:ORDERS`                           | `submitOrdersAsync`           | Submits one or more orders to MOEW.                              |
-|                                                | &rdsh; `orderString`          | Creates a valid order string, for use with `submitOrdersAsync`.  |
-| `XMLCclRequest`                                | `makeCclRequestAsync`         | Makes an AJAX call to a CCL end-point.                           |
+| Discern                                        | _fluent-cerner-js_                  | Description                                                                |
+| ---------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------- |
+| `APPLINK`                                      | &mdash;                             | Opens an app, chart, or tab.                                               |
+|                                                | &rdsh; `openOrganizeTabAsync`       | Opens a tab at the organizer level.                                        |
+|                                                | &rdsh; `openPatientTabAsync`        | Opens a tab at the patient level.                                          |
+| `CCLEVENT`                                     | (no support planned)                | Evoke special solution-specific events from within a web page.             |
+| `CCLLINK`                                      | (no support planned)                | Link CCL reports within a given MPage.                                     |
+| `CCLLINKPOPUP`                                 | (no support planned)                | Link CCL reports, launch in a new Internet Explorer&reg; pop-up.           |
+| `CCLNEWSESSIONWINDOW`                          | (will review)                       | Open a link (a URL) in a new _Discern Output Viewer_ window.               |
+| `DiscernObjectFactory("CINFOBUTTONLINK")`      | (will review)                       | Communicate information between MPages and the Infobutton service.         |
+| `DiscernObjectFactory("DISCHARGEPROCESS")`     | (planned)                           | Launch the discharge process module.                                       |
+| `DiscernObjectFactory("DYNDOC")`               | &mdash;                             | Create new Dynamic Documentation notes and modify existing ones.           |
+|                                                | &rdsh; `createNewDocumentAsync`     | Create a new document, launching the DYNDOC modal.                         |
+|                                                | &rdsh; `addAddendumToDocumentAsync` | Add an addendum to an existing document.                                   |
+| `DiscernObjectFactory("KIACROSSMAPPING")`      | (will review)                       | Map a nomenclature from one nomenclature terminology set to another.       |
+| `DiscernObjectFactory("ORDERS")`               | (no support planned)                | Launch the MOEW and execute orders-related actions.                        |
+| `DiscernObjectFactory("PATIENTEDUCATION")`     | `launchPatientEducationAsync`       | Launches patient education.                                                |
+| `DiscernObjectFactory("PEXAPPLICATIONSTATUS")` | (will review)                       | Provides a means to decide if a given MPage is in view.                    |
+| `DiscernObjectFactory("PEXSCHEDULINGACTIONS")` | `manageAppointmentAsync`            | Launch various Cerner Scheduling functions.                                |
+| `DiscernObjectFactory("PMLISTMAINTENANCE")`    | (planned)                           | Launch the patient list maintenance dialog.                                |
+| `DiscernObjectFactory("POWERFORM")`            | `launchPowerFormAsync`              | Launch a PowerForm.                                                        |
+| `DiscernObjectFactory("POWERNOTE")`            | `launchPowerNoteAsync`              | Launch a PowerNote.                                                        |
+| `DiscernObjectFactory("POWERORDERS")`          | &mdash;                             | Interact with the PowerOrders MOEW dialog from within an MPage.            |
+|                                                | &rdsh; `submitPowerPlansAsync`      | Submit PowerPlan orders.                                                   |
+| `DiscernObjectFactory("PREGNANCY")`            | (planned)                           | Launch dialogs used for managing an active pregnancy                       |
+| `DiscernObjectFactory("PVCONTXTMPAGE")`        | `getValidEncountersAsync`           | Gets an array valid encounter ID's for a given patient.                    |
+| `DiscernObjectFactory("PVFRAMEWORKLINK")`      | (will review)                       | Communicate infomration ot the Win32 components of PowerChart.             |
+| `DiscernObjectFactory("PVPATIENTFOCUS")`       | (planned)                           | Set and clear a patient's focus within the Powerchart framework.           |
+| `DiscernObjectFactory("PVPATIENTSEARCHMPAGE")` | (planned)                           | Launch the patient search dialogue.                                        |
+| `DiscernObjectFactory("PVVIEWERMPAGE")`        | (planned)                           | Launch various result viewers for docs, reminders, and more.               |
+| `DiscernObjectFactory("TASKDOC")`              | (planned)                           | Launch the task documentation dialog or to launch the print labels dialog. |
+| `MESSAGING`                                    | (planned)                           | Register, unregister, send, and receive messages between MPages.           |
+| `MPAGE_EVENT:CLINICALNOTE`                     | `launchClinicalNoteAsync`           | Launch a clinical note.                                                    |
+| `MPAGE_EVENT:ORDERS`                           | `submitOrdersAsync`                 | Submits one or more orders to MOEW.                                        |
+|                                                | &rdsh; `orderString`                | Creates a valid order string, for use with `submitOrdersAsync`.            |
+| `MPAGES_SVC_EVENT`                             | &mdash;                             | &mdash;                                                                    |
+| `MPAGES_OVERRIDE_REFRESH`                      | &mdash;                             | &mdash;                                                                    |
+| `MPAGES_OVERRIDE_PRINT`                        | &mdash;                             | &mdash;                                                                    |
+| _Patient List Navigation_                      | &mdash;                             | &mdash;                                                                    |
+| &rdsh;`PCEdgePatNavSetCallback`                | &mdash;                             | &mdash;                                                                    |
+| &rdsh;`PCEdgeActivatePatArrows`                | &mdash;                             | &mdash;                                                                    |
+| `PCUPDATEREFRESHTIME`                          | &mdash;                             | &mdash;                                                                    |
+| `XMLCclRequest`                                | `makeCclRequestAsync`               | Makes an AJAX call to a CCL end-point.                                     |
 
 ## API In Action
 
