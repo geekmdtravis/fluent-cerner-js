@@ -14,19 +14,22 @@ A modern API for interacting with the Cerner Millennium application. Modern Type
 
 ## Utility Map
 
-| Discern                                    | _fluent-cerner-js_            | Description                                                     |
-| ------------------------------------------ | ----------------------------- | --------------------------------------------------------------- |
-| `APPLINK`                                  | `openOrganizeTabAsync`        | Opens a tab at the organizer level.                             |
-| `APPLINK`                                  | `openPatientTabAsync`         | Opens a tab at the patient level.                               |
-| `DiscernObjectFactory("PATIENTEDUCATION")` | `launchPatientEducationAsync` | Launches patient education in Cerner's PowerChart.              |
-| `DiscernObjectFactory("POWERFORM")`        | `launchPowerFormAsync`        | Launch a PowerForm in Cerner's PowerChart.                      |
-| `DiscernObjectFactory("POWERNOTE")`        | `launchPowerNoteAsync`        | Launch a PowerNote in Cerner's PowerChart.                      |
-| `DiscernObjectFactory("POWERPLANS")`       | `submitPowerPlansAsync`       | Submits one or more powerplans to MOEW.                         |
-| `DiscernObjectFactory("PVCONTXTMPAGE")`    | `getValidEncountersAsync`     | Gets an array valid encounter ID's for a given patient.         |
-| `MPAGE_EVENT:CLINICALNOTE`                 | `launchClinicalNoteAsync`     | Launch a clinical note in Cerner's PowerChart.                  |
-| `MPAGE_EVENT:ORDERS`                       | `submitOrdersAsync`           | Submits one or more orders to MOEW.                             |
-|                                            | &rdsh; `orderString`          | Creates a valid order string, for use with `submitOrdersAsync`. |
-| `XMLCclRequest`                            | `makeCclRequestAsync`         | Makes an AJAX call to a CCL end-point.                          |
+| Discern                                        | _fluent-cerner-js_            | Description                                                      |
+| ---------------------------------------------- | ----------------------------- | ---------------------------------------------------------------- |
+| `APPLINK`                                      | `openOrganizeTabAsync`        | Opens a tab at the organizer level.                              |
+| `APPLINK`                                      | `openPatientTabAsync`         | Opens a tab at the patient level.                                |
+| `DiscernObjectFactory("DYNDOC")`               | `createNewDocumentAsync`      | Create a new document, launching the DYNDOC modal.               |
+| `DiscernObjectFactory("DYNDOC")`               | `addAddendumToDocumentAsync`  | Add an addendum to an existing document.                         |
+| `DiscernObjectFactory("PATIENTEDUCATION")`     | `launchPatientEducationAsync` | Launches patient education in Cerner's PowerChart.               |
+| `DiscernObjectFactory("PEXSCHEDULINGACTIONS")` | `manageAppointmentAsync`      | Launches the appointment management tool in Cerner's PowerChart. |
+| `DiscernObjectFactory("POWERFORM")`            | `launchPowerFormAsync`        | Launch a PowerForm in Cerner's PowerChart.                       |
+| `DiscernObjectFactory("POWERNOTE")`            | `launchPowerNoteAsync`        | Launch a PowerNote in Cerner's PowerChart.                       |
+| `DiscernObjectFactory("POWERPLANS")`           | `submitPowerPlansAsync`       | Submits one or more powerplans to MOEW.                          |
+| `DiscernObjectFactory("PVCONTXTMPAGE")`        | `getValidEncountersAsync`     | Gets an array valid encounter ID's for a given patient.          |
+| `MPAGE_EVENT:CLINICALNOTE`                     | `launchClinicalNoteAsync`     | Launch a clinical note in Cerner's PowerChart.                   |
+| `MPAGE_EVENT:ORDERS`                           | `submitOrdersAsync`           | Submits one or more orders to MOEW.                              |
+|                                                | &rdsh; `orderString`          | Creates a valid order string, for use with `submitOrdersAsync`.  |
+| `XMLCclRequest`                                | `makeCclRequestAsync`         | Makes an AJAX call to a CCL end-point.                           |
 
 ## API In Action
 
