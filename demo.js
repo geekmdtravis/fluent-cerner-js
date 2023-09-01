@@ -9,6 +9,8 @@ const {
   launchPowerFormAsync,
   launchPowerNoteAsync,
   getValidEncountersAsync,
+  createNewDocumentAsync,
+  addAddendumToDocumentAsync,
 } = require('./dist/');
 
 // Define a 'window' object to simulate the browser environment
@@ -189,4 +191,44 @@ let result = undefined;
       success ? 'successful' : 'unsuccessful'
     }`
   );
+})();
+
+/**
+ * Create a new document (DYNDOC)
+ */
+(async () => {
+  try {
+    await createNewDocumentAsync('by workflow', {
+      eid: 123,
+      pid: 456,
+      workflowId: 123,
+    });
+    await createNewDocumentAsync('by reference template', {
+      eid: 123,
+      pid: 456,
+      refTemplateId: 123,
+    });
+    await createNewDocumentAsync('by reference template', {
+      eid: 123,
+      pid: 456,
+      refTemplateId: 123,
+      noteTypeCd: 123,
+    });
+    await createNewDocumentAsync('by reference template', {
+      workflowId: 123,
+    });
+  } catch (e) {
+    console.error(e.message);
+  }
+})();
+
+/**
+ * Add an addendum to a document (DYNDOC)
+ */
+(async () => {
+  try {
+    await addAddendumToDocumentAsync(1, 1, 1);
+  } catch (e) {
+    console.error(e.message);
+  }
 })();

@@ -16,7 +16,8 @@ export type AppointmentReturn = PowerChartReturn & {
 /**
  * Managed appointments in PowerChart. For any given appointment ID, the
  * following actions can be performed: check in, check out, cancel, no show,
- * view appointment dialog, and view appointment history.
+ * view appointment dialog, and view appointment history. This is a wrapper function
+ * for the `PEXSCHEDULINGACTIONS` Discern COM object.
  * @param id {number} - the event ID of the appointment to check in.
  * @param action {string} - the action to perform on the appointment. The available
  * actions are: 'check in', 'check out', 'cancel', 'no show', 'view appt dialog',

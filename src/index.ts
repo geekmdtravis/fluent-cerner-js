@@ -1,4 +1,6 @@
 import {
+  addAddendumToDocumentAsync,
+  createNewDocumentAsync,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
@@ -24,6 +26,8 @@ import {
 } from './functional';
 
 export {
+  addAddendumToDocumentAsync,
+  createNewDocumentAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
@@ -191,6 +195,31 @@ declare global {
        * @resolves to `0` if the action was successful, `1` otherwise.
        */
       ShowHistoryView(eventId: number): Promise<0 | 1>;
+      // TODO: update return type and JSDOc
+      OpenNewDocumentByReferenceTemplateId(
+        pid: number,
+        eid: number,
+        refTemplateId: number
+      ): Promise<null>;
+      // TODO: update return type and JSDOc
+      OpenNewDocumentByReferenceTemplateIdAndNoteType(
+        pid: number,
+        eid: number,
+        refTemplateId: number,
+        noteTypeCd: number
+      ): Promise<null>;
+      // TODO: update return type and JSDOc
+      ModifyExistingDocumentByEventId(
+        pid: number,
+        eid: number,
+        docEventId: number
+      ): Promise<null>;
+      // TODO: update return type and JSDOc
+      OpenDynDocByWorkFlowId(
+        pid: number,
+        eid: number,
+        workflowId: number
+      ): Promise<null>;
     }>;
     /**
      * Funtion that returns a Cerner Windows COM object for an XMLCclRequest.
