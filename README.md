@@ -46,16 +46,19 @@ A modern API for interacting with the Cerner Millennium application. Modern Type
 | `DiscernObjectFactory("PVVIEWERMPAGE")`        | (planned)                           | Launch various result viewers for docs, reminders, and more.               |
 | `DiscernObjectFactory("TASKDOC")`              | (planned)                           | Launch the task documentation dialog or to launch the print labels dialog. |
 | `MESSAGING`                                    | (planned)                           | Register, unregister, send, and receive messages between MPages.           |
-| `MPAGE_EVENT:CLINICALNOTE`                     | `launchClinicalNoteAsync`           | Launch a clinical note.                                                    |
-| `MPAGE_EVENT:ORDERS`                           | `submitOrdersAsync`                 | Submits one or more orders to MOEW.                                        |
+| `MPAGE_EVENT("ALLERGY",...)`                   | (planned)                           | Allergy conversation will be launched.                                     |
+| `MPAGE_EVENT("CLINICALNOTE",...)`              | `launchClinicalNoteAsync`           | Launch a clinical note.                                                    |
+| `MPAGE_EVENT("POWERFORM",...)`                 | (will review)                       | PowerForm conversation will be launched.                                   |
+| `MPAGE_EVENT("POWERNOTE",...)`                 | `launchClinicalNoteAsync`           | PowerNote conversation will be launched.                                   |
+| `MPAGE_EVENT("ORDERS",...)`                    | `submitOrdersAsync`                 | Submits one or more orders to MOEW.                                        |
 |                                                | &rdsh; `orderString`                | Creates a valid order string, for use with `submitOrdersAsync`.            |
-| `MPAGES_SVC_EVENT`                             | &mdash;                             | &mdash;                                                                    |
-| `MPAGES_OVERRIDE_REFRESH`                      | &mdash;                             | &mdash;                                                                    |
-| `MPAGES_OVERRIDE_PRINT`                        | &mdash;                             | &mdash;                                                                    |
-| _Patient List Navigation_                      | &mdash;                             | &mdash;                                                                    |
-| &rdsh;`PCEdgePatNavSetCallback`                | &mdash;                             | &mdash;                                                                    |
-| &rdsh;`PCEdgeActivatePatArrows`                | &mdash;                             | &mdash;                                                                    |
-| `PCUPDATEREFRESHTIME`                          | &mdash;                             | &mdash;                                                                    |
+| `MPAGES_SVC_EVENT`                             | (planned)                           | Launch the Discern MPages Web Service.                                     |
+| `MPAGES_OVERRIDE_REFRESH`                      | (planned)                           | Change the behavior of the MPage when a refresh event is received.         |
+| `MPAGES_OVERRIDE_PRINT`                        | (planned)                           | Change the behavior of the MPage when a print event is received.           |
+| _Patient List Navigation_                      | (no support planned)                | &mdash;                                                                    |
+| &rdsh;`PCEdgeActivatePatArrows`                | (no support planned)                | Activates the pateint navigation buttons.                                  |
+| &rdsh;`PCEdgePatNavSetCallback`                | (no support planned)                | Set a handler callback func for when navigation arrows are pressed.        |
+| `PCUPDATEREFRESHTIME`                          | (no support planned)                | Update the refresh button to show how long ago the data was updated.       |
 | `XMLCclRequest`                                | `makeCclRequestAsync`               | Makes an AJAX call to a CCL end-point.                                     |
 
 ## API In Action
