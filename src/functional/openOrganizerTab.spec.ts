@@ -13,7 +13,7 @@ describe('openOrganizerTab', () => {
   });
   test('returns an appropriately formatted eventString', async () => {
     const { eventString } = await openOrganizerTabAsync('Tab Name');
-    expect(eventString).toBe(`/ORGANIZERTAB=^Tab Name^`);
+    expect(eventString).toBe(`/ORGANIZERTAB=^TAB NAME^`);
   });
   test('badInput returns false if response is anything other than null', async () => {
     Object.defineProperty(window, 'external', {
