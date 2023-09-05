@@ -1,3 +1,4 @@
+import { XMLParser } from 'fast-xml-parser';
 import { outsideOfPowerChartError } from '../utils';
 import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
 
@@ -79,6 +80,8 @@ export type PowerPlanOrder = {
  *
  * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog IDs and, optionally, personalized plan IDs and diagnosis code IDs, for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
  *
+ * @param {boolean} signSilently - A boolean indicating whether or not a "silent sign" should be attempted.
+ *
  * @documentation [POWERORDERS - AddPowerPlanWithDetails](https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
  **/
 export type PowerPlanOrderOpts = {
@@ -86,8 +89,26 @@ export type PowerPlanOrderOpts = {
   encounterId: number;
   standaloneOrders?: Array<StandaloneOrder>;
   powerPlanOrders?: Array<PowerPlanOrder>;
+  signSilently: boolean;
 };
 
+/**
+ * Submits a combination of standalone orders and/or PowerPlan orders by utilizing underlying Cerner - POWERORDERS functionality.
+ * @param {PowerPlanOrderOpts} orderOpts - An object containing the person/patient ID, encounter ID,
+ * an array of objects of either standalone orders or PowerPlan orders (each of which may contain
+ * specific order properties), and a flag indicating whether or not the orders should be signed
+ * silently.
+ * @param {Array<PowerPlanMOEWOpts>} moewOpts - An (optional) array of strings defining the MOEW behavior.
+ * If not provided, the values will default to the recommended values for the MOEW to be configured
+ * with Power Plan support. If any values are provided, those will be the only values used.
+ * @returns an object with several high value properties: a boolean flag set to notify the user if the
+ * attempt was made outside of PowerChart, the `status` of the order attempt, an object
+ * representing the XML response string (converted to an array of the orders placed with order `name`,
+ * `oid`, and `display` available for each), and the XML/response string itself (which is attempted to be parsed).
+ * @throws an error if an unexpected error occurs that could not be handled appropriately.
+ *
+ * @documentation [POWERORDERS](https://wiki.cerner.com/display/public/MPDEVWIKI/POWERORDERS)
+ */
 export const submitPowerPlanOrdersAsync = async (
   orderOpts: PowerPlanOrderOpts,
   moewOpts?: Array<PowerPlanMOEWOpts>
@@ -97,12 +118,23 @@ export const submitPowerPlanOrdersAsync = async (
     ? moewOpts
     : ['allow power plans', 'allow power plan doc'];
 
+  const {
+    personId,
+    encounterId,
+    standaloneOrders,
+    powerPlanOrders,
+    signSilently,
+  } = orderOpts;
+
   // Calculate the CreateMOEW() parameters
-  let {
+  const {
     dwCustomizeFlag,
     dwTabFlag,
     dwTabDisplayOptionsFlag,
   } = calculateMOEWBitmask(inputOpts);
+
+  //Enable interaction checking (will hardcode to true for safety)
+  const m_bSignTimeInteractionChecking = true;
 
   //Create the return object with default values
   let retVal: SubmitPowerPlanOrderReturn = {
@@ -117,9 +149,9 @@ export const submitPowerPlanOrdersAsync = async (
 
   let powerPlanOrdersXML: string = '';
 
-  //Prepare the XML strings for input to AddNewOrderToScatchPadAddPowerPlanWithDetails()
-  if (orderOpts.standaloneOrders && orderOpts.standaloneOrders.length >= 1) {
-    orderOpts.standaloneOrders.forEach(standaloneOrder => {
+  //Prepare the XML strings for input to AddNewOrdersToScatchPadAddPowerPlanWithDetails()
+  if (standaloneOrders && standaloneOrders.length >= 1) {
+    standaloneOrders.forEach(standaloneOrder => {
       standaloneOrdersXML += `<Order><EOrderOriginationFlag>0</EOrderOriginationFlag><SynonymId>${standaloneOrder}</SynonymId><\OrderSentenceId></OrderSentenceId></Order>`;
     });
 
@@ -128,8 +160,8 @@ export const submitPowerPlanOrdersAsync = async (
     standaloneOrdersXML += '</Orders>';
   }
 
-  if (orderOpts.powerPlanOrders && orderOpts.powerPlanOrders.length >= 1) {
-    orderOpts.powerPlanOrders.forEach(powerPlanOrder => {
+  if (powerPlanOrders && powerPlanOrders.length >= 1) {
+    powerPlanOrders.forEach(powerPlanOrder => {
       powerPlanOrdersXML += `<Plan><PathwayCatalogId>${
         powerPlanOrder.pathwayCatalogID
       }</PathwayCatalogId><PersonalizedPlanId>${
@@ -163,12 +195,74 @@ export const submitPowerPlanOrdersAsync = async (
     //Initialize the MOEW handle
     let m_hMOEW = 0;
 
-    //Enable interaction checking (will set to true for safety)
-    const m_bSignTimeInteractionChecking = true;
-
     //Create the MOEW
-    m_hMOEW = await dcof.CreateMOEW();
+    m_hMOEW = await dcof.CreateMOEW(
+      personId,
+      encounterId,
+      dwCustomizeFlag,
+      dwTabFlag,
+      dwTabDisplayOptionsFlag
+    );
+
+    //Add PowerPlan orders (if present)
+    if (powerPlanOrders && powerPlanOrders.length >= 1) {
+      await dcof.AddPowerPlanWithDetails(m_hMOEW, powerPlanOrdersXML);
+    }
+
+    //Add standalone orders (if present)
+    if (standaloneOrders && standaloneOrders.length >= 1) {
+      await dcof.AddNewOrdersToScratchpad(
+        m_hMOEW,
+        standaloneOrdersXML,
+        m_bSignTimeInteractionChecking
+      );
+    }
+
+    //Display the MOEW
+    await dcof.DisplayMOEW(m_hMOEW);
+
+    //Sign orders silently (if enalbed)
+    if (signSilently === true) {
+      await dcof.SignOrders(m_hMOEW);
+    }
+
+    //Obtain the return string
+    const responseXML = await dcof.GetXMLOrdersMOEW(m_hMOEW);
+
+    //Destroy the MOEW at the end of the ordering process.
+    await dcof.DestroyMOEW(m_hMOEW);
+
+    //Check to see if the response type was not a string (should always either be "" or an XML string)
+    if (typeof responseXML !== 'string') {
+      retVal.status = 'invalid data returned';
+      return retVal;
+    }
+
+    //Check to see if no orders were placed or if invalid parameters were provided
+    if (responseXML === '') {
+      retVal.status = 'cancelled, failed, or invalid parameters provided';
+      return retVal;
+    }
+
+    //Assuming we have a valid (non-empty) string at this point, attempt to parse out its XML and populate `retVal.ordersPlaced`
+    const parser = new XMLParser();
+    try {
+      const parsed: OrdersReturnXML = parser.parse(responseXML);
+      retVal.response = parsed;
+      if (!(parsed.Orders.Order instanceof Array)) {
+        parsed.Orders.Order = [parsed.Orders.Order];
+      }
+      retVal.ordersPlaced = parsed.Orders.Order.map(o => ({
+        name: o.OrderedAsMnemonic,
+        oid: o.OrderId,
+        display: o.ClinDisplayLine,
+      }));
+    } catch {
+      //A parsing error indicates the string isn't formatted as epxected
+      retVal.status = 'xml parse error';
+    }
   } catch (e) {
+    //Document the error depending on the type, and adjust the return object
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;
       retVal.ordersPlaced = [];
@@ -185,8 +279,7 @@ export const submitPowerPlanOrdersAsync = async (
 // Return type to signifiy status of order placing
 export type SubmitOrdersStatus =
   | 'success'
-  | 'cancelled'
-  | 'failed'
+  | 'cancelled, failed, or invalid parameters provided'
   | 'invalid data returned'
   | 'xml parse error'
   | 'dry run';
