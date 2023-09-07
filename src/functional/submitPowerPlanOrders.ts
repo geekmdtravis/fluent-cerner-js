@@ -144,6 +144,16 @@ export const submitPowerPlanOrdersAsync = async (
     ordersPlaced: null,
   };
 
+  //If no standalone orders AND no PowerPlan orders are provided, throw an error
+  if (
+    (!standaloneOrders || standaloneOrders.length < 1) &&
+    (!powerPlanOrders || powerPlanOrders.length < 1)
+  ) {
+    throw new SyntaxError(
+      'At least one standalone order or one PowerPlan order to submit must be provided to this function.'
+    );
+  }
+
   //Hold information regarding any standalone or PowerPlan orders
   let standaloneOrdersXML: string = '';
 
@@ -242,7 +252,7 @@ export const submitPowerPlanOrdersAsync = async (
     }
 
     //Check to see if no orders were placed or if invalid parameters were provided
-    if (responseXML === '') {
+    if (responseXML.trim() === '') {
       retVal.status = 'cancelled, failed, or invalid parameters provided';
       return retVal;
     }

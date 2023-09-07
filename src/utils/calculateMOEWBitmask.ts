@@ -24,109 +24,109 @@ export const calculateMOEWBitmask = (
   }
 
   // Initialize and calculate the CreateMOEW() parameters
-  let CustomizeFlag: number = 0;
-  let TabFlag: number = 0;
-  let TabDisplayOptionsFlag: number = 0;
+  let dwCustomizeFlag: number = 0;
+  let dwTabFlag: number = 0;
+  let dwTabDisplayOptionsFlag: number = 0;
 
   // Calculate the bitmask parameters ultimately needed for CreateMOEW()
   inputOpts.forEach(option => {
     switch (option) {
       // Calculate the dwCustomizeFlagParamater
       case 'sign later':
-        CustomizeFlag += 1;
+        dwCustomizeFlag += 1;
         break;
 
       case 'read only':
-        CustomizeFlag += 4;
+        dwCustomizeFlag += 4;
         break;
 
       case 'allow power plans':
-        CustomizeFlag += 8;
+        dwCustomizeFlag += 8;
         break;
 
       case 'allow power plan doc':
-        CustomizeFlag += 16;
+        dwCustomizeFlag += 16;
         break;
 
       case 'allow only inpatient and outpatient orders':
-        CustomizeFlag += 32;
+        dwCustomizeFlag += 32;
         break;
 
       case 'show refresh and print buttons':
-        CustomizeFlag += 128;
+        dwCustomizeFlag += 128;
         break;
 
       case 'documented meds only':
-        CustomizeFlag += 256;
+        dwCustomizeFlag += 256;
         break;
 
       case 'hide med rec':
-        CustomizeFlag += 512;
+        dwCustomizeFlag += 512;
         break;
 
       case 'disallow EOL':
-        CustomizeFlag += 1024;
+        dwCustomizeFlag += 1024;
         break;
 
       case 'hide demographics':
-        CustomizeFlag += 2048;
+        dwCustomizeFlag += 2048;
         break;
 
       case 'add rx filter':
-        CustomizeFlag += 4096;
+        dwCustomizeFlag += 4096;
         break;
 
       case 'disable auto search':
-        CustomizeFlag += 8192;
+        dwCustomizeFlag += 8192;
         break;
 
       case 'allow regimen':
-        CustomizeFlag += 16384;
+        dwCustomizeFlag += 16384;
         break;
 
       // Calculate the dwTabFlag parameter
       case 'customize order':
-        TabFlag = 2;
+        dwTabFlag = 2;
         break;
 
       case 'customize meds':
-        TabFlag = 3;
+        dwTabFlag = 3;
         break;
 
       // Calculate the dwTabDisplayOptionsFlag parameter
       case 'show nav tree':
-        TabDisplayOptionsFlag += 1;
+        dwTabDisplayOptionsFlag += 1;
         break;
 
       case 'show diag and probs':
-        TabDisplayOptionsFlag += 2;
+        dwTabDisplayOptionsFlag += 2;
         break;
 
       case 'show related res':
-        TabDisplayOptionsFlag += 4;
+        dwTabDisplayOptionsFlag += 4;
         break;
 
       case 'show orders search':
-        TabDisplayOptionsFlag += 8;
+        dwTabDisplayOptionsFlag += 8;
         break;
 
       case 'show order profile':
-        TabDisplayOptionsFlag += 16;
+        dwTabDisplayOptionsFlag += 16;
         break;
 
       case 'show scratchpad':
-        TabDisplayOptionsFlag += 32;
+        dwTabDisplayOptionsFlag += 32;
         break;
 
       case 'show list details':
-        TabDisplayOptionsFlag += 64;
+        dwTabDisplayOptionsFlag += 64;
         break;
     }
   });
 
   return {
-    dwCustomizeFlag: CustomizeFlag,
-    dwTabFlag: TabFlag,
-    dwTabDisplayOptionsFlag: TabDisplayOptionsFlag,
+    dwCustomizeFlag,
+    dwTabFlag,
+    dwTabDisplayOptionsFlag,
   };
 };
