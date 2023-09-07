@@ -58,7 +58,7 @@ export type PowerPlanMOEWOpts =
 
 export type StandaloneOrder = {
   synonymId: number;
-  orderOrigination: 'inpatient order' | 'prescription order';
+  origination: 'inpatient order' | 'prescription order';
   sentenceId?: number;
 };
 
@@ -153,7 +153,7 @@ export const submitPowerPlanOrdersAsync = async (
   if (standaloneOrders && standaloneOrders.length >= 1) {
     standaloneOrders.forEach(standaloneOrder => {
       standaloneOrdersXML += `<Order><EOrderOriginationFlag>${
-        standaloneOrder.orderOrigination === 'inpatient order' ? 0 : 1
+        standaloneOrder.origination === 'inpatient order' ? 0 : 1
       }</EOrderOriginationFlag><SynonymId>${
         standaloneOrder.synonymId
       }</SynonymId>

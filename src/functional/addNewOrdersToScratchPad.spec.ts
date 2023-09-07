@@ -9,7 +9,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     const orders: Array<StandaloneOrder> = [
       {
         synonymId: 1337,
-        orderOrigination: 'inpatient order',
+        origination: 'inpatient order',
         sentenceId: 31337,
       },
     ];
@@ -51,7 +51,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     const orders: Array<StandaloneOrder> = [
       {
         synonymId: 1337,
-        orderOrigination: 'inpatient order',
+        origination: 'inpatient order',
         sentenceId: 31337,
       },
     ];
@@ -73,7 +73,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     const orders: Array<StandaloneOrder> = [
       {
         synonymId: 1337,
-        orderOrigination: 'inpatient order',
+        origination: 'inpatient order',
         sentenceId: 31337,
       },
     ];
@@ -95,7 +95,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     const orders: Array<StandaloneOrder> = [
       {
         synonymId: 1337,
-        orderOrigination: 'inpatient order',
+        origination: 'inpatient order',
         sentenceId: 31337,
       },
     ];
@@ -117,7 +117,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     const orders: Array<StandaloneOrder> = [
       {
         synonymId: 1337,
-        orderOrigination: 'inpatient order',
+        origination: 'inpatient order',
         sentenceId: 31337,
       },
     ];
@@ -139,7 +139,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     const orders: Array<StandaloneOrder> = [
       {
         synonymId: 1337,
-        orderOrigination: 'inpatient order',
+        origination: 'inpatient order',
         sentenceId: 31337,
       },
     ];
@@ -161,7 +161,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     const orders: Array<StandaloneOrder> = [
       {
         synonymId: 1337,
-        orderOrigination: 'prescription order',
+        origination: 'prescription order',
       },
     ];
 
@@ -173,7 +173,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     const orders: Array<StandaloneOrder> = [
       {
         synonymId: 1337,
-        orderOrigination: 'inpatient order',
+        origination: 'inpatient order',
         sentenceId: 31337,
       },
     ];

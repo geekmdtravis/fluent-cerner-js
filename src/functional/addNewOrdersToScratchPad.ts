@@ -33,7 +33,7 @@ export async function addNewOrdersToScratchpadAsync(
 
   standaloneOrders.forEach(standaloneOrder => {
     standaloneOrdersXML += `<Order><EOrderOriginationFlag>${
-      standaloneOrder.orderOrigination === 'inpatient order' ? 0 : 1
+      standaloneOrder.origination === 'inpatient order' ? 0 : 1
     }</EOrderOriginationFlag><SynonymId>${standaloneOrder.synonymId}</SynonymId>
     <OrderSentenceId>${
       standaloneOrder.sentenceId ? standaloneOrder.sentenceId : ''
