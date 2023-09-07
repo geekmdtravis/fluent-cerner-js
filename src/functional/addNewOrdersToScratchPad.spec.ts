@@ -8,9 +8,9 @@ describe('addNewOrdersToScratchpadAsync', () => {
   it('runs outside of powerchart and correctly outputs as such', async () => {
     const orders: Array<StandaloneOrder> = [
       {
-        synonymID: 1337,
+        synonymId: 1337,
         orderOrigination: 'inpatient order',
-        sentenceID: 31337,
+        sentenceId: 31337,
       },
     ];
 
@@ -50,9 +50,9 @@ describe('addNewOrdersToScratchpadAsync', () => {
 
     const orders: Array<StandaloneOrder> = [
       {
-        synonymID: 1337,
+        synonymId: 1337,
         orderOrigination: 'inpatient order',
-        sentenceID: 31337,
+        sentenceId: 31337,
       },
     ];
 
@@ -72,9 +72,9 @@ describe('addNewOrdersToScratchpadAsync', () => {
 
     const orders: Array<StandaloneOrder> = [
       {
-        synonymID: 1337,
+        synonymId: 1337,
         orderOrigination: 'inpatient order',
-        sentenceID: 31337,
+        sentenceId: 31337,
       },
     ];
 
@@ -94,9 +94,9 @@ describe('addNewOrdersToScratchpadAsync', () => {
 
     const orders: Array<StandaloneOrder> = [
       {
-        synonymID: 1337,
+        synonymId: 1337,
         orderOrigination: 'inpatient order',
-        sentenceID: 31337,
+        sentenceId: 31337,
       },
     ];
 
@@ -116,9 +116,9 @@ describe('addNewOrdersToScratchpadAsync', () => {
 
     const orders: Array<StandaloneOrder> = [
       {
-        synonymID: 1337,
+        synonymId: 1337,
         orderOrigination: 'inpatient order',
-        sentenceID: 31337,
+        sentenceId: 31337,
       },
     ];
 
@@ -138,9 +138,9 @@ describe('addNewOrdersToScratchpadAsync', () => {
 
     const orders: Array<StandaloneOrder> = [
       {
-        synonymID: 1337,
+        synonymId: 1337,
         orderOrigination: 'inpatient order',
-        sentenceID: 31337,
+        sentenceId: 31337,
       },
     ];
 
@@ -148,7 +148,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
     expect(result.result).toEqual('added and signed');
   });
 
-  it('can handle an outpatient order with no sentence ID', async () => {
+  it('can handle an outpatient order with no sentence Id', async () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
@@ -160,7 +160,7 @@ describe('addNewOrdersToScratchpadAsync', () => {
 
     const orders: Array<StandaloneOrder> = [
       {
-        synonymID: 1337,
+        synonymId: 1337,
         orderOrigination: 'prescription order',
       },
     ];
@@ -172,9 +172,9 @@ describe('addNewOrdersToScratchpadAsync', () => {
   it('throws an error if an unexpected error occurs', async () => {
     const orders: Array<StandaloneOrder> = [
       {
-        synonymID: 1337,
+        synonymId: 1337,
         orderOrigination: 'inpatient order',
-        sentenceID: 31337,
+        sentenceId: 31337,
       },
     ];
 

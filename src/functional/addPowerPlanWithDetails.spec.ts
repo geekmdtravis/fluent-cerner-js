@@ -6,7 +6,7 @@ import { PowerPlanOrder } from './submitPowerPlanOrders';
 
 describe('addPowerPlanWithDetailsAsync', () => {
   it('runs outside of powerchart and correctly outputs as such', async () => {
-    const orders: Array<PowerPlanOrder> = [{ pathwayCatalogID: 1337 }];
+    const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
 
     const expectedObj: AddPowerPlanWithDetailsReturn = {
       inPowerChart: false,
@@ -42,13 +42,13 @@ describe('addPowerPlanWithDetailsAsync', () => {
       },
     });
 
-    const orders: Array<PowerPlanOrder> = [{ pathwayCatalogID: 1337 }];
+    const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
 
     const result = await addPowerPlanWithDetailsAsync(0, orders);
     expect(result.powerPlanAdded).toEqual(true);
   });
 
-  it('can create a powerplan with a personalized plan ID and a diagnosis code', async () => {
+  it('can create a powerplan with a personalized plan Id and a diagnosis code', async () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
@@ -59,7 +59,7 @@ describe('addPowerPlanWithDetailsAsync', () => {
     });
 
     const orders: Array<PowerPlanOrder> = [
-      { pathwayCatalogID: 1337, personalizedPlanID: 31337, diagnoses: [12] },
+      { pathwayCatalogId: 1337, personalizedPlanId: 31337, diagnoses: [12] },
     ];
 
     const result = await addPowerPlanWithDetailsAsync(0, orders);
@@ -76,14 +76,14 @@ describe('addPowerPlanWithDetailsAsync', () => {
       },
     });
 
-    const orders: Array<PowerPlanOrder> = [{ pathwayCatalogID: 1337 }];
+    const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
 
     const result = await addPowerPlanWithDetailsAsync(0, orders);
     expect(result.powerPlanAdded).toEqual(false);
   });
 
   it('throws an error if an unexpected error occurs', async () => {
-    const orders: Array<PowerPlanOrder> = [{ pathwayCatalogID: 1337 }];
+    const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
 
     Object.defineProperty(window, 'external', {
       writable: true,

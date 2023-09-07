@@ -5,7 +5,7 @@ import { StandaloneOrder } from './submitPowerPlanOrders';
 /**
  * Attempts to add new standalone orders to the scratchpad.
  * @param {number} moewHandle - the handle to the MOEW.
- * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym IDs, order origination flags and, optionally, sentence IDs, for standalone orders to be placed.
+ * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym Ids, order origination flags and, optionally, sentence Ids, for standalone orders to be placed.
  * @param {boolean} interactionChecking - A boolean value indicating whether or not order interaction checking should be performed. Strongly recommended to be true.
  * @returns a `Promise` which resolves to a string, indicating the status or not the standalone orders were successfully added
  * @throws `Error` if an unexpected error occurs or if the array provided is empty
@@ -34,9 +34,9 @@ export async function addNewOrdersToScratchpadAsync(
   standaloneOrders.forEach(standaloneOrder => {
     standaloneOrdersXML += `<Order><EOrderOriginationFlag>${
       standaloneOrder.orderOrigination === 'inpatient order' ? 0 : 1
-    }</EOrderOriginationFlag><SynonymId>${standaloneOrder.synonymID}</SynonymId>
+    }</EOrderOriginationFlag><SynonymId>${standaloneOrder.synonymId}</SynonymId>
     <OrderSentenceId>${
-      standaloneOrder.sentenceID ? standaloneOrder.sentenceID : ''
+      standaloneOrder.sentenceId ? standaloneOrder.sentenceId : ''
     }</OrderSentenceId></Order>`;
   });
 

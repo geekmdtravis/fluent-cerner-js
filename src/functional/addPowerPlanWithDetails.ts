@@ -3,9 +3,9 @@ import { outsideOfPowerChartError } from '../utils';
 import { PowerPlanOrder } from './submitPowerPlanOrders';
 
 /**
- * Attempts to add a PowerPlan and creates PowerPlan objects from the pathway catalog IDs. CreateMOEW() must be called first.
+ * Attempts to add a PowerPlan and creates PowerPlan objects from the pathway catalog Ids. CreateMOEW() must be called first.
  * @param {number} moewHandle - the handle to the MOEW.
- * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog IDs and, optionally, personalized plan IDs and diagnosis code IDs, for PowerPlan orders to be placed.
+ * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog Ids and, optionally, personalized plan Ids and diagnosis code Ids, for PowerPlan orders to be placed.
  * @returns a `Promise` which resolves to a boolean, indicating whether or not the PowerPlan orders were successfully added
  * @throws `Error` if an unexpected error occurs or if the array provided is empty
  */
@@ -32,9 +32,9 @@ export async function addPowerPlanWithDetailsAsync(
 
   powerPlanOrders.forEach(powerPlanOrder => {
     powerPlanOrdersXML += `<Plan><PathwayCatalogId>${
-      powerPlanOrder.pathwayCatalogID
+      powerPlanOrder.pathwayCatalogId
     }</PathwayCatalogId><PersonalizedPlanId>${
-      powerPlanOrder.personalizedPlanID ? powerPlanOrder.personalizedPlanID : ''
+      powerPlanOrder.personalizedPlanId ? powerPlanOrder.personalizedPlanId : ''
     }</PersonalizedPlanId><Diagnoses>
     ${
       powerPlanOrder.diagnoses

@@ -57,14 +57,14 @@ export type PowerPlanMOEWOpts =
   | 'sign later';
 
 export type StandaloneOrder = {
-  synonymID: number;
+  synonymId: number;
   orderOrigination: 'inpatient order' | 'prescription order';
-  sentenceID?: number;
+  sentenceId?: number;
 };
 
 export type PowerPlanOrder = {
-  pathwayCatalogID: number;
-  personalizedPlanID?: number;
+  pathwayCatalogId: number;
+  personalizedPlanId?: number;
   diagnoses?: Array<number>;
 };
 
@@ -76,9 +76,9 @@ export type PowerPlanOrder = {
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this order will be placed. Cerner context variable: VIS_EncntrId.
  *
- * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym IDs, order origination flags and, optionally, sentence IDs, for standalone orders to be placed. Either this, `powerPlanOrders,` or both, should be present.
+ * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym Ids, order origination flags and, optionally, sentence Ids, for standalone orders to be placed. Either this, `powerPlanOrders,` or both, should be present.
  *
- * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog IDs and, optionally, personalized plan IDs and diagnosis code IDs, for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
+ * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog Ids and, optionally, personalized plan Ids and diagnosis code Ids, for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
  *
  * @param {boolean} signSilently - A boolean indicating whether or not a "silent sign" should be attempted.
  *
@@ -94,7 +94,7 @@ export type PowerPlanOrderOpts = {
 
 /**
  * Submits a combination of standalone orders and/or PowerPlan orders by utilizing underlying Cerner - POWERORDERS functionality.
- * @param {PowerPlanOrderOpts} orderOpts - An object containing the person/patient ID, encounter ID,
+ * @param {PowerPlanOrderOpts} orderOpts - An object containing the person/patient Id, encounter Id,
  * an array of objects of either standalone orders or PowerPlan orders (each of which may contain
  * specific order properties), and a flag indicating whether or not the orders should be signed
  * silently.
@@ -155,10 +155,10 @@ export const submitPowerPlanOrdersAsync = async (
       standaloneOrdersXML += `<Order><EOrderOriginationFlag>${
         standaloneOrder.orderOrigination === 'inpatient order' ? 0 : 1
       }</EOrderOriginationFlag><SynonymId>${
-        standaloneOrder.synonymID
+        standaloneOrder.synonymId
       }</SynonymId>
       <OrderSentenceId>${
-        standaloneOrder.sentenceID ? standaloneOrder.sentenceID : ''
+        standaloneOrder.sentenceId ? standaloneOrder.sentenceId : ''
       }</OrderSentenceId></Order>`;
     });
 
@@ -170,10 +170,10 @@ export const submitPowerPlanOrdersAsync = async (
   if (powerPlanOrders && powerPlanOrders.length >= 1) {
     powerPlanOrders.forEach(powerPlanOrder => {
       powerPlanOrdersXML += `<Plan><PathwayCatalogId>${
-        powerPlanOrder.pathwayCatalogID
+        powerPlanOrder.pathwayCatalogId
       }</PathwayCatalogId><PersonalizedPlanId>${
-        powerPlanOrder.personalizedPlanID
-          ? powerPlanOrder.personalizedPlanID
+        powerPlanOrder.personalizedPlanId
+          ? powerPlanOrder.personalizedPlanId
           : ''
       }</PersonalizedPlanId><Diagnoses>
     ${

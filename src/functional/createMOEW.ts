@@ -5,8 +5,8 @@ import { PowerPlanMOEWOpts } from './submitPowerPlanOrders';
 
 /**
  * Creates an MOEW handle.
- * @param pid {number} - the patient ID
- * @param eid {number} - the encounter ID in which orders would be placed
+ * @param pid {number} - the patient Id
+ * @param eid {number} - the encounter Id in which orders would be placed
  * @param moewOpts {Array<PowerPlanMOEWOpts>} - the optional parameters to be be passed into the CreateMOEW() function.
  * These parameters, passed as an array, are optional and, if not provided, the values will default to the recommended values for the MOEW
  * with Power Plan support. If any values are provided, those will be the only values used.
