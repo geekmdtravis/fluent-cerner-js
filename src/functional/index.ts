@@ -22,6 +22,7 @@ import {
   NewOrderStrOpts,
 } from './orderString';
 import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
+import { submitPowerPlanOrdersAsync } from './submitPowerPlanOrders';
 
 export type PowerChartReturn = {
   inPowerChart: boolean;
@@ -50,6 +51,7 @@ export {
   openOrganizerTabAsync,
   orderString,
   submitOrdersAsync,
+  submitPowerPlanOrdersAsync,
 };
 
 // Export types; cannot use the `export type` syntax.

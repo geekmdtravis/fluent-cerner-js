@@ -9,6 +9,7 @@ import {
   openOrganizerTabAsync,
   orderString,
   submitOrdersAsync,
+  submitPowerPlanOrdersAsync,
   CclCallParam,
   CclOpts,
   CclRequestResponse,
@@ -33,6 +34,7 @@ export {
   openOrganizerTabAsync,
   orderString,
   submitOrdersAsync,
+  submitPowerPlanOrdersAsync,
 };
 
 export {
