@@ -152,7 +152,14 @@ export const submitPowerPlanOrdersAsync = async (
   //Prepare the XML strings for input to AddNewOrdersToScatchPadAddPowerPlanWithDetails()
   if (standaloneOrders && standaloneOrders.length >= 1) {
     standaloneOrders.forEach(standaloneOrder => {
-      standaloneOrdersXML += `<Order><EOrderOriginationFlag>0</EOrderOriginationFlag><SynonymId>${standaloneOrder}</SynonymId><\OrderSentenceId></OrderSentenceId></Order>`;
+      standaloneOrdersXML += `<Order><EOrderOriginationFlag>${
+        standaloneOrder.orderOrigination === 'inpatient order' ? 0 : 1
+      }</EOrderOriginationFlag><SynonymId>${
+        standaloneOrder.synonymID
+      }</SynonymId>
+      <OrderSentenceId>${
+        standaloneOrder.sentenceID ? standaloneOrder.sentenceID : ''
+      }</OrderSentenceId></Order>`;
     });
 
     //Add <Orders> to beginning & end of the Standalone Order XML
@@ -169,18 +176,14 @@ export const submitPowerPlanOrdersAsync = async (
           ? powerPlanOrder.personalizedPlanID
           : ''
       }</PersonalizedPlanId><Diagnoses>
-      
-      
-      ${
-        powerPlanOrder.diagnoses
-          ? powerPlanOrder.diagnoses.map(diagnosis => {
-              return '<DiagnosisId>' + diagnosis + '</DiagnosisId>';
-            })
-          : ''
-      }
-      
-      
-      </Diagnoses></Plan>`;
+    ${
+      powerPlanOrder.diagnoses
+        ? powerPlanOrder.diagnoses.map(diagnosis => {
+            return '<DiagnosisId>' + diagnosis + '</DiagnosisId>';
+          })
+        : ''
+    }
+    </Diagnoses></Plan>`;
     });
 
     //Add <Plans> to beginning & end of PowerPlan XML
