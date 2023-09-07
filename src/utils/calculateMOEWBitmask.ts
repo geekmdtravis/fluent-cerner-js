@@ -2,34 +2,47 @@ import { PowerPlanMOEWOpts } from '../functional/submitPowerPlanOrders';
 
 /**
  * A utility function designed to calculate the bitmask for the input paramaters to be used with PowerChart's CreateMOEW() function.
- * @param {Array<PowerPlanMOEWOpts>} moewOpts - The plaintext parameters, passed as an array of strings, are optional and, if not provided, the values will default to the recommended values for the MOEW
+ * @param {Array<PowerPlanMOEWOpts>} inputOpts - The plaintext parameters, passed as an array of strings, are optional and, if not provided, the values will default to the recommended values for the MOEW
  * with Power Plan support within createMOEWAsync(). If any values are provided, those will be the only values used.
  * @returns The bitmask numbers (dwCustomizeFlag, dwTabFlag, and dwTabDisplayOptionsFlag) to be used with PowerChart's CreateMOEW() function.
  */
 export const calculateMOEWBitmask = (
-  inputOpts: Array<PowerPlanMOEWOpts>
+  inputOpts: PowerPlanMOEWOpts
 ): {
   dwCustomizeFlag: number;
   dwTabFlag: number;
   dwTabDisplayOptionsFlag: number;
 } => {
-  // Check for the inclusion of both 'customize order' and 'customize meds' and throw an error if so
-  if (
-    inputOpts.includes('customize order') &&
-    inputOpts.includes('customize meds')
-  ) {
-    throw new SyntaxError(
-      'The MOEW must be configured to customize orders or medications, but cannot be configured to customize both.'
-    );
-  }
-
   // Initialize and calculate the CreateMOEW() parameters
   let dwCustomizeFlag: number = 0;
   let dwTabFlag: number = 0;
   let dwTabDisplayOptionsFlag: number = 0;
 
-  // Calculate the bitmask parameters ultimately needed for CreateMOEW()
-  inputOpts.forEach(option => {
+  // Calculate the dwTabFlag parameter
+  if (inputOpts.orderType === 'order') {
+    dwTabFlag = 2;
+  }
+
+  if (inputOpts.orderType === 'medications') {
+    dwTabFlag = 3;
+  }
+
+  if (!inputOpts.moewFlags || inputOpts.moewFlags.length === 0) {
+    inputOpts.moewFlags = [
+      'allow power plans',
+      'allow power plan doc',
+      'show scratchpad',
+      'allow regimen',
+      'show list details',
+      'show orders search',
+      'hide demographics',
+      'show order profile',
+      'show refresh and print buttons',
+    ];
+  }
+
+  // Calculate the other two parameters ultimately needed for CreateMOEW()
+  inputOpts.moewFlags.forEach(option => {
     switch (option) {
       // Calculate the dwCustomizeFlagParamater
       case 'sign later':
@@ -72,7 +85,7 @@ export const calculateMOEWBitmask = (
         dwCustomizeFlag += 2048;
         break;
 
-      case 'add rx filter':
+      case 'add rx to filter':
         dwCustomizeFlag += 4096;
         break;
 
@@ -82,15 +95,6 @@ export const calculateMOEWBitmask = (
 
       case 'allow regimen':
         dwCustomizeFlag += 16384;
-        break;
-
-      // Calculate the dwTabFlag parameter
-      case 'customize order':
-        dwTabFlag = 2;
-        break;
-
-      case 'customize meds':
-        dwTabFlag = 3;
         break;
 
       // Calculate the dwTabDisplayOptionsFlag parameter

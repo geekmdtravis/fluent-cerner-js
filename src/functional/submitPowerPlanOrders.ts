@@ -4,16 +4,17 @@ import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
 
 /**
  * PowerPlanMOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
- * These parameters, passed as an array, are optional and, if not provided, the values will default to the recommended values for the MOEW
+ *
+ * @param {string} orderType -  Should be set to 'order' or 'medications', indicating what type of orders will be submitted
+ *
+ * @param {Array<string>} moewFlags -  An optional array of flags to  customize the MOEW. If not provided, the values will default to the recommended values for the MOEW
  * with Power Plan support. If any values are provided, those will be the only values used.
  *
- * @action `add rx filter` - Sets the prescription indicator to the default filter.
+ * @action `add rx to filter` - Turns the prescription indicator on the default filter.
  * @action `allow only inpatient and outpatient orders` - Only inpatient and ambulatory venue ordering will be allowed.
  * @action `allow power plan doc` - Enables PowerPlan documentation.
  * @action `allow power plans` - Allows PowerPlans to be used from the MOEW.
  * @action `allow regimen` - Ensures that regimens are enabled.
- * @action `customize meds` - States that medications are being customized. Either this or "customize orders" must be present (if parameters are provided), but not both.
- * @action `customize orders` - States that orders are being customized. Either this or "customize meds" must be present (if parameters are provided), but not both.
  * @action `disable auto search` - Disables auto search.
  * @action `disallow EOL` - This option forces edit-on-line mode (which allows multi-selection) to be disabled.
  * @action `documented meds only` - Restricts the MOEW to only perform actions on documented medications.
@@ -32,29 +33,33 @@ import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
  *
  * @documentation [POWERORDERS - CREATEMOEW](https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
  **/
-export type PowerPlanMOEWOpts =
-  | 'add rx filter'
-  | 'allow only inpatient and outpatient orders'
-  | 'allow power plan doc'
-  | 'allow power plans'
-  | 'allow regimen'
-  | 'customize meds'
-  | 'customize order'
-  | 'disable auto search'
-  | 'disallow EOL'
-  | 'documented meds only'
-  | 'hide demographics'
-  | 'hide med rec'
-  | 'read only'
-  | 'show diag and probs'
-  | 'show list details'
-  | 'show nav tree'
-  | 'show order profile'
-  | 'show orders search'
-  | 'show refresh and print buttons'
-  | 'show related res'
-  | 'show scratchpad'
-  | 'sign later';
+export type PowerPlanMOEWOpts = {
+  orderType: 'order' | 'medications';
+  moewFlags?: Array<
+    | 'add rx to filter'
+    | 'allow only inpatient and outpatient orders'
+    | 'allow power plan doc'
+    | 'allow power plans'
+    | 'allow regimen'
+    | 'customize meds'
+    | 'customize order'
+    | 'disable auto search'
+    | 'disallow EOL'
+    | 'documented meds only'
+    | 'hide demographics'
+    | 'hide med rec'
+    | 'read only'
+    | 'show diag and probs'
+    | 'show list details'
+    | 'show nav tree'
+    | 'show order profile'
+    | 'show orders search'
+    | 'show refresh and print buttons'
+    | 'show related res'
+    | 'show scratchpad'
+    | 'sign later'
+  >;
+};
 
 export type StandaloneOrder = {
   synonymId: number;
@@ -111,13 +116,8 @@ export type PowerPlanOrderOpts = {
  */
 export const submitPowerPlanOrdersAsync = async (
   orderOpts: PowerPlanOrderOpts,
-  moewOpts?: Array<PowerPlanMOEWOpts>
+  moewOpts: PowerPlanMOEWOpts
 ): Promise<SubmitPowerPlanOrderReturn> => {
-  //Either use the options provided by the user, or if none or provided, set default PowerPlan options
-  const inputOpts: Array<PowerPlanMOEWOpts> = moewOpts
-    ? moewOpts
-    : ['allow power plans', 'allow power plan doc'];
-
   const {
     personId,
     encounterId,
@@ -131,7 +131,7 @@ export const submitPowerPlanOrdersAsync = async (
     dwCustomizeFlag,
     dwTabFlag,
     dwTabDisplayOptionsFlag,
-  } = calculateMOEWBitmask(inputOpts);
+  } = calculateMOEWBitmask(moewOpts);
 
   //Enable interaction checking (will hardcode to true for safety)
   const m_bSignTimeInteractionChecking = true;
