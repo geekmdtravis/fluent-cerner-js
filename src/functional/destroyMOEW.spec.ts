@@ -1,11 +1,11 @@
-import { DestroyMOEWReturn, destroyMOEWAsync } from './destroyMOEW';
+import { PowerChartReturn } from '.';
+import { destroyMOEWAsync } from './destroyMOEW';
 
 describe('destroyMOEWAsync()', () => {
   it('runs outside of powerchart', async () => {
     const result = await destroyMOEWAsync(1337);
-    const expectedObj: DestroyMOEWReturn = {
+    const expectedObj: PowerChartReturn = {
       inPowerChart: false,
-      retVal: null,
     };
     expect(result).toEqual(expectedObj);
   });
@@ -20,7 +20,6 @@ describe('destroyMOEWAsync()', () => {
       },
     });
     const result = await destroyMOEWAsync(1337);
-    expect(result.retVal).toEqual(null);
     expect(result.inPowerChart).toEqual(true);
   });
 

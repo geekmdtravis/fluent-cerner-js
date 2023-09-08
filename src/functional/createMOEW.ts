@@ -8,8 +8,7 @@ import { outsideOfPowerChartError } from '../utils';
  * @param {number} dwCustomizeFlag  - the bitmask that determines available MOEW options
  * @param {number} dwTabFlag  - the bitmask identifying the list being customized
  * @param {number} dwTabDisplayOptionsFlag  - the bitmask specificying which components display on the MOEW
-
- * @returns a `Promise` which resolves to an integer representing a handle to the MOEW instance. `null` indicates an invalid call or call from outside PowerChart.
+ * @returns a `Promise` which resolves to a PowerChartReturn and an integer representing a handle to the MOEW instance. 0 indicates an invalid/unsuccessful call, which is logged as null.
  * @throws `Error` if an unexpected error occurs
  */
 

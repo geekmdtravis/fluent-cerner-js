@@ -1,7 +1,7 @@
 import { calculateMOEWBitmask } from './calculateMOEWBitmask';
 
 describe('calculateMOEWBitmask()', () => {
-  it('accepts all paramaters and yields expected flag values', async () => {
+  it('accepts all parameters and yields expected flag values', async () => {
     const result = calculateMOEWBitmask({
       orderType: 'order',
       moewFlags: [
@@ -18,8 +18,6 @@ describe('calculateMOEWBitmask()', () => {
         'allow regimen',
         'customize order',
         'show nav tree',
-        'show demographics',
-        'show med rec',
         'show diag and probs',
         'show related res',
         'show orders search',
@@ -38,8 +36,21 @@ describe('calculateMOEWBitmask()', () => {
     expect(result).toEqual(expectedObj);
   });
 
-  it('correctly handles `customize meds` (`order` tested previously)', async () => {
+  it('correctly handles the `medications` order type', async () => {
     const result = calculateMOEWBitmask({ orderType: 'medications' });
+    const expectedObj = {
+      dwCustomizeFlag: 19096,
+      dwTabFlag: 3,
+      dwTabDisplayOptionsFlag: 120,
+    };
+    expect(result).toEqual(expectedObj);
+  });
+
+  it('can handle the alternate `show flags`', async () => {
+    const result = calculateMOEWBitmask({
+      orderType: 'medications',
+      moewFlags: ['show med rec', 'show demographics'],
+    });
     const expectedObj = {
       dwCustomizeFlag: 0,
       dwTabFlag: 3,

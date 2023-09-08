@@ -4,7 +4,7 @@ import { outsideOfPowerChartError } from '../utils';
 /**
  * Attempts to silently sign orders on the scratchpad. If the orders cannot be signed silently, will display the MOEW.
  * @param {number} moewHandle - the handle to the MOEW.
- * @returns a `Promise` which resolves to an integer: 0 if called with invalid/improperly structured paramters, and 1 otherwise.
+ * @returns a `Promise` which resolves to a PowerChartReturn and an integer: 0 if called with invalid/improperly structured paramters, and 1 otherwise.
  * @throws `Error` if an unexpected error occurs.
  */
 

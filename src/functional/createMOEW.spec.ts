@@ -2,26 +2,13 @@ import { CreateMOEWReturn, createMOEWAsync } from './createMOEW';
 
 describe('createMOEWAsync()', () => {
   it('runs with minimal (and invalid) paramaters outside of powerchart', async () => {
-    const result = await createMOEWAsync(0, 0);
+    const result = await createMOEWAsync(0, 0, 0, 0, 0);
     const expectedObj: CreateMOEWReturn = {
       inPowerChart: false,
       moewHandle: null,
     };
 
     expect(result).toEqual(expectedObj);
-  });
-
-
-  it('throws the expected error if `customize meds` and `customize order` are both chosen', async () => {
-    try {
-      await createMOEWAsync(0, 0, ['customize meds', 'customize order']);
-    } catch (e) {
-      expect(e).toBeInstanceOf(SyntaxError);
-      expect(e as SyntaxError).toHaveProperty(
-        'message',
-        'The MOEW must be configured to customize orders or medications, but cannot be configured to customize both.'
-      );
-    }
   });
 
   it('throws an error if an unexpected error occurs', async () => {
@@ -36,7 +23,7 @@ describe('createMOEWAsync()', () => {
       },
     });
     try {
-      await createMOEWAsync(0, 0);
+      await createMOEWAsync(0, 0, 0, 0, 0);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');
@@ -52,7 +39,7 @@ describe('createMOEWAsync()', () => {
         })),
       },
     });
-    const result = await createMOEWAsync(1, 1);
+    const result = await createMOEWAsync(1, 1, 1, 1, 1);
     expect(result.moewHandle).toEqual(null);
   });
 
@@ -65,7 +52,7 @@ describe('createMOEWAsync()', () => {
         })),
       },
     });
-    const result = await createMOEWAsync(1, 1);
+    const result = await createMOEWAsync(1, 1, 1, 1, 1);
     expect(result.moewHandle).toEqual(1337);
   });
 });

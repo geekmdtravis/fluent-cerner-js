@@ -6,8 +6,8 @@ import { PowerPlanOrder } from './submitPowerPlanOrders';
  * Attempts to add a PowerPlan and creates PowerPlan objects from the pathway catalog Ids. CreateMOEW() must be called first.
  * @param {number} moewHandle - the handle to the MOEW.
  * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog Ids and, optionally, personalized plan Ids and diagnosis code Ids, for PowerPlan orders to be placed.
- * @returns a `Promise` which resolves to a boolean, indicating whether or not the PowerPlan orders were successfully added
- * @throws `Error` if an unexpected error occurs or if the array provided is empty
+ * @returns a `Promise` which resolves to a PowerChartReturn and a boolean, indicating whether or not PowerPlan orders were successfully added
+ * @throws `Error` if an unexpected error occurs or if no orders are provided
  */
 
 export async function addPowerPlanWithDetailsAsync(
@@ -17,7 +17,7 @@ export async function addPowerPlanWithDetailsAsync(
   //Prepare the default return data
   let retData: AddPowerPlanWithDetailsReturn = {
     inPowerChart: true,
-    powerPlanAdded: true,
+    powerPlansAdded: true,
   };
 
   // Check for to make sure the array of orders provided is not empty
@@ -59,12 +59,12 @@ export async function addPowerPlanWithDetailsAsync(
     );
 
     // Set the `powerPlanAdded` boolean to be true if the orders were added, and false otherwise
-    retData.powerPlanAdded = response === 0 ? false : true;
+    retData.powerPlansAdded = response === 0 ? false : true;
   } catch (e) {
     // If outside of PowerChart, set the output to reflect that
     if (outsideOfPowerChartError(e)) {
       retData.inPowerChart = false;
-      retData.powerPlanAdded = false;
+      retData.powerPlansAdded = false;
     } else {
       // If some other error was encountered, throw that error
       throw e;
@@ -76,5 +76,5 @@ export async function addPowerPlanWithDetailsAsync(
 }
 
 export type AddPowerPlanWithDetailsReturn = PowerChartReturn & {
-  powerPlanAdded: boolean;
+  powerPlansAdded: boolean;
 };

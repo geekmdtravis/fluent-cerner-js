@@ -1,6 +1,6 @@
-import { XMLParser } from 'fast-xml-parser';
 import { outsideOfPowerChartError } from '../utils';
 import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
+import { SubmitPowerPlanOrdersStatus } from './getXMLOrdersMOEW';
 
 export type PowerPlanMOEWFlags =
   | 'add rx to filter'
@@ -141,7 +141,6 @@ export const submitPowerPlanOrdersAsync = async (
   let retVal: SubmitPowerPlanOrderReturn = {
     inPowerChart: true,
     status: 'success',
-    response: null,
     ordersPlaced: null,
   };
 
@@ -240,47 +239,15 @@ export const submitPowerPlanOrdersAsync = async (
       await dcof.SignOrders(m_hMOEW);
     }
 
-    //Obtain the return string
-    const responseXML = await dcof.GetXMLOrdersMOEW(m_hMOEW);
-
     //Destroy the MOEW at the end of the ordering process.
     await dcof.DestroyMOEW(m_hMOEW);
 
-    //Check to see if the response type was not a string (should always either be "" or an XML string)
-    if (typeof responseXML !== 'string') {
-      retVal.status = 'invalid data returned';
-      return retVal;
-    }
-
-    //Check to see if no orders were placed or if invalid parameters were provided
-    if (responseXML.trim() === '') {
-      retVal.status = 'cancelled, failed, or invalid parameters provided';
-      return retVal;
-    }
-
-    //Assuming we have a valid (non-empty) string at this point, attempt to parse out its XML and populate `retVal.ordersPlaced`
-    const parser = new XMLParser();
-    try {
-      const parsed: OrdersReturnXML = parser.parse(responseXML);
-      retVal.response = parsed;
-      if (!(parsed.Orders.Order instanceof Array)) {
-        parsed.Orders.Order = [parsed.Orders.Order];
-      }
-      retVal.ordersPlaced = parsed.Orders.Order.map(o => ({
-        name: o.OrderedAsMnemonic,
-        oid: o.OrderId,
-        display: o.ClinDisplayLine,
-      }));
-    } catch {
-      //A parsing error indicates the string isn't formatted as epxected
-      retVal.status = 'xml parse error';
-    }
+    //Obtain the XML return string
   } catch (e) {
     //Document the error depending on the type, and adjust the return object
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;
       retVal.ordersPlaced = [];
-      retVal.response = null;
       retVal.status = 'dry run';
     } else {
       throw e;
@@ -291,203 +258,10 @@ export const submitPowerPlanOrdersAsync = async (
 };
 
 // Return type to signifiy status of order placing
-export type SubmitOrdersStatus =
-  | 'success'
-  | 'cancelled, failed, or invalid parameters provided'
-  | 'invalid data returned'
-  | 'xml parse error'
-  | 'dry run';
-
-// Return type to contain the orders placed and associated XML data
-export type OrdersReturnXML = {
-  Orders: {
-    OrderVersion: number;
-    Order: Array<PowerPlanReturnOrderXML>;
-  };
-};
-
-// Return type of XML data
-export type PowerPlanReturnOrderXML = {
-  OrderableType: number;
-  OrderId: number;
-  SynonymId: number;
-  ClinCatCd: number;
-  CatalogTypeCd: number;
-  ActivityTypeCd: number;
-  OrderSentenceId: number;
-  RxMask: number;
-  HnaOrderMnemonic: string;
-  OrderedAsMnemonic: string;
-  OrderDtTm: string;
-  OrigOrderDtTm: string;
-  OrderMnemonic: string;
-  OrderStatusCd: number;
-  OrderStatusDisp: string;
-  ClinDisplayLine: string;
-  SimpleDisplayLine: string;
-  DeptStatusCd: number;
-  NeedDoctorCosignInd: number;
-  NeedPhysicianValidateInd: number;
-  NeedNurseReviewInd: number;
-  CommInd: number;
-  IngredientInd: number;
-  LastUpdtCnt: number;
-  MultipleOrdSentInd: number;
-  OrderActionId: number;
-  TemplateOrderFlag: number;
-  TemplateOrderId: number;
-  CsFlag: number;
-  CsOrderId: number;
-  OrderStatus: number;
-  SuspendInd: number;
-  ResumeInd: number;
-  OrderableTypeFlag: number;
-  RequiredInd: number;
-  ConstantInd: number;
-  PrnInd: number;
-  FreqTypeFlag: number;
-  HybridInd: number;
-  NeedRxVerifyFlag: number;
-  MedTypeCd: number;
-  LastActionSeq: number;
-  CommentTypeMask: number;
-  StopTypeCd: number;
-  ProviderId: number;
-  ProviderName: string;
-  CommunicationTypeCd: number;
-  CurrentStartDtTm: string;
-  ProjectedStopDtTm: string;
-  TimeZone: number;
-  OrigOrdAsFlag: number;
-  OrdCommentTemplateId: number;
-  DisableOrdCommentInd: number;
-  SuspendEffectiveDtTm: string;
-  ResumeEffectiveDtTm: string;
-  AdditiveCnt: number;
-  ClinSigDiluentCnt: number;
-  LinkNbr: number;
-  LinkTypeFlag: number;
-  SuperviseProviderId: number;
-  SuperviseProviderName: string;
-  BillingProvider: string;
-  RelatedOrderObjId: number;
-  ActionDtTm: string;
-  OeFormatId: number;
-  FmtActionCd: number;
-  SignedActionCd: number;
-  ActionType: number;
-  EncntrId: number;
-  ProcessMask: number;
-  CatalogCd: number;
-  ParentId: number;
-  ProjectedOrderId: number;
-  ProposalAcceptance: string;
-  ProposalId: number;
-  SignDtTm: string;
-  ActionDisplay: string;
-  SignedOrderStatusCd: number;
-  LastActionPrsnlId: number;
-  LastActionPrsnlName: string;
-  LastActionDtTm: string;
-  DetailList: DetailList;
-  ComplianceDetailList: string;
-  CommentList: CommentList;
-  AdHocFreqList: AdHocFreqList;
-  DiagnosisList: DiagnosisList;
-  CurrSchedExceptionList: string;
-  PrevSchedExceptionList: string;
-  OrigSchedExceptionList: string;
-  ResponsibleProviderId: number;
-  ResponsibleProviderName: string;
-  SuspendedDtTm: string;
-  RelatedFromOrderId: number;
-  OrderRelationTypeCd: number;
-  OrderRelationTypeMeaning: string;
-  OrderRelationTypeDisplay: string;
-  ProposalRejectReasonCd: number;
-  ProposalRejectReasonDisplay: string;
-  ProposalFreetextRejectReason: string;
-};
-
-//XML data return subtype
-export type FieldValueList = {
-  ListValues: {
-    FieldValue: number;
-    FieldDisplayValue: number;
-    FieldDtTmValue: string;
-  };
-};
-
-//XML data return subtype
-export type Detail = {
-  FieldValueList: FieldValueList;
-  OeFieldId: number;
-  OeFieldMeaning: string;
-  OeFieldMeaningId: number;
-  ValueRequiredInd: number;
-  GroupSeq: number;
-  FieldSeq: number;
-  ModifiedInd: number;
-  DetailAlterFlag: number;
-};
-
-//XML data return subtype
-export type DetailList = {
-  STRENGTHDOSE: Detail;
-  STRENGTHDOSEUNIT: Detail;
-  RXROUTE: Detail;
-  DRUGFORM: Detail;
-  FREQ: Detail;
-  'SCH.PRN': Detail;
-  OTHER: Detail[];
-  DURATION: Detail;
-  DURATIONUNIT: Detail;
-  REQSTARTDTTM: Detail;
-  STOPDTTM: Detail;
-  STOPTYPE: Detail;
-  FREQSCHEDID: Detail;
-  ADHOCFREQINSTANCE: Detail;
-  NEXTDOSEDTTM: Detail;
-  PHARMORDERTYPE: Detail;
-  DIFFINMIN: Detail;
-  ICD9: Detail;
-  INSTREPLACEREQUIREDDETS: Detail;
-  REFERENCESTARTDTTM: Detail;
-  DetailListCount: number;
-};
-
-//XML data return subtype
-export type CommentList = {
-  CommentValues: {
-    CommentType: number;
-    CommentText: string;
-  };
-};
-
-//XML data return subtype
-export type AdHocFreqList = {
-  CurrSchedList: string;
-  OrigSchedList: string;
-  PrevSchedList: string;
-};
-
-//XML data return subtype
-export type DiagnosisList = {
-  Diagnosis: {
-    DiagnosisId: number;
-    NomenclatureId: number;
-    SourceVocabularyCd: number;
-    SourceIdentifier: string;
-    DiagnosisDescription: string;
-    DiagnosisRanking: number;
-    SearchNomenclatureId: number;
-  };
-};
 
 //Return type of the entire function
 export type SubmitPowerPlanOrderReturn = {
   inPowerChart: boolean;
-  status: SubmitOrdersStatus;
-  response: OrdersReturnXML | null;
+  status: SubmitPowerPlanOrdersStatus;
   ordersPlaced: Array<{ name: string; oid: number; display: string }> | null;
 };

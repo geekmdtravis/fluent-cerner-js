@@ -4,7 +4,7 @@ import { outsideOfPowerChartError } from '../utils';
 /**
  * Displays the modal order entry window (MOEW).
  * @param {number} moewHandle - the handle to the MOEW.
- * @returns a `Promise` which resolves to an integer (0). This appears to be returned upon either a successful or unsuccessful launch.
+ * @returns a `Promise` which resolves to a PowerChartReturn and an integer indicating if orders were signed, 1, or 0 otherwise, converted to a Boolean.
  * @throws `Error` if an unexpected error occurs.
  */
 
@@ -13,7 +13,7 @@ export async function displayMOEWAsync(
 ): Promise<DisplayMOEWReturn> {
   let retData: DisplayMOEWReturn = {
     inPowerChart: true,
-    retval: 0,
+    signed: false,
   };
 
   // Create the DiscernObjectFactory and use that to call DisplayMOEW() with the handle from above
@@ -21,8 +21,8 @@ export async function displayMOEWAsync(
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     const response = await dcof.DisplayMOEW(moewHandle);
 
-    // Set the retValue equal to the return (which appears to always be 0)
-    retData.retval === response;
+    // Set the `signed` variable equal to the return, converted to a Boolean. 0 will return false, 1 will return true
+    retData.signed = Boolean(response);
   } catch (e) {
     //If outside of PowerChart, set the output to reflect that
     if (outsideOfPowerChartError(e)) {
@@ -38,5 +38,5 @@ export async function displayMOEWAsync(
 }
 
 export type DisplayMOEWReturn = PowerChartReturn & {
-  retval: number;
+  signed: boolean;
 };

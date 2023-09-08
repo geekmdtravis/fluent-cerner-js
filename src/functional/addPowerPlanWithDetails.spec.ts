@@ -10,7 +10,7 @@ describe('addPowerPlanWithDetailsAsync', () => {
 
     const expectedObj: AddPowerPlanWithDetailsReturn = {
       inPowerChart: false,
-      powerPlanAdded: false,
+      powerPlansAdded: false,
     };
 
     const resultObj = await addPowerPlanWithDetailsAsync(0, orders);
@@ -45,7 +45,7 @@ describe('addPowerPlanWithDetailsAsync', () => {
     const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
 
     const result = await addPowerPlanWithDetailsAsync(0, orders);
-    expect(result.powerPlanAdded).toEqual(true);
+    expect(result.powerPlansAdded).toEqual(true);
   });
 
   it('can create a powerplan with a personalized plan Id and a diagnosis code', async () => {
@@ -63,7 +63,7 @@ describe('addPowerPlanWithDetailsAsync', () => {
     ];
 
     const result = await addPowerPlanWithDetailsAsync(0, orders);
-    expect(result.powerPlanAdded).toEqual(true);
+    expect(result.powerPlansAdded).toEqual(true);
   });
 
   it('sets `powerPlanAdded` correctly if plans could not be added', async () => {
@@ -79,7 +79,7 @@ describe('addPowerPlanWithDetailsAsync', () => {
     const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
 
     const result = await addPowerPlanWithDetailsAsync(0, orders);
-    expect(result.powerPlanAdded).toEqual(false);
+    expect(result.powerPlansAdded).toEqual(false);
   });
 
   it('throws an error if an unexpected error occurs', async () => {

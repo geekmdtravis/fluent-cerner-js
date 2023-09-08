@@ -3,11 +3,11 @@ import { outsideOfPowerChartError } from '../utils';
 import { StandaloneOrder } from './submitPowerPlanOrders';
 
 /**
- * Attempts to add new standalone orders to the scratchpad.
- * @param {number} moewHandle - the handle to the MOEW.
- * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym Ids, order origination flags and, optionally, sentence Ids, for standalone orders to be placed.
- * @param {boolean} interactionChecking - A boolean value indicating whether or not order interaction checking should be performed. Strongly recommended to be true.
- * @returns a `Promise` which resolves to a string, indicating the status or not the standalone orders were successfully added
+ * Attempts to add new standalone orders to the scratchpad
+ * @param {number} moewHandle - the handle to the MOEW
+ * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym Ids, order origination flags and, optionally, sentence Ids, for standalone orders to be placed
+ * @param {boolean} interactionChecking - A boolean value indicating whether or not order interaction checking should be performed (strongly recommended to be set to true)
+ * @returns a `Promise` which resolves to a PowerChartReturn and string, indicating the result of whether or not standalone orders were successfully added
  * @throws `Error` if an unexpected error occurs or if the array provided is empty
  */
 export async function addNewOrdersToScratchpadAsync(

@@ -5,7 +5,7 @@ describe('displayMOEWAsync()', () => {
     const result = await displayMOEWAsync(1337);
     const expectedObj: DisplayMOEWReturn = {
       inPowerChart: false,
-      retval: 0,
+      signed: false,
     };
     expect(result).toEqual(expectedObj);
   });
@@ -20,7 +20,7 @@ describe('displayMOEWAsync()', () => {
       },
     });
     const result = await displayMOEWAsync(1337);
-    expect(result.retval).toEqual(0);
+    expect(result.signed).toEqual(false);
   });
 
   it('throws an error if an unexpected error occurs', async () => {
