@@ -2,12 +2,36 @@ import { XMLParser } from 'fast-xml-parser';
 import { outsideOfPowerChartError } from '../utils';
 import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
 
+export type PowerPlanMOEWFlags =
+  | 'add rx to filter'
+  | 'allow only inpatient and outpatient orders'
+  | 'allow power plan doc'
+  | 'allow power plans'
+  | 'allow regimen'
+  | 'customize meds'
+  | 'customize order'
+  | 'disable auto search'
+  | 'disallow EOL'
+  | 'documented meds only'
+  | 'read only'
+  | 'show demographics' // Cerner analog: 'hide demographics'
+  | 'show diag and probs'
+  | 'show list details'
+  | 'show med rec' // Cerner analog: 'hide med rec'
+  | 'show nav tree'
+  | 'show order profile'
+  | 'show orders search'
+  | 'show refresh and print buttons'
+  | 'show related res'
+  | 'show scratchpad'
+  | 'sign later';
+
 /**
  * PowerPlanMOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
  *
  * @param {string} orderType -  Should be set to 'order' or 'medications', indicating what type of orders will be submitted
  *
- * @param {Array<string>} moewFlags -  An optional array of flags to  customize the MOEW. If not provided, the values will default to the recommended values for the MOEW
+ * @param {Array<PowerPlanMOEWFlags>} moewFlags -  An optional array of flags to  customize the MOEW. If not provided, the values will default to the recommended values for the MOEW
  * with Power Plan support. If any values are provided, those will be the only values used.
  *
  * @action `add rx to filter` - Turns the prescription indicator on the default filter.
@@ -18,8 +42,8 @@ import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
  * @action `disable auto search` - Disables auto search.
  * @action `disallow EOL` - This option forces edit-on-line mode (which allows multi-selection) to be disabled.
  * @action `documented meds only` - Restricts the MOEW to only perform actions on documented medications.
- * @action `hide demographics` - Hides the demographics bar.
- * @action `hide med rec` - Hides medication reconiciliation controls.
+ * @action `show demographics` - Displays the demographics bar in the MOEW.
+ * @action `show med rec` - Displays medication reconiciliation controls in the MOEW.
  * @action `read only` - The MEOW will be read only.
  * @action `show diag and probs` -  Configures the MOEW such that the diagnoses/problem control menu is displayed.
  * @action `show list details` -  Configures the MOEW such that the order detail control is enabled. Note that this is required if adding any orders (if parameters are provided).
@@ -35,30 +59,7 @@ import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
  **/
 export type PowerPlanMOEWOpts = {
   orderType: 'order' | 'medications';
-  moewFlags?: Array<
-    | 'add rx to filter'
-    | 'allow only inpatient and outpatient orders'
-    | 'allow power plan doc'
-    | 'allow power plans'
-    | 'allow regimen'
-    | 'customize meds'
-    | 'customize order'
-    | 'disable auto search'
-    | 'disallow EOL'
-    | 'documented meds only'
-    | 'hide demographics'
-    | 'hide med rec'
-    | 'read only'
-    | 'show diag and probs'
-    | 'show list details'
-    | 'show nav tree'
-    | 'show order profile'
-    | 'show orders search'
-    | 'show refresh and print buttons'
-    | 'show related res'
-    | 'show scratchpad'
-    | 'sign later'
-  >;
+  moewFlags?: Array<PowerPlanMOEWFlags>;
 };
 
 export type StandaloneOrder = {
@@ -103,9 +104,9 @@ export type PowerPlanOrderOpts = {
  * an array of objects of either standalone orders or PowerPlan orders (each of which may contain
  * specific order properties), and a flag indicating whether or not the orders should be signed
  * silently.
- * @param {Array<PowerPlanMOEWOpts>} moewOpts - An (optional) array of strings defining the MOEW behavior.
- * If not provided, the values will default to the recommended values for the MOEW to be configured
- * with Power Plan support. If any values are provided, those will be the only values used.
+ * @param {PowerPlanMOEWOpts} moewOpts - The type of orders to be placed (prescription or order) as well as an (optional)
+ * array of strings defining the MOEW behavior/appearance. If not provided, the values will default to the recommended
+ * values for the MOEW to be configured with Power Plan support. If any values are provided, those will be the only values used.
  * @returns an object with several high value properties: a boolean flag set to notify the user if the
  * attempt was made outside of PowerChart, the `status` of the order attempt, an object
  * representing the XML response string (converted to an array of the orders placed with order `name`,

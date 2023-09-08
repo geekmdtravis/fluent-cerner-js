@@ -1,9 +1,37 @@
-import { PowerPlanMOEWOpts } from '../functional/submitPowerPlanOrders';
+import {
+  PowerPlanMOEWFlags,
+  PowerPlanMOEWOpts,
+} from '../functional/submitPowerPlanOrders';
+
+type CernerMOEWFlags =
+  | 'add rx to filter'
+  | 'allow only inpatient and outpatient orders'
+  | 'allow power plan doc'
+  | 'allow power plans'
+  | 'allow regimen'
+  | 'customize meds'
+  | 'customize order'
+  | 'disable auto search'
+  | 'disallow EOL'
+  | 'documented meds only'
+  | 'hide demographics'
+  | 'hide med rec'
+  | 'read only'
+  | 'show diag and probs'
+  | 'show list details'
+  | 'show nav tree'
+  | 'show order profile'
+  | 'show orders search'
+  | 'show refresh and print buttons'
+  | 'show related res'
+  | 'show scratchpad'
+  | 'sign later';
 
 /**
  * A utility function designed to calculate the bitmask for the input paramaters to be used with PowerChart's CreateMOEW() function.
- * @param {Array<PowerPlanMOEWOpts>} inputOpts - The plaintext parameters, passed as an array of strings, are optional and, if not provided, the values will default to the recommended values for the MOEW
- * with Power Plan support within createMOEWAsync(). If any values are provided, those will be the only values used.
+ * @param {PowerPlanMOEWOpts} inputOpts - The type of orders to be placed (prescription or order) as well as an (optional)
+ * array of strings defining the MOEW behavior/appearance. If not provided, the values will default to the recommended
+ * values for the MOEW to be configured with Power Plan support. If any values are provided, those will be the only values used.
  * @returns The bitmask numbers (dwCustomizeFlag, dwTabFlag, and dwTabDisplayOptionsFlag) to be used with PowerChart's CreateMOEW() function.
  */
 export const calculateMOEWBitmask = (
@@ -27,22 +55,47 @@ export const calculateMOEWBitmask = (
     dwTabFlag = 3;
   }
 
-  if (!inputOpts.moewFlags || inputOpts.moewFlags.length === 0) {
-    inputOpts.moewFlags = [
-      'allow power plans',
-      'allow power plan doc',
-      'show scratchpad',
-      'allow regimen',
-      'show list details',
-      'show orders search',
-      'hide demographics',
-      'show order profile',
-      'show refresh and print buttons',
-    ];
+  // If no MOEW options are provided, use recommended default settings
+  const defaultOpts: Array<PowerPlanMOEWFlags> = [
+    'allow power plans',
+    'allow power plan doc',
+    'show scratchpad',
+    'allow regimen',
+    'show list details',
+    'show orders search',
+    'show order profile',
+    'show refresh and print buttons',
+  ];
+
+  const userFlags =
+    !inputOpts.moewFlags || inputOpts.moewFlags.length === 0
+      ? defaultOpts
+      : inputOpts.moewFlags;
+
+  //Go through the flags provided by the user and convert them to Cerner analogs
+  //At time of last edit:
+  // - absence of `show demographics` causes `hide demographics` to be added to the bitmask calculation
+  // - absence of `show med rec` causes `hide med rec` to be added to the bitmask calculation
+
+  const cernerFlags: Array<CernerMOEWFlags> = [];
+  userFlags.forEach((flag: PowerPlanMOEWFlags) => {
+    if (flag == 'show demographics') {
+      return;
+    }
+    if (flag === 'show med rec') {
+      return;
+    }
+    return cernerFlags.push(flag as CernerMOEWFlags);
+  });
+  if (!userFlags.includes('show demographics')) {
+    cernerFlags.push('hide demographics');
+  }
+  if (!userFlags.includes('show med rec')) {
+    cernerFlags.push('hide med rec');
   }
 
-  // Calculate the other two parameters ultimately needed for CreateMOEW()
-  inputOpts.moewFlags.forEach(option => {
+  // Calculate the other two parameters (dwCustomizeFlag and dwTabDisplayOptionsFlag) that are also ultimately needed for CreateMOEW()
+  cernerFlags.forEach(option => {
     switch (option) {
       // Calculate the dwCustomizeFlagParamater
       case 'sign later':
