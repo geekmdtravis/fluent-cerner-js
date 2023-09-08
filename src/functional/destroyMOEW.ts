@@ -20,7 +20,9 @@ export async function destroyMOEWAsync(
   try {
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     const response = await dcof.DestroyMOEW(moewHandle);
+
     console.log('Response from DestroyMOEW() is: ', response);
+    
   } catch (e) {
     //If outside of PowerChart, set the output to reflect that
     if (outsideOfPowerChartError(e)) {

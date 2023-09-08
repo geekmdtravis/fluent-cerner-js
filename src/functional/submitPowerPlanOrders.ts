@@ -138,7 +138,7 @@ export const submitPowerPlanOrdersAsync = async (
   const m_bSignTimeInteractionChecking = true;
 
   //Create the return object with default values
-  let retVal: SubmitPowerPlanOrderReturn = {
+  let retData: SubmitPowerPlanOrderReturn = {
     inPowerChart: true,
     status: 'success',
     ordersPlaced: null,
@@ -246,15 +246,15 @@ export const submitPowerPlanOrdersAsync = async (
   } catch (e) {
     //Document the error depending on the type, and adjust the return object
     if (outsideOfPowerChartError(e)) {
-      retVal.inPowerChart = false;
-      retVal.ordersPlaced = [];
-      retVal.status = 'dry run';
+      retData.inPowerChart = false;
+      retData.ordersPlaced = [];
+      retData.status = 'dry run';
     } else {
       throw e;
     }
   }
 
-  return retVal;
+  return retData;
 };
 
 // Return type to signifiy status of order placing
