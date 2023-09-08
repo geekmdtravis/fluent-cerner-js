@@ -14,8 +14,8 @@ import { outsideOfPowerChartError } from '../utils';
  */
 
 export async function createMOEWAsync(
-  pid: number,
-  eid: number,
+  personId: number,
+  encounterId: number,
   dwCustomizeFlag: number,
   dwTabFlag: number,
   dwTabDisplayOptionsFlag: number
@@ -29,8 +29,8 @@ export async function createMOEWAsync(
   try {
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     const response = await dcof.CreateMOEW(
-      pid,
-      eid,
+      personId,
+      encounterId,
       dwCustomizeFlag,
       dwTabFlag,
       dwTabDisplayOptionsFlag
