@@ -1,11 +1,11 @@
-import { SignOrdersReturn, signOrdersAsync } from './signOrders';
+import { PowerChartReturn } from '.';
+import { signOrdersAsync } from './signOrders';
 
 describe('signOrdersAsync()', () => {
   it('runs outside of powerchart', async () => {
     const result = await signOrdersAsync(1337);
-    const expectedObj: SignOrdersReturn = {
+    const expectedObj: PowerChartReturn = {
       inPowerChart: false,
-      retval: 1,
     };
     expect(result).toEqual(expectedObj);
   });
@@ -20,7 +20,7 @@ describe('signOrdersAsync()', () => {
       },
     });
     const result = await signOrdersAsync(1337);
-    expect(result.retval).toEqual(1);
+    expect(result.inPowerChart).toEqual(true);
   });
 
   it('throws an error if an unexpected error occurs', async () => {

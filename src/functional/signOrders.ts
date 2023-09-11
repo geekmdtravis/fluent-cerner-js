@@ -4,16 +4,17 @@ import { outsideOfPowerChartError } from '../utils';
 /**
  * Attempts to silently sign orders on the scratchpad. If the orders cannot be signed silently, will display the MOEW.
  * @param {number} moewHandle - the handle to the MOEW.
- * @returns a `Promise` which resolves to a PowerChartReturn and an integer: 0 if called with invalid/improperly structured paramters, and 1 otherwise.
+ * @returns a `Promise` which resolves to a PowerChartReturn.
+ * @description The value returned by SignOrders() is not used and is not believed to be meaningful, but is logged to the console for development purposes.
+ * In our testing, a 0 is returned if an improper MOEW handle is provided, but a 1 is returned otherwise (any time SignOrders() is called).
  * @throws `Error` if an unexpected error occurs.
  */
 
 export async function signOrdersAsync(
   moewHandle: number
-): Promise<SignOrdersReturn> {
-  let retData: SignOrdersReturn = {
+): Promise<PowerChartReturn> {
+  let retData: PowerChartReturn = {
     inPowerChart: true,
-    retval: 1,
   };
 
   // Create the DiscernObjectFactory and use that to call signOrders() with the handle from above
@@ -21,8 +22,8 @@ export async function signOrdersAsync(
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     const response = await dcof.SignOrders(moewHandle);
 
-    // Set the retValue equal to the return (which appears to always be 0)
-    retData.retval === response;
+    // Log the return value for development purposes
+    console.log('Response from SignMOEW() is: ', response);
   } catch (e) {
     //If outside of PowerChart, set the output to reflect that
     if (outsideOfPowerChartError(e)) {
@@ -36,7 +37,3 @@ export async function signOrdersAsync(
   // Return the retData object when complete
   return retData;
 }
-
-export type SignOrdersReturn = PowerChartReturn & {
-  retval: number;
-};
