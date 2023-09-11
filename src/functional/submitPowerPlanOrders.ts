@@ -1,6 +1,22 @@
+import { PowerChartReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
 import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
-import { SubmitPowerPlanOrdersStatus } from './getXMLOrdersMOEW';
+import {
+  AddNewOrdersToScratchpadReturn,
+  addNewOrdersToScratchpadAsync,
+} from './addNewOrdersToScratchPad';
+import {
+  AddPowerPlanWithDetailsReturn,
+  addPowerPlanWithDetailsAsync,
+} from './addPowerPlanWithDetails';
+import { CreateMOEWReturn, createMOEWAsync } from './createMOEW';
+import { DisplayMOEWReturn, displayMOEWAsync } from './displayMOEW';
+import {
+  GetXMLReturn,
+  SubmitPowerPlanOrdersStatus,
+  getXMLOrdersMOEWAsync,
+} from './getXMLOrdersMOEW';
+import { signOrdersAsync } from './signOrders';
 
 export type PowerPlanMOEWFlags =
   | 'add rx to filter'
@@ -55,7 +71,7 @@ export type PowerPlanMOEWFlags =
  * @action `show scratchpad` -  Configures the MOEW such that the scratchpad is displayed. Note that this is required if adding any orders (if parameters are provided).
  * @action `sign later` - Sign later functionality will be allowed from the MOEW.
  *
- * @documentation [POWERORDERS - CREATEMOEW](https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
+ * @documentation [POWERORDERS - CREATEMOEW] (https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
  **/
 export type PowerPlanMOEWOpts = {
   orderType: 'order' | 'medications';
@@ -88,6 +104,8 @@ export type PowerPlanOrder = {
  *
  * @param {boolean} signSilently - A boolean indicating whether or not a "silent sign" should be attempted.
  *
+ *  @param {boolean} interactionChecking - A boolean indicating whether or not interaction checking (to standalone orders only) should be performed. *Strongly* recommended to be TRUE.
+ *
  * @documentation [POWERORDERS - AddPowerPlanWithDetails](https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
  **/
 export type PowerPlanOrderOpts = {
@@ -96,6 +114,7 @@ export type PowerPlanOrderOpts = {
   standaloneOrders?: Array<StandaloneOrder>;
   powerPlanOrders?: Array<PowerPlanOrder>;
   signSilently: boolean;
+  interactionChecking: boolean;
 };
 
 /**
@@ -104,10 +123,10 @@ export type PowerPlanOrderOpts = {
  * an array of objects of either standalone orders or PowerPlan orders (each of which may contain
  * specific order properties), and a flag indicating whether or not the orders should be signed
  * silently.
- * @param {PowerPlanMOEWOpts} moewOpts - The type of orders to be placed (prescription or order) as well as an (optional)
+ * @param {PowerPlanMOEWOpts} moewOpts - An object containing the type of orders to be placed (medications or order) as well as an (optional)
  * array of strings defining the MOEW behavior/appearance. If not provided, the values will default to the recommended
  * values for the MOEW to be configured with Power Plan support. If any values are provided, those will be the only values used.
- * @returns an object with several high value properties: a boolean flag set to notify the user if the
+ * @returns {SubmitPowerPlanOrderReturn} - an object with several high value properties: a boolean flag set to notify the user if the
  * attempt was made outside of PowerChart, the `status` of the order attempt, an object
  * representing the XML response string (converted to an array of the orders placed with order `name`,
  * `oid`, and `display` available for each), and the XML/response string itself (which is attempted to be parsed).
@@ -134,8 +153,8 @@ export const submitPowerPlanOrdersAsync = async (
     dwTabDisplayOptionsFlag,
   } = calculateMOEWBitmask(moewOpts);
 
-  //Enable interaction checking (will hardcode to true for safety)
-  const m_bSignTimeInteractionChecking = true;
+  //Obtain user's chosen interaction checking setting
+  const m_bSignTimeInteractionChecking = orderOpts.interactionChecking;
 
   //Create the return object with default values
   let retData: SubmitPowerPlanOrderReturn = {
@@ -154,95 +173,178 @@ export const submitPowerPlanOrdersAsync = async (
     );
   }
 
-  //Hold information regarding any standalone or PowerPlan orders
-  let standaloneOrdersXML: string = '';
-
-  let powerPlanOrdersXML: string = '';
-
-  //Prepare the XML strings for input to AddNewOrdersToScatchPadAddPowerPlanWithDetails()
-  if (standaloneOrders && standaloneOrders.length >= 1) {
-    standaloneOrders.forEach(standaloneOrder => {
-      standaloneOrdersXML += `<Order><EOrderOriginationFlag>${
-        standaloneOrder.origination === 'inpatient order' ? 0 : 1
-      }</EOrderOriginationFlag><SynonymId>${
-        standaloneOrder.synonymId
-      }</SynonymId>
-      <OrderSentenceId>${
-        standaloneOrder.sentenceId ? standaloneOrder.sentenceId : ''
-      }</OrderSentenceId></Order>`;
-    });
-
-    //Add <Orders> to beginning & end of the Standalone Order XML
-    standaloneOrdersXML = '<Orders>' + standaloneOrdersXML;
-    standaloneOrdersXML += '</Orders>';
-  }
-
-  if (powerPlanOrders && powerPlanOrders.length >= 1) {
-    powerPlanOrders.forEach(powerPlanOrder => {
-      powerPlanOrdersXML += `<Plan><PathwayCatalogId>${
-        powerPlanOrder.pathwayCatalogId
-      }</PathwayCatalogId><PersonalizedPlanId>${
-        powerPlanOrder.personalizedPlanId
-          ? powerPlanOrder.personalizedPlanId
-          : ''
-      }</PersonalizedPlanId><Diagnoses>
-    ${
-      powerPlanOrder.diagnoses
-        ? powerPlanOrder.diagnoses.map(diagnosis => {
-            return '<DiagnosisId>' + diagnosis + '</DiagnosisId>';
-          })
-        : ''
-    }
-    </Diagnoses></Plan>`;
-    });
-
-    //Add <Plans> to beginning & end of PowerPlan XML
-    powerPlanOrdersXML = '<Plans>' + powerPlanOrdersXML;
-    powerPlanOrdersXML += '</Plans>';
-  }
-
   try {
-    //Create the DiscernObjectFactory - POWERORDERS object
-    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
-
     //Initialize the MOEW handle
-    let m_hMOEW = 0;
+    let m_hMOEW: number = 0;
 
     //Create the MOEW
-    m_hMOEW = await dcof.CreateMOEW(
-      personId,
-      encounterId,
-      dwCustomizeFlag,
-      dwTabFlag,
-      dwTabDisplayOptionsFlag
-    );
+    try {
+      const createMOEW: CreateMOEWReturn = await createMOEWAsync(
+        personId,
+        encounterId,
+        dwCustomizeFlag,
+        dwTabFlag,
+        dwTabDisplayOptionsFlag
+      );
+
+      //If not in power chart, state so and return
+      if (createMOEW.inPowerChart === false) {
+        retData.inPowerChart = false;
+        retData.ordersPlaced = [];
+        retData.status = 'dry run';
+        return retData;
+      }
+
+      //If an improper MOEW handle was generated, state so
+      if (createMOEW.moewHandle === null) {
+        retData.inPowerChart = true;
+        retData.ordersPlaced = [];
+        retData.status = 'invalid data returned';
+        return retData;
+      }
+
+      //Update the MOEW handle once verified to be valid
+      m_hMOEW = createMOEW.moewHandle;
+    } catch (e) {
+      throw e;
+    }
 
     //Add PowerPlan orders (if present)
     if (powerPlanOrders && powerPlanOrders.length >= 1) {
-      await dcof.AddPowerPlanWithDetails(m_hMOEW, powerPlanOrdersXML);
+      try {
+        const addPowerPlans: AddPowerPlanWithDetailsReturn = await addPowerPlanWithDetailsAsync(
+          m_hMOEW,
+          powerPlanOrders
+        );
+
+        //If not in PowerChart, state so and return
+        if (addPowerPlans.inPowerChart === false) {
+          retData.inPowerChart = false;
+          retData.ordersPlaced = [];
+          retData.status = 'dry run';
+          return retData;
+        }
+
+        //If failed to add PowerPlans, state so and return
+        if (addPowerPlans.powerPlansAdded === false) {
+          retData.inPowerChart = true;
+          retData.ordersPlaced = [];
+          retData.status = 'cancelled, failed, or invalid parameters provided';
+          return retData;
+        }
+      } catch (e) {
+        throw e;
+      }
     }
 
     //Add standalone orders (if present)
     if (standaloneOrders && standaloneOrders.length >= 1) {
-      await dcof.AddNewOrdersToScratchpad(
-        m_hMOEW,
-        standaloneOrdersXML,
-        m_bSignTimeInteractionChecking
-      );
+      try {
+        const addStandaloneOrders: AddNewOrdersToScratchpadReturn = await addNewOrdersToScratchpadAsync(
+          m_hMOEW,
+          standaloneOrders,
+          m_bSignTimeInteractionChecking
+        );
+
+        //If not in PowerChart, state so and return
+        if (addStandaloneOrders.inPowerChart === false) {
+          retData.inPowerChart = false;
+          retData.ordersPlaced = [];
+          retData.status = 'dry run';
+          return retData;
+        }
+
+        //If failed to add standalone orders, state so and return
+        if (
+          addStandaloneOrders.result === 'add failed' ||
+          addStandaloneOrders.result === 'cancelled by user'
+        ) {
+          retData.inPowerChart = true;
+          retData.ordersPlaced = [];
+          retData.status = 'cancelled, failed, or invalid parameters provided';
+          return retData;
+        }
+      } catch (e) {
+        throw e;
+      }
     }
 
-    //Display the MOEW
-    await dcof.DisplayMOEW(m_hMOEW);
+    //Display the MOEW (if user has chosen to not silent sign)
+    if (signSilently === false) {
+      try {
+        const displayMOEW: DisplayMOEWReturn = await displayMOEWAsync(m_hMOEW);
 
-    //Sign orders silently (if enalbed)
+        //If not in PowerChart, state so and return
+        if (displayMOEW.inPowerChart === false) {
+          retData.inPowerChart = false;
+          retData.ordersPlaced = [];
+          retData.status = 'dry run';
+          return retData;
+        }
+
+        //If the orders are not signed by the user for some reason, state so
+        if (displayMOEW.signed === false) {
+          retData.inPowerChart = true;
+          retData.ordersPlaced = [];
+          retData.status = 'cancelled, failed, or invalid parameters provided';
+          return retData;
+        }
+      } catch (e) {
+        throw e;
+      }
+    }
+
+    //Try to sign orders silently (if chosen by user)
     if (signSilently === true) {
-      await dcof.SignOrders(m_hMOEW);
+      try {
+        const signOrders: PowerChartReturn = await signOrdersAsync(m_hMOEW);
+
+        //If not in PowerChart, state so and return
+        if (signOrders.inPowerChart === false) {
+          retData.inPowerChart = false;
+          retData.ordersPlaced = [];
+          retData.status = 'dry run';
+          return retData;
+        }
+      } catch (e) {
+        throw e;
+      }
     }
 
-    //Destroy the MOEW at the end of the ordering process.
-    await dcof.DestroyMOEW(m_hMOEW);
+    //Obtain the XML return information
+    try {
+      const getXML: GetXMLReturn = await getXMLOrdersMOEWAsync(m_hMOEW);
 
-    //Obtain the XML return string
+      //If not in PowerChart, state so and return
+      if (getXML.inPowerChart === false) {
+        retData.inPowerChart = false;
+        retData.ordersPlaced = [];
+        retData.status = 'dry run';
+        return retData;
+      }
+
+      //If no orders placed, state so and return
+      if (getXML.ordersPlaced === null || getXML.ordersPlaced.length === 0) {
+        retData.inPowerChart = true;
+        retData.ordersPlaced = null;
+        retData.status = getXML.status;
+        return retData;
+      }
+
+      //Otherwise, obtain the data from the XML call to ultimately return back
+      retData.inPowerChart = true;
+      retData.ordersPlaced = getXML.ordersPlaced;
+      retData.status = getXML.status;
+    } catch (e) {
+      throw e;
+    }
+
+    //Destroy the MOEW at the end of the ordering process (and after obtaining our XML)
+    try {
+      await displayMOEWAsync(m_hMOEW);
+    } catch (e) {
+      throw e;
+    }
   } catch (e) {
     //Document the error depending on the type, and adjust the return object
     if (outsideOfPowerChartError(e)) {
@@ -254,10 +356,9 @@ export const submitPowerPlanOrdersAsync = async (
     }
   }
 
+  //Return the final data
   return retData;
 };
-
-// Return type to signifiy status of order placing
 
 //Return type of the entire function
 export type SubmitPowerPlanOrderReturn = {
