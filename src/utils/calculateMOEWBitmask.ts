@@ -79,7 +79,7 @@ export const calculateMOEWBitmask = (
 
   const cernerFlags: Array<CernerMOEWFlags> = [];
   userFlags.forEach((flag: PowerPlanMOEWFlags) => {
-    if (flag == 'show demographics') {
+    if (flag === 'show demographics') {
       return;
     }
     if (flag === 'show med rec') {
