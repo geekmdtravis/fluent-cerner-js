@@ -74,7 +74,7 @@ export async function getXMLOrdersMOEWAsync(
   return retData;
 }
 
-export type SubmitPowerPlanOrdersStatus =
+export type SubmitPowerOrdersStatus =
   | 'success'
   | 'cancelled, failed, or invalid parameters provided'
   | 'invalid data returned'
@@ -85,19 +85,19 @@ export type GetXMLReturn = PowerChartReturn & {
   ordersPlaced: Array<{ name: string; oid: number; display: string }> | null;
   parsedXML: OrdersReturnXML | null;
   rawXML: string;
-  status: SubmitPowerPlanOrdersStatus;
+  status: SubmitPowerOrdersStatus;
 };
 
 // Return type to contain the orders placed and associated XML data
 export type OrdersReturnXML = {
   Orders: {
     OrderVersion: number;
-    Order: Array<PowerPlanReturnOrderXML>;
+    Order: Array<PowerOrderReturnOrderXML>;
   };
 };
 
 // Return type of XML data
-export type PowerPlanReturnOrderXML = {
+export type PowerOrderReturnOrderXML = {
   OrderableType: number;
   OrderId: number;
   SynonymId: number;

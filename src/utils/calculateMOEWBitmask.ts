@@ -1,7 +1,7 @@
 import {
-  PowerPlanMOEWFlags,
-  PowerPlanMOEWOpts,
-} from '../functional/submitPowerPlanOrders';
+  PowerOrdersMOEWFlags,
+  PowerOrdersMOEWOpts,
+} from '../functional/submitPowerOrders';
 
 type CernerMOEWFlags =
   | 'add rx to filter'
@@ -29,13 +29,13 @@ type CernerMOEWFlags =
 
 /**
  * A utility function designed to calculate the bitmask for the input paramaters to be used with PowerChart's CreateMOEW() function.
- * @param {PowerPlanMOEWOpts} inputOpts - The type of orders to be placed (prescription or order) as well as an (optional)
- * array of strings defining the MOEW behavior/appearance. If not provided, the values will default to the recommended
- * values for the MOEW to be configured with Power Plan support. If any values are provided, those will be the only values used.
+ * @param {PowerOrdersMOEWOpts} inputOpts - An object containing the type of orders to be placed (medications or order) as well as an (optional)
+ * array of strings defining the MOEW behavior/appearance. If not provided, the values will default to the the order setting as well as recommended
+ * values for the MOEW to be configured with PowerPlan support. If any values are provided, those will be the only values used.
  * @returns The bitmask numbers (dwCustomizeFlag, dwTabFlag, and dwTabDisplayOptionsFlag) to be used with PowerChart's CreateMOEW() function.
  */
 export const calculateMOEWBitmask = (
-  inputOpts: PowerPlanMOEWOpts
+  inputOpts: PowerOrdersMOEWOpts
 ): {
   dwCustomizeFlag: number;
   dwTabFlag: number;
@@ -56,7 +56,7 @@ export const calculateMOEWBitmask = (
   }
 
   // If no MOEW options are provided, use recommended default settings
-  const defaultOpts: Array<PowerPlanMOEWFlags> = [
+  const defaultOpts: Array<PowerOrdersMOEWFlags> = [
     'allow power plans',
     'allow power plan doc',
     'show scratchpad',
@@ -78,7 +78,7 @@ export const calculateMOEWBitmask = (
   // - absence of `show med rec` causes `hide med rec` to be added to the bitmask calculation
 
   const cernerFlags: Array<CernerMOEWFlags> = [];
-  userFlags.forEach((flag: PowerPlanMOEWFlags) => {
+  userFlags.forEach((flag: PowerOrdersMOEWFlags) => {
     if (flag === 'show demographics') {
       return;
     }

@@ -2,7 +2,7 @@ import {
   AddNewOrdersToScratchpadReturn,
   addNewOrdersToScratchpadAsync,
 } from './addNewOrdersToScratchPad';
-import { StandaloneOrder } from './submitPowerPlanOrders';
+import { StandaloneOrder } from './submitPowerOrders';
 
 describe('addNewOrdersToScratchpadAsync', () => {
   it('runs outside of powerchart and correctly outputs as such', async () => {

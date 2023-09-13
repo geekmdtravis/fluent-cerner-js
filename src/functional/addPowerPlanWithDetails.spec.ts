@@ -2,7 +2,7 @@ import {
   AddPowerPlanWithDetailsReturn,
   addPowerPlanWithDetailsAsync,
 } from './addPowerPlanWithDetails';
-import { PowerPlanOrder } from './submitPowerPlanOrders';
+import { PowerPlanOrder } from './submitPowerOrders';
 
 describe('addPowerPlanWithDetailsAsync', () => {
   it('runs outside of powerchart and correctly outputs as such', async () => {

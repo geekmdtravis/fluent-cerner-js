@@ -13,12 +13,12 @@ import { CreateMOEWReturn, createMOEWAsync } from './createMOEW';
 import { DisplayMOEWReturn, displayMOEWAsync } from './displayMOEW';
 import {
   GetXMLReturn,
-  SubmitPowerPlanOrdersStatus,
+  SubmitPowerOrdersStatus,
   getXMLOrdersMOEWAsync,
 } from './getXMLOrdersMOEW';
 import { signOrdersAsync } from './signOrders';
 
-export type PowerPlanMOEWFlags =
+export type PowerOrdersMOEWFlags =
   | 'add rx to filter'
   | 'allow only inpatient and outpatient orders'
   | 'allow power plan doc'
@@ -47,7 +47,7 @@ export type PowerPlanMOEWFlags =
  *
  * @param {string} orderType -  Should be set to 'order' or 'medications', indicating what type of orders will be submitted
  *
- * @param {Array<PowerPlanMOEWFlags>} moewFlags -  An optional array of flags to  customize the MOEW. If not provided, the values will default to the recommended values for the MOEW
+ * @param {Array<PowerOrdersMOEWFlags>} moewFlags -  An optional array of flags to  customize the MOEW. If not provided, the values will default to the recommended values for the MOEW
  * with Power Plan support. If any values are provided, those will be the only values used.
  *
  * @action `add rx to filter` - Turns the prescription indicator on the default filter.
@@ -73,9 +73,9 @@ export type PowerPlanMOEWFlags =
  *
  * @documentation [POWERORDERS - CREATEMOEW] (https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
  **/
-export type PowerPlanMOEWOpts = {
+export type PowerOrdersMOEWOpts = {
   orderType: 'order' | 'medications';
-  moewFlags?: Array<PowerPlanMOEWFlags>;
+  moewFlags?: Array<PowerOrdersMOEWFlags>;
 };
 
 export type StandaloneOrder = {
@@ -91,60 +91,56 @@ export type PowerPlanOrder = {
 };
 
 /**
- * PowerPlanOrderOpts is a type which represents the parameters to be be passed into the AddPowerPlanWithDetails() function.
- * @param {number} personId - The identifier for the patient.
- * Cerner context variable: PAT_PersonId.
+ * PowerOrdersOrderOpts is a type which allows the user to choose settings (silent sign and interaction checking) that impact the manner in which order(s) are placed.
  *
- * @param {number} encounterId - The identifier for the encounter belonging to the patient where
- * this order will be placed. Cerner context variable: VIS_EncntrId.
+ * @param {boolean} signSilently - A boolean indicating whether or not a silent sign should be attempted.
  *
- * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym Ids, order origination flags and, optionally, sentence Ids, for standalone orders to be placed. Either this, `powerPlanOrders,` or both, should be present.
+ * @param {boolean} standaloneOrderInteractionChecking - A boolean indicating whether or not interaction checking (for standalone orders only) should be performed. *Strongly* recommended to be TRUE.
  *
- * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog Ids and, optionally, personalized plan Ids and diagnosis code Ids, for PowerPlan orders to be placed. Either this, `standaloneOrders,` or both, should be present.
- *
- * @param {boolean} signSilently - A boolean indicating whether or not a "silent sign" should be attempted.
- *
- *  @param {boolean} interactionChecking - A boolean indicating whether or not interaction checking (to standalone orders only) should be performed. *Strongly* recommended to be TRUE.
- *
- * @documentation [POWERORDERS - AddPowerPlanWithDetails](https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
+ * @documentation [POWERORDERS - AddPowerPlanWithDetails] (https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
  **/
-export type PowerPlanOrderOpts = {
-  personId: number;
-  encounterId: number;
-  standaloneOrders?: Array<StandaloneOrder>;
-  powerPlanOrders?: Array<PowerPlanOrder>;
+export type PowerOrdersOrderOpts = {
   signSilently: boolean;
-  interactionChecking: boolean;
+  standaloneOrderInteractionChecking: boolean;
 };
 
 /**
  * Submits a combination of standalone orders and/or PowerPlan orders by utilizing underlying Cerner - POWERORDERS functionality.
- * @param {PowerPlanOrderOpts} orderOpts - An object containing the person/patient Id, encounter Id,
- * an array of objects of either standalone orders or PowerPlan orders (each of which may contain
- * specific order properties), and a flag indicating whether or not the orders should be signed
- * silently.
- * @param {PowerPlanMOEWOpts} moewOpts - An object containing the type of orders to be placed (medications or order) as well as an (optional)
- * array of strings defining the MOEW behavior/appearance. If not provided, the values will default to the recommended
- * values for the MOEW to be configured with Power Plan support. If any values are provided, those will be the only values used.
- * @returns {SubmitPowerPlanOrderReturn} - an object with several high value properties: a boolean flag set to notify the user if the
+ *
+ * @param {number} personId - The identifier for the patient. Cerner context variable: PAT_PersonId.
+ * @param {number} encounterId - The identifier for the encounter belonging to the patient where
+ * this order will be placed. Cerner context variable: VIS_EncntrId.
+ * @param {Array<StandaloneOrder | PowerPlanOrder>} orders - An array of `StandaloneOrder` and/or `PowerPlanOrder`
+ * objects, representing orders to be placed.
+ * @param {PowerOrdersOpts} orderOpts - An *optional* object containg a flag indicating whether or not the orders should be signed
+ * silently and whether interaction checking should be performed for standalone orders. Defaults to no silent signing and interaction checking if not provided.
+ * @param {PowerOrdersMOEWOpts} moewOpts - An *optional* object containing the type of orders to be placed (medications or order) as well as an (optional)
+ * array of strings defining the MOEW behavior/appearance. If not provided, the values will default to the the order setting as well as recommended
+ * values for the MOEW to be configured with PowerPlan support. If any values are provided, those will be the only values used.
+ * @returns {SubmitPowerOrdersReturn} - an object with several high value properties: a boolean flag set to notify the user if the
  * attempt was made outside of PowerChart, the `status` of the order attempt, an object
  * representing the XML response string (converted to an array of the orders placed with order `name`,
  * `oid`, and `display` available for each), and the XML/response string itself (which is attempted to be parsed).
  * @throws an error if an unexpected error occurs that could not be handled appropriately.
  *
- * @documentation [POWERORDERS](https://wiki.cerner.com/display/public/MPDEVWIKI/POWERORDERS)
+ * @documentation [POWERORDERS] (https://wiki.cerner.com/display/public/MPDEVWIKI/POWERORDERS)
  */
-export const submitPowerPlanOrdersAsync = async (
-  orderOpts: PowerPlanOrderOpts,
-  moewOpts: PowerPlanMOEWOpts
-): Promise<SubmitPowerPlanOrderReturn> => {
-  const {
-    personId,
-    encounterId,
-    standaloneOrders,
-    powerPlanOrders,
-    signSilently,
-  } = orderOpts;
+export const submitPowerOrdersAsync = async (
+  personId: number,
+  encounterId: number,
+  orders: Array<StandaloneOrder | PowerPlanOrder>,
+  orderOpts?: PowerOrdersOrderOpts,
+  moewOpts?: PowerOrdersMOEWOpts
+): Promise<SubmitPowerOrdersReturn> => {
+  //If orderOpts is not provided, default parameters chosen, otherwise just use the provided object
+  orderOpts = !orderOpts
+    ? { signSilently: false, standaloneOrderInteractionChecking: true }
+    : orderOpts;
+
+  //If moewOpts is not provided, default parameters chosen, otherwise just use the provided object
+  moewOpts = !moewOpts
+    ? { orderType: 'order', moewFlags: undefined }
+    : moewOpts;
 
   // Calculate the CreateMOEW() parameters
   const {
@@ -153,25 +149,40 @@ export const submitPowerPlanOrdersAsync = async (
     dwTabDisplayOptionsFlag,
   } = calculateMOEWBitmask(moewOpts);
 
-  //Obtain user's chosen interaction checking setting
-  const m_bSignTimeInteractionChecking = orderOpts.interactionChecking;
+  //Obtain user's chosen interaction checking setting & silent sign setting
+  const m_bSignTimeInteractionChecking =
+    orderOpts.standaloneOrderInteractionChecking;
+  const signSilently = orderOpts.signSilently;
 
   //Create the return object with default values
-  let retData: SubmitPowerPlanOrderReturn = {
+  let retData: SubmitPowerOrdersReturn = {
     inPowerChart: true,
     status: 'success',
     ordersPlaced: null,
   };
 
-  //If no standalone orders AND no PowerPlan orders are provided, throw an error
-  if (
-    (!standaloneOrders || standaloneOrders.length < 1) &&
-    (!powerPlanOrders || powerPlanOrders.length < 1)
-  ) {
+  //If no orders are provided, throw an error
+  if (orders.length < 1) {
     throw new SyntaxError(
-      'At least one standalone order or one PowerPlan order to submit must be provided to this function.'
+      'At least one standalone order to submit must be provided to this function.'
     );
   }
+
+  //Split the orders array into two separate arrays, depending on each element's type
+  let powerPlanOrders: Array<PowerPlanOrder> = [];
+  let standaloneOrders: Array<StandaloneOrder> = [];
+
+  orders.forEach(order => {
+    if (isPowerPlanOrder(order)) {
+      powerPlanOrders.push(order as PowerPlanOrder);
+    } else if (isStandaloneOrder(order)) {
+      standaloneOrders.push(order as StandaloneOrder);
+    } else {
+      throw new SyntaxError(
+        'Each order provided must be of either a PowerPlanOrder or  StandaloneOrder type.'
+      );
+    }
+  });
 
   try {
     //Initialize the MOEW handle
@@ -361,8 +372,17 @@ export const submitPowerPlanOrdersAsync = async (
 };
 
 //Return type of the entire function
-export type SubmitPowerPlanOrderReturn = {
+export type SubmitPowerOrdersReturn = {
   inPowerChart: boolean;
-  status: SubmitPowerPlanOrdersStatus;
+  status: SubmitPowerOrdersStatus;
   ordersPlaced: Array<{ name: string; oid: number; display: string }> | null;
+};
+
+//Helper functions to determine order type
+const isPowerPlanOrder = (o: PowerPlanOrder | StandaloneOrder): boolean => {
+  return o.hasOwnProperty('pathwayCatalogId');
+};
+
+const isStandaloneOrder = (o: PowerPlanOrder | StandaloneOrder): boolean => {
+  return o.hasOwnProperty('synonymId') && o.hasOwnProperty('origination');
 };
