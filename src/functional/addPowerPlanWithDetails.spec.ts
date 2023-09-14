@@ -59,7 +59,11 @@ describe('addPowerPlanWithDetailsAsync', () => {
     });
 
     const orders: Array<PowerPlanOrder> = [
-      { pathwayCatalogId: 1337, personalizedPlanId: 31337, diagnoses: [12] },
+      {
+        pathwayCatalogId: 1337,
+        personalizedPlanId: 31337,
+        diagnosesSynonymIds: [12],
+      },
     ];
 
     const result = await addPowerPlanWithDetailsAsync(0, orders);

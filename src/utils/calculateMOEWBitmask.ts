@@ -1,7 +1,4 @@
-import {
-  PowerOrdersMOEWFlags,
-  PowerOrdersMOEWOpts,
-} from '../functional/submitPowerOrders';
+import { PowerOrdersMOEWFlags } from '../functional/submitPowerOrders';
 
 type CernerMOEWFlags =
   | 'add rx to filter'
@@ -35,7 +32,8 @@ type CernerMOEWFlags =
  * @returns The bitmask numbers (dwCustomizeFlag, dwTabFlag, and dwTabDisplayOptionsFlag) to be used with PowerChart's CreateMOEW() function.
  */
 export const calculateMOEWBitmask = (
-  inputOpts: PowerOrdersMOEWOpts
+  orderType: 'order' | 'medications',
+  inputFlags: Array<PowerOrdersMOEWFlags>
 ): {
   dwCustomizeFlag: number;
   dwTabFlag: number;
@@ -47,11 +45,11 @@ export const calculateMOEWBitmask = (
   let dwTabDisplayOptionsFlag: number = 0;
 
   // Calculate the dwTabFlag parameter
-  if (inputOpts.orderType === 'order') {
+  if (orderType === 'order') {
     dwTabFlag = 2;
   }
 
-  if (inputOpts.orderType === 'medications') {
+  if (orderType === 'medications') {
     dwTabFlag = 3;
   }
 
@@ -68,9 +66,7 @@ export const calculateMOEWBitmask = (
   ];
 
   const userFlags =
-    !inputOpts.moewFlags || inputOpts.moewFlags.length === 0
-      ? defaultOpts
-      : inputOpts.moewFlags;
+    !inputFlags || inputFlags.length === 0 ? defaultOpts : inputFlags;
 
   //Go through the flags provided by the user and convert them to Cerner analogs
   //At time of last edit:

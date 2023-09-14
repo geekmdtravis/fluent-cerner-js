@@ -18,6 +18,31 @@ import {
 } from './getXMLOrdersMOEW';
 import { signOrdersAsync } from './signOrders';
 
+/**
+ * PowerOrdersMOEWFlags is a type which represents an optional array of flags to  customize the MOEW. If not provided, the values will default to the recommended values for the MOEW
+ * with PowerPlan support. If any values are provided, those will be the only values used by submitPowerOrdersAsync().
+ * @action `add rx to filter` - Turns the prescription indicator on the default filter.
+ * @action `allow only inpatient and outpatient orders` - Only inpatient and ambulatory venue ordering will be allowed.
+ * @action `allow power plan doc` - Enables PowerPlan documentation.
+ * @action `allow power plans` - Allows PowerPlans to be used from the MOEW.
+ * @action `allow regimen` - Ensures that regimens are enabled.
+ * @action `disable auto search` - Disables auto search.
+ * @action `disallow EOL` - This option forces edit-on-line mode (which allows multi-selection) to be disabled.
+ * @action `documented meds only` - Restricts the MOEW to only perform actions on documented medications.
+ * @action `show demographics` - Displays the demographics bar in the MOEW.
+ * @action `show med rec` - Displays medication reconiciliation controls in the MOEW.
+ * @action `read only` - The MEOW will be read only.
+ * @action `show diag and probs` -  Configures the MOEW such that the diagnoses/problem control menu is displayed.
+ * @action `show list details` -  Configures the MOEW such that the order detail control is enabled. Note that this is required if adding any orders (if parameters are provided).
+ * @action `show nav tree` - Configures the MOEW such that the navigator tree control is displayed.
+ * @action `show order profile` -  Configures the MOEW such that the order profile is displayed.
+ * @action `show orders search` -  Configures the MOEW such that the order search menu is displayed. Note that this is required if adding any orders (if parameters are provided).
+ * @action `show refresh and print buttons` - Will show the refresh and print buttons in the MOEW.
+ * @action `show related res` -  Configures the MOEW such that the related results control is displayed.
+ * @action `show scratchpad` -  Configures the MOEW such that the scratchpad is displayed. Note that this is required if adding any orders (if parameters are provided).
+ * @action `sign later` - Sign later functionality will be allowed from the MOEW.
+ * @documentation [POWERORDERS - CREATEMOEW] (https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
+ **/
 export type PowerOrdersMOEWFlags =
   | 'add rx to filter'
   | 'allow only inpatient and outpatient orders'
@@ -43,60 +68,35 @@ export type PowerOrdersMOEWFlags =
   | 'sign later';
 
 /**
- * PowerPlanMOEWOpts is a type which represents the parameters to be be passed into the CreateMOEW() function.
- *
- * @param {string} orderType -  Should be set to 'order' or 'medications', indicating what type of orders will be submitted
- *
- * @param {Array<PowerOrdersMOEWFlags>} moewFlags -  An optional array of flags to  customize the MOEW. If not provided, the values will default to the recommended values for the MOEW
- * with Power Plan support. If any values are provided, those will be the only values used.
- *
- * @action `add rx to filter` - Turns the prescription indicator on the default filter.
- * @action `allow only inpatient and outpatient orders` - Only inpatient and ambulatory venue ordering will be allowed.
- * @action `allow power plan doc` - Enables PowerPlan documentation.
- * @action `allow power plans` - Allows PowerPlans to be used from the MOEW.
- * @action `allow regimen` - Ensures that regimens are enabled.
- * @action `disable auto search` - Disables auto search.
- * @action `disallow EOL` - This option forces edit-on-line mode (which allows multi-selection) to be disabled.
- * @action `documented meds only` - Restricts the MOEW to only perform actions on documented medications.
- * @action `show demographics` - Displays the demographics bar in the MOEW.
- * @action `show med rec` - Displays medication reconiciliation controls in the MOEW.
- * @action `read only` - The MEOW will be read only.
- * @action `show diag and probs` -  Configures the MOEW such that the diagnoses/problem control menu is displayed.
- * @action `show list details` -  Configures the MOEW such that the order detail control is enabled. Note that this is required if adding any orders (if parameters are provided).
- * @action `show nav tree` - Configures the MOEW such that the navigator tree control is displayed.
- * @action `show order profile` -  Configures the MOEW such that the order profile is displayed.
- * @action `show orders search` -  Configures the MOEW such that the order search menu is displayed. Note that this is required if adding any orders (if parameters are provided).
- * @action `show refresh and print buttons` - Will show the refresh and print buttons in the MOEW.
- * @action `show related res` -  Configures the MOEW such that the related results control is displayed.
- * @action `show scratchpad` -  Configures the MOEW such that the scratchpad is displayed. Note that this is required if adding any orders (if parameters are provided).
- * @action `sign later` - Sign later functionality will be allowed from the MOEW.
- *
- * @documentation [POWERORDERS - CREATEMOEW] (https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
+ * StandaloneOrder is a type which contains the items needed to place a standalone order.
+ * @param {number} synonymId - The synonym Id associated with the standalone order.
+ * @param {'inpatient order' | 'prescription order'} origination - The origination of the order being placed.
+ * @param {number} sentenceId - An optional order sentence Id for the order being placed.
+ * @documentation [POWERORDERS - AddNewOrderToScratchpad] (https://wiki.cerner.com/pages/viewpage.action?spaceKey=MPDEVWIKI&title=AddNewOrderToScratchpad)
  **/
-export type PowerOrdersMOEWOpts = {
-  orderType: 'order' | 'medications';
-  moewFlags?: Array<PowerOrdersMOEWFlags>;
-};
-
 export type StandaloneOrder = {
   synonymId: number;
   origination: 'inpatient order' | 'prescription order';
   sentenceId?: number;
 };
 
+/**
+ * PowerPlanOrder is a type which contains the items needed to place a PowerPlan order.
+ * @param {number} pathwayCatalogId -The pathway catalog Id associated with the PowerPlan order.
+ * @param {number} personalizedPlanId - An optional personalized plan Id.
+ * @param {Array<number>} diagnosesSynonymIds - An optional array of diagnosis synonym Ids for the PowerPlan order to be associated with
+ * @documentation [POWERORDERS - AddPowerPlanWithDetails] (https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
+ **/
 export type PowerPlanOrder = {
   pathwayCatalogId: number;
   personalizedPlanId?: number;
-  diagnoses?: Array<number>;
+  diagnosesSynonymIds?: Array<number>;
 };
 
 /**
  * PowerOrdersOrderOpts is a type which allows the user to choose settings (silent sign and interaction checking) that impact the manner in which order(s) are placed.
- *
  * @param {boolean} signSilently - A boolean indicating whether or not a silent sign should be attempted.
- *
  * @param {boolean} standaloneOrderInteractionChecking - A boolean indicating whether or not interaction checking (for standalone orders only) should be performed. *Strongly* recommended to be TRUE.
- *
  * @documentation [POWERORDERS - AddPowerPlanWithDetails] (https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
  **/
 export type PowerOrdersOrderOpts = {
@@ -106,7 +106,7 @@ export type PowerOrdersOrderOpts = {
 
 /**
  * Submits a combination of standalone orders and/or PowerPlan orders by utilizing underlying Cerner - POWERORDERS functionality.
- *
+ * @param {'order' | 'medications'} orderType - Configures the MOEW to allow customizations to either the 'order' list or the 'medications' list
  * @param {number} personId - The identifier for the patient. Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this order will be placed. Cerner context variable: VIS_EncntrId.
@@ -114,8 +114,8 @@ export type PowerOrdersOrderOpts = {
  * objects, representing orders to be placed.
  * @param {PowerOrdersOpts} orderOpts - An *optional* object containg a flag indicating whether or not the orders should be signed
  * silently and whether interaction checking should be performed for standalone orders. Defaults to no silent signing and interaction checking if not provided.
- * @param {PowerOrdersMOEWOpts} moewOpts - An *optional* object containing the type of orders to be placed (medications or order) as well as an (optional)
- * array of strings defining the MOEW behavior/appearance. If not provided, the values will default to the the order setting as well as recommended
+ * @param { Array<PowerOrdersMOEWFlags>} moewFlags - An *optional* array of strings defining the MOEW behavior/appearance. If not provided,
+ * the values will default to the the order setting as well as recommended
  * values for the MOEW to be configured with PowerPlan support. If any values are provided, those will be the only values used.
  * @returns {SubmitPowerOrdersReturn} - an object with several high value properties: a boolean flag set to notify the user if the
  * attempt was made outside of PowerChart, the `status` of the order attempt, an object
@@ -126,28 +126,27 @@ export type PowerOrdersOrderOpts = {
  * @documentation [POWERORDERS] (https://wiki.cerner.com/display/public/MPDEVWIKI/POWERORDERS)
  */
 export const submitPowerOrdersAsync = async (
+  orderType: 'order' | 'medications',
   personId: number,
   encounterId: number,
   orders: Array<StandaloneOrder | PowerPlanOrder>,
   orderOpts?: PowerOrdersOrderOpts,
-  moewOpts?: PowerOrdersMOEWOpts
+  moewFlags?: Array<PowerOrdersMOEWFlags>
 ): Promise<SubmitPowerOrdersReturn> => {
   //If orderOpts is not provided, default parameters chosen, otherwise just use the provided object
   orderOpts = !orderOpts
     ? { signSilently: false, standaloneOrderInteractionChecking: true }
     : orderOpts;
 
-  //If moewOpts is not provided, default parameters chosen, otherwise just use the provided object
-  moewOpts = !moewOpts
-    ? { orderType: 'order', moewFlags: undefined }
-    : moewOpts;
+  //If moewFlags is not provided, default parameters chosen, otherwise just use the provided object
+  moewFlags = !moewFlags ? [] : moewFlags;
 
   // Calculate the CreateMOEW() parameters
   const {
     dwCustomizeFlag,
     dwTabFlag,
     dwTabDisplayOptionsFlag,
-  } = calculateMOEWBitmask(moewOpts);
+  } = calculateMOEWBitmask(orderType, moewFlags);
 
   //Obtain user's chosen interaction checking setting & silent sign setting
   const m_bSignTimeInteractionChecking =
