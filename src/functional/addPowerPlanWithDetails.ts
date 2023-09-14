@@ -37,9 +37,9 @@ export async function addPowerPlanWithDetailsAsync(
       powerPlanOrder.personalizedPlanId ? powerPlanOrder.personalizedPlanId : ''
     }</PersonalizedPlanId><Diagnoses>
     ${
-      powerPlanOrder.diagnoses
-        ? powerPlanOrder.diagnoses.map(diagnosis => {
-            return '<DiagnosisId>' + diagnosis + '</DiagnosisId>';
+      powerPlanOrder.diagnosesSynonymIds
+        ? powerPlanOrder.diagnosesSynonymIds.map(diagnosisSynonymID => {
+            return '<DiagnosisId>' + diagnosisSynonymID + '</DiagnosisId>';
           })
         : ''
     }
