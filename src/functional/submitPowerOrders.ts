@@ -1,4 +1,3 @@
-import { PowerChartReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
 import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
 import {
@@ -9,7 +8,8 @@ import {
   AddPowerPlanWithDetailsReturn,
   addPowerPlanWithDetailsAsync,
 } from './addPowerPlanWithDetails';
-import { CreateMOEWReturn, createMOEWAsync } from './createMOEW';
+import { createMOEWAsync } from './createMOEW';
+import { destroyMOEWAsync } from './destroyMOEW';
 import { DisplayMOEWReturn, displayMOEWAsync } from './displayMOEW';
 import {
   GetXMLReturn,
@@ -163,7 +163,7 @@ export const submitPowerOrdersAsync = async (
   //If no orders are provided, throw an error
   if (orders.length < 1) {
     throw new SyntaxError(
-      'At least one standalone order to submit must be provided to this function.'
+      'At least one order to submit must be provided to this function.'
     );
   }
 
@@ -188,179 +188,105 @@ export const submitPowerOrdersAsync = async (
     let m_hMOEW: number = 0;
 
     //Create the MOEW
-    try {
-      const createMOEW: CreateMOEWReturn = await createMOEWAsync(
-        personId,
-        encounterId,
-        dwCustomizeFlag,
-        dwTabFlag,
-        dwTabDisplayOptionsFlag
-      );
+    const createMOEW = await createMOEWAsync(
+      personId,
+      encounterId,
+      dwCustomizeFlag,
+      dwTabFlag,
+      dwTabDisplayOptionsFlag
+    );
 
-      //If not in power chart, state so and return
-      if (createMOEW.inPowerChart === false) {
-        retData.inPowerChart = false;
-        retData.ordersPlaced = [];
-        retData.status = 'dry run';
-        return retData;
-      }
-
-      //If an improper MOEW handle was generated, state so
-      if (createMOEW.moewHandle === null) {
-        retData.inPowerChart = true;
-        retData.ordersPlaced = [];
-        retData.status = 'invalid data returned';
-        return retData;
-      }
-
-      //Update the MOEW handle once verified to be valid
-      m_hMOEW = createMOEW.moewHandle;
-    } catch (e) {
-      throw e;
+    //If an improper MOEW handle was generated, state so
+    if (createMOEW.moewHandle === null) {
+      retData.inPowerChart = true;
+      retData.ordersPlaced = [];
+      retData.status = 'invalid data returned';
+      return retData;
     }
+
+
+    //Update the MOEW handle once verified to be valid
+    m_hMOEW = createMOEW.moewHandle;
 
     //Add PowerPlan orders (if present)
     if (powerPlanOrders && powerPlanOrders.length >= 1) {
-      try {
-        const addPowerPlans: AddPowerPlanWithDetailsReturn = await addPowerPlanWithDetailsAsync(
-          m_hMOEW,
-          powerPlanOrders
-        );
+      const addPowerPlans: AddPowerPlanWithDetailsReturn = await addPowerPlanWithDetailsAsync(
+        m_hMOEW,
+        powerPlanOrders
+      );
 
-        //If not in PowerChart, state so and return
-        if (addPowerPlans.inPowerChart === false) {
-          retData.inPowerChart = false;
-          retData.ordersPlaced = [];
-          retData.status = 'dry run';
-          return retData;
-        }
-
-        //If failed to add PowerPlans, state so and return
-        if (addPowerPlans.powerPlansAdded === false) {
-          retData.inPowerChart = true;
-          retData.ordersPlaced = [];
-          retData.status = 'cancelled, failed, or invalid parameters provided';
-          return retData;
-        }
-      } catch (e) {
-        throw e;
+      //If failed to add PowerPlans, state so and return
+      if (addPowerPlans.powerPlansAdded === false) {
+        retData.inPowerChart = true;
+        retData.ordersPlaced = [];
+        retData.status = 'cancelled, failed, or invalid parameters provided';
+        return retData;
       }
     }
 
     //Add standalone orders (if present)
     if (standaloneOrders && standaloneOrders.length >= 1) {
-      try {
-        const addStandaloneOrders: AddNewOrdersToScratchpadReturn = await addNewOrdersToScratchpadAsync(
-          m_hMOEW,
-          standaloneOrders,
-          m_bSignTimeInteractionChecking
-        );
+      const addStandaloneOrders: AddNewOrdersToScratchpadReturn = await addNewOrdersToScratchpadAsync(
+        m_hMOEW,
+        standaloneOrders,
+        m_bSignTimeInteractionChecking
+      );
 
-        //If not in PowerChart, state so and return
-        if (addStandaloneOrders.inPowerChart === false) {
-          retData.inPowerChart = false;
-          retData.ordersPlaced = [];
-          retData.status = 'dry run';
-          return retData;
-        }
-
-        //If failed to add standalone orders, state so and return
-        if (
-          addStandaloneOrders.result === 'add failed' ||
-          addStandaloneOrders.result === 'cancelled by user'
-        ) {
-          retData.inPowerChart = true;
-          retData.ordersPlaced = [];
-          retData.status = 'cancelled, failed, or invalid parameters provided';
-          return retData;
-        }
-      } catch (e) {
-        throw e;
+      //If failed to add standalone orders, state so and return
+      if (
+        addStandaloneOrders.result === 'add failed' ||
+        addStandaloneOrders.result === 'cancelled by user'
+      ) {
+        retData.inPowerChart = true;
+        retData.ordersPlaced = [];
+        retData.status = 'cancelled, failed, or invalid parameters provided';
+        return retData;
       }
     }
 
     //Display the MOEW (if user has chosen to not silent sign)
     if (signSilently === false) {
-      try {
-        const displayMOEW: DisplayMOEWReturn = await displayMOEWAsync(m_hMOEW);
+      const displayMOEW: DisplayMOEWReturn = await displayMOEWAsync(m_hMOEW);
 
-        //If not in PowerChart, state so and return
-        if (displayMOEW.inPowerChart === false) {
-          retData.inPowerChart = false;
-          retData.ordersPlaced = [];
-          retData.status = 'dry run';
-          return retData;
-        }
-
-        //If the orders are not signed by the user for some reason, state so
-        if (displayMOEW.signed === false) {
-          retData.inPowerChart = true;
-          retData.ordersPlaced = [];
-          retData.status = 'cancelled, failed, or invalid parameters provided';
-          return retData;
-        }
-      } catch (e) {
-        throw e;
+      //If the orders are not signed by the user for some reason, state so
+      if (displayMOEW.signed === false) {
+        retData.inPowerChart = true;
+        retData.ordersPlaced = [];
+        retData.status = 'cancelled, failed, or invalid parameters provided';
+        return retData;
       }
     }
 
     //Try to sign orders silently (if chosen by user)
     if (signSilently === true) {
-      try {
-        const signOrders: PowerChartReturn = await signOrdersAsync(m_hMOEW);
-
-        //If not in PowerChart, state so and return
-        if (signOrders.inPowerChart === false) {
-          retData.inPowerChart = false;
-          retData.ordersPlaced = [];
-          retData.status = 'dry run';
-          return retData;
-        }
-      } catch (e) {
-        throw e;
-      }
+      await signOrdersAsync(m_hMOEW);
     }
 
     //Obtain the XML return information
-    try {
-      const getXML: GetXMLReturn = await getXMLOrdersMOEWAsync(m_hMOEW);
+    const getXML: GetXMLReturn = await getXMLOrdersMOEWAsync(m_hMOEW);
 
-      //If not in PowerChart, state so and return
-      if (getXML.inPowerChart === false) {
-        retData.inPowerChart = false;
-        retData.ordersPlaced = [];
-        retData.status = 'dry run';
-        return retData;
-      }
-
-      //If no orders placed, state so and return
-      if (getXML.ordersPlaced === null || getXML.ordersPlaced.length === 0) {
-        retData.inPowerChart = true;
-        retData.ordersPlaced = null;
-        retData.status = getXML.status;
-        return retData;
-      }
-
-      //Otherwise, obtain the data from the XML call to ultimately return back
+    //If no orders placed, state so and return
+    if (getXML.ordersPlaced === null || getXML.ordersPlaced.length === 0) {
       retData.inPowerChart = true;
-      retData.ordersPlaced = getXML.ordersPlaced;
+      retData.ordersPlaced = null;
       retData.status = getXML.status;
-    } catch (e) {
-      throw e;
+      return retData;
     }
+
+    //Otherwise, obtain the data from the XML call to ultimately return back
+    retData.inPowerChart = true;
+    retData.ordersPlaced = getXML.ordersPlaced;
+    retData.status = getXML.status;
 
     //Destroy the MOEW at the end of the ordering process (and after obtaining our XML)
-    try {
-      await displayMOEWAsync(m_hMOEW);
-    } catch (e) {
-      throw e;
-    }
+    await destroyMOEWAsync(m_hMOEW);
   } catch (e) {
     //Document the error depending on the type, and adjust the return object
     if (outsideOfPowerChartError(e)) {
       retData.inPowerChart = false;
       retData.ordersPlaced = [];
       retData.status = 'dry run';
+      return retData;
     } else {
       throw e;
     }
