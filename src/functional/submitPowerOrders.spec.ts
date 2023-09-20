@@ -21,13 +21,6 @@ beforeEach(() => {
 
 describe('submitPowerOrders()', () => {
   it('returns appropriate object if run outside of PowerChart', async () => {
-    Object.defineProperty(window, 'external', {
-      writable: true,
-      value: {
-        DiscernObjectFactory: undefined,
-      },
-    });
-
     const orderArray: Array<PowerPlanOrder | StandaloneOrder> = [
       {
         synonymId: 1,
@@ -73,7 +66,7 @@ describe('submitPowerOrders()', () => {
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: false,
       status: 'dry run',
-      ordersPlaced: [],
+      ordersPlaced: null,
     };
     expect(result).toEqual(expectedObj);
   });
@@ -139,7 +132,7 @@ describe('submitPowerOrders()', () => {
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: true,
       status: 'invalid data returned',
-      ordersPlaced: [],
+      ordersPlaced: null,
     };
 
     expect(result).toEqual(expectedObj);
@@ -556,5 +549,168 @@ describe('submitPowerOrders()', () => {
     };
 
     expect(result).toEqual(expectedObj);
+  });
+
+  it('returns the expected object if the PowerPlans could not be added', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          CreateMOEW: async () => Promise.resolve(1),
+          AddPowerPlanWithDetails: async () => Promise.resolve(0),
+          AddNewOrdersToScratchpad: async () => Promise.resolve(0),
+          DisplayMOEW: async () => Promise.resolve(1),
+          SignOrders: async () => Promise.resolve(1),
+          GetXMLOrdersMOEW: async () => Promise.resolve(``),
+          DestroyMOEW: async () => Promise.resolve(null),
+        })),
+      },
+    });
+
+    const orderArray: Array<PowerPlanOrder | StandaloneOrder> = [
+      {
+        pathwayCatalogId: 1,
+      },
+    ];
+    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+
+    const expectedObj: SubmitPowerOrdersReturn = {
+      inPowerChart: true,
+      status: 'cancelled, failed, or invalid parameters provided',
+      ordersPlaced: null,
+    };
+
+    expect(result).toEqual(expectedObj);
+  });
+
+  it('returns the expected object if the standalone orders could not be added', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          CreateMOEW: async () => Promise.resolve(2),
+          AddPowerPlanWithDetails: async () => Promise.resolve(1),
+          AddNewOrdersToScratchpad: async () => Promise.resolve(2),
+          DisplayMOEW: async () => Promise.resolve(1),
+          SignOrders: async () => Promise.resolve(1),
+          GetXMLOrdersMOEW: async () => Promise.resolve(``),
+          DestroyMOEW: async () => Promise.resolve(null),
+        })),
+      },
+    });
+
+    const orderArray: Array<PowerPlanOrder | StandaloneOrder> = [
+      {
+        synonymId: 1,
+        origination: 'prescription order',
+      },
+    ];
+    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+
+    const expectedObj: SubmitPowerOrdersReturn = {
+      inPowerChart: true,
+      status: 'cancelled, failed, or invalid parameters provided',
+      ordersPlaced: null,
+    };
+
+    expect(result).toEqual(expectedObj);
+  });
+
+  it('returns the expected object if orders are not fully signed', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          CreateMOEW: async () => Promise.resolve(2),
+          AddPowerPlanWithDetails: async () => Promise.resolve(1),
+          AddNewOrdersToScratchpad: async () => Promise.resolve(0),
+          DisplayMOEW: async () => Promise.resolve(0),
+          SignOrders: async () => Promise.resolve(1),
+          GetXMLOrdersMOEW: async () => Promise.resolve(``),
+          DestroyMOEW: async () => Promise.resolve(null),
+        })),
+      },
+    });
+
+    const orderArray: Array<PowerPlanOrder | StandaloneOrder> = [
+      {
+        synonymId: 1,
+        origination: 'prescription order',
+      },
+    ];
+    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+
+    const expectedObj: SubmitPowerOrdersReturn = {
+      inPowerChart: true,
+      status: 'cancelled, failed, or invalid parameters provided',
+      ordersPlaced: null,
+    };
+
+    expect(result).toEqual(expectedObj);
+  });
+
+  it('returns the expected object if orders are not fully signed, even with a silent sign attempt', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          CreateMOEW: async () => Promise.resolve(2),
+          AddPowerPlanWithDetails: async () => Promise.resolve(1),
+          AddNewOrdersToScratchpad: async () => Promise.resolve(0),
+          DisplayMOEW: async () => Promise.resolve(0),
+          SignOrders: async () => Promise.resolve(1),
+          GetXMLOrdersMOEW: async () => Promise.resolve(``),
+          DestroyMOEW: async () => Promise.resolve(null),
+        })),
+      },
+    });
+
+    const orderArray: Array<PowerPlanOrder | StandaloneOrder> = [
+      {
+        synonymId: 1,
+        origination: 'prescription order',
+      },
+    ];
+    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray, {
+      signSilently: true,
+      standaloneOrderInteractionChecking: true,
+    });
+
+    const expectedObj: SubmitPowerOrdersReturn = {
+      inPowerChart: true,
+      status: 'cancelled, failed, or invalid parameters provided',
+      ordersPlaced: null,
+    };
+
+    expect(result).toEqual(expectedObj);
+  });
+
+  it('catches an unexpected error', async () => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+          CreateMOEW: async () => Promise.resolve(new Error('')),
+        })),
+      },
+    });
+
+    const orderArray: Array<PowerPlanOrder | StandaloneOrder> = [
+      {
+        synonymId: 1,
+        origination: 'prescription order',
+      },
+    ];
+
+    try {
+      await submitPowerOrdersAsync('order', 1, 1, orderArray, {
+        signSilently: true,
+        standaloneOrderInteractionChecking: true,
+      });
+    } catch (e) {
+      expect((e as Error).message).toBe(
+        'dcof.AddNewOrdersToScratchpad is not a function'
+      );
+    }
   });
 });

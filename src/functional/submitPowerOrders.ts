@@ -1,18 +1,11 @@
 import { outsideOfPowerChartError } from '../utils';
 import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
-import {
-  AddNewOrdersToScratchpadReturn,
-  addNewOrdersToScratchpadAsync,
-} from './addNewOrdersToScratchPad';
-import {
-  AddPowerPlanWithDetailsReturn,
-  addPowerPlanWithDetailsAsync,
-} from './addPowerPlanWithDetails';
+import { addNewOrdersToScratchpadAsync } from './addNewOrdersToScratchPad';
+import { addPowerPlanWithDetailsAsync } from './addPowerPlanWithDetails';
 import { createMOEWAsync } from './createMOEW';
 import { destroyMOEWAsync } from './destroyMOEW';
-import { DisplayMOEWReturn, displayMOEWAsync } from './displayMOEW';
+import { displayMOEWAsync } from './displayMOEW';
 import {
-  GetXMLReturn,
   SubmitPowerOrdersStatus,
   getXMLOrdersMOEWAsync,
 } from './getXMLOrdersMOEW';
@@ -196,8 +189,9 @@ export const submitPowerOrdersAsync = async (
       dwTabDisplayOptionsFlag
     );
 
+    //If not in PowerChart, state so and return
     if (createMOEW.inPowerChart === false) {
-      retData.inPowerChart = createMOEW.inPowerChart;
+      retData.inPowerChart = false;
       retData.ordersPlaced = null;
       retData.status = 'dry run';
       return retData;
@@ -216,15 +210,23 @@ export const submitPowerOrdersAsync = async (
 
     //Add PowerPlan orders (if present)
     if (powerPlanOrders && powerPlanOrders.length >= 1) {
-      const addPowerPlans: AddPowerPlanWithDetailsReturn = await addPowerPlanWithDetailsAsync(
+      const addPowerPlans = await addPowerPlanWithDetailsAsync(
         m_hMOEW,
         powerPlanOrders
       );
 
+      //If not in PowerChart, state so and return
+      if (addPowerPlans.inPowerChart === false) {
+        retData.inPowerChart = false;
+        retData.ordersPlaced = null;
+        retData.status = 'dry run';
+        return retData;
+      }
+
       //If failed to add PowerPlans, state so and return
       if (addPowerPlans.powerPlansAdded === false) {
         retData.inPowerChart = true;
-        retData.ordersPlaced = [];
+        retData.ordersPlaced = null;
         retData.status = 'cancelled, failed, or invalid parameters provided';
         return retData;
       }
@@ -232,11 +234,19 @@ export const submitPowerOrdersAsync = async (
 
     //Add standalone orders (if present)
     if (standaloneOrders && standaloneOrders.length >= 1) {
-      const addStandaloneOrders: AddNewOrdersToScratchpadReturn = await addNewOrdersToScratchpadAsync(
+      const addStandaloneOrders = await addNewOrdersToScratchpadAsync(
         m_hMOEW,
         standaloneOrders,
         m_bSignTimeInteractionChecking
       );
+
+      //If not in PowerChart, state so and return
+      if (addStandaloneOrders.inPowerChart === false) {
+        retData.inPowerChart = false;
+        retData.ordersPlaced = null;
+        retData.status = 'dry run';
+        return retData;
+      }
 
       //If failed to add standalone orders, state so and return
       if (
@@ -244,7 +254,7 @@ export const submitPowerOrdersAsync = async (
         addStandaloneOrders.result === 'cancelled by user'
       ) {
         retData.inPowerChart = true;
-        retData.ordersPlaced = [];
+        retData.ordersPlaced = null;
         retData.status = 'cancelled, failed, or invalid parameters provided';
         return retData;
       }
@@ -252,12 +262,20 @@ export const submitPowerOrdersAsync = async (
 
     //Display the MOEW (if user has chosen to not silent sign)
     if (signSilently === false) {
-      const displayMOEW: DisplayMOEWReturn = await displayMOEWAsync(m_hMOEW);
+      const displayMOEW = await displayMOEWAsync(m_hMOEW);
+
+      //If not in PowerChart, state so and return
+      if (displayMOEW.inPowerChart === false) {
+        retData.inPowerChart = false;
+        retData.ordersPlaced = null;
+        retData.status = 'dry run';
+        return retData;
+      }
 
       //If the orders are not signed by the user for some reason, state so
       if (displayMOEW.signed === false) {
         retData.inPowerChart = true;
-        retData.ordersPlaced = [];
+        retData.ordersPlaced = null;
         retData.status = 'cancelled, failed, or invalid parameters provided';
         return retData;
       }
@@ -265,11 +283,27 @@ export const submitPowerOrdersAsync = async (
 
     //Try to sign orders silently (if chosen by user)
     if (signSilently === true) {
-      await signOrdersAsync(m_hMOEW);
+      const signOrders = await signOrdersAsync(m_hMOEW);
+
+      //If not in PowerChart, state so and return
+      if (signOrders.inPowerChart === false) {
+        retData.inPowerChart = false;
+        retData.ordersPlaced = null;
+        retData.status = 'dry run';
+        return retData;
+      }
     }
 
     //Obtain the XML return information
-    const getXML: GetXMLReturn = await getXMLOrdersMOEWAsync(m_hMOEW);
+    const getXML = await getXMLOrdersMOEWAsync(m_hMOEW);
+
+    //If not in PowerChart, state so and return
+    if (getXML.inPowerChart === false) {
+      retData.inPowerChart = false;
+      retData.ordersPlaced = null;
+      retData.status = 'dry run';
+      return retData;
+    }
 
     //If no orders placed, state so and return
     if (getXML.ordersPlaced === null || getXML.ordersPlaced.length === 0) {
@@ -285,12 +319,20 @@ export const submitPowerOrdersAsync = async (
     retData.status = getXML.status;
 
     //Destroy the MOEW at the end of the ordering process (and after obtaining our XML)
-    await destroyMOEWAsync(m_hMOEW);
+    const destroyMOEW = await destroyMOEWAsync(m_hMOEW);
+
+    //If not in PowerChart, state so and return
+    if (destroyMOEW.inPowerChart === false) {
+      retData.inPowerChart = false;
+      retData.ordersPlaced = null;
+      retData.status = 'dry run';
+      return retData;
+    }
   } catch (e) {
     //Document the error depending on the type, and adjust the return object
     if (outsideOfPowerChartError(e)) {
       retData.inPowerChart = false;
-      retData.ordersPlaced = [];
+      retData.ordersPlaced = null;
       retData.status = 'dry run';
       return retData;
     } else {
