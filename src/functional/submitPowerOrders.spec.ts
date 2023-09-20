@@ -5,13 +5,7 @@ import {
   submitPowerOrdersAsync,
 } from './submitPowerOrders';
 
-/*
-//Please note that the "untested" lines in this file are left so 
-//purely because those lines have  already been tested (in helper
-//functions) in separate .spec.ts files.
-*/
-
-//Clear the window before each test
+//Clear the window object before each test
 beforeEach(() => {
   Object.defineProperty(window, 'external', {
     writable: true,
