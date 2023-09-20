@@ -1,6 +1,14 @@
 import { CreateMOEWReturn, createMOEWAsync } from './createMOEW';
 
 describe('createMOEWAsync()', () => {
+  afterEach(() => {
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: null,
+      },
+    });
+  });
   it('runs with minimal (and invalid) paramaters outside of powerchart', async () => {
     const result = await createMOEWAsync(0, 0, 0, 0, 0);
     const expectedObj: CreateMOEWReturn = {

@@ -196,14 +196,20 @@ export const submitPowerOrdersAsync = async (
       dwTabDisplayOptionsFlag
     );
 
-    //If an improper MOEW handle was generated, state so
-    if (createMOEW.moewHandle === null) {
-      retData.inPowerChart = true;
-      retData.ordersPlaced = [];
-      retData.status = 'invalid data returned';
+    if (createMOEW.inPowerChart === false) {
+      retData.inPowerChart = createMOEW.inPowerChart;
+      retData.ordersPlaced = null;
+      retData.status = 'dry run';
       return retData;
     }
 
+    //If an improper MOEW handle was generated, state so
+    if (createMOEW.moewHandle === null) {
+      retData.inPowerChart = true;
+      retData.ordersPlaced = null;
+      retData.status = 'invalid data returned';
+      return retData;
+    }
 
     //Update the MOEW handle once verified to be valid
     m_hMOEW = createMOEW.moewHandle;
