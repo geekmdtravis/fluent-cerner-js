@@ -42,8 +42,6 @@ export type PowerOrdersMOEWFlags =
   | 'allow power plan doc'
   | 'allow power plans'
   | 'allow regimen'
-  | 'customize meds'
-  | 'customize order'
   | 'disable auto search'
   | 'disallow EOL'
   | 'documented meds only'
