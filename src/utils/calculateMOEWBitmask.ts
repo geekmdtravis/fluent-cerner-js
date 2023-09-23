@@ -55,14 +55,18 @@ export const calculateMOEWBitmask = (
 
   // If no MOEW options are provided, use recommended default settings
   const defaultOpts: Array<PowerOrdersMOEWFlags> = [
-    'allow power plans',
-    'allow power plan doc',
-    'show scratchpad',
-    'allow regimen',
-    'show list details',
-    'show orders search',
-    'show order profile',
     'show refresh and print buttons',
+    'allow power plan doc',
+    'allow power plans',
+    'show list details',
+    'show scratchpad',
+    'show order profile',
+    'show orders search',
+    'show related res',
+    'show diag and probs',
+    'show nav tree',
+    'show demographics',
+    'show med rec',
   ];
 
   const userFlags =

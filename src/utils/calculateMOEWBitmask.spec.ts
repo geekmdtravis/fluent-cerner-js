@@ -14,7 +14,6 @@ describe('calculateMOEWBitmask()', () => {
       'add rx to filter',
       'disable auto search',
       'allow regimen',
-      'customize order',
       'show nav tree',
       'show diag and probs',
       'show related res',
@@ -36,9 +35,9 @@ describe('calculateMOEWBitmask()', () => {
   it('correctly handles the `medications` order type', async () => {
     const result = calculateMOEWBitmask('medications', []);
     const expectedObj = {
-      dwCustomizeFlag: 19096,
+      dwCustomizeFlag: 152,
       dwTabFlag: 3,
-      dwTabDisplayOptionsFlag: 120,
+      dwTabDisplayOptionsFlag: 127,
     };
     expect(result).toEqual(expectedObj);
   });
