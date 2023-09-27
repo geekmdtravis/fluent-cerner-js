@@ -50,6 +50,9 @@ export async function addPowerPlanWithDetailsAsync(
   powerPlanOrdersXML = '<Plans>' + powerPlanOrdersXML;
   powerPlanOrdersXML += '</Plans>';
 
+  //Remove newlines and spaces
+  powerPlanOrdersXML = powerPlanOrdersXML.replace(/[\r\n\s]/g, '');
+
   // Create the DiscernObjectFactory and use that to call AddPowerPlanWithDetails() with the values from above
   try {
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
