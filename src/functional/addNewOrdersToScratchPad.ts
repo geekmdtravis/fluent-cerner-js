@@ -44,6 +44,9 @@ export async function addNewOrdersToScratchpadAsync(
   standaloneOrdersXML = '<Orders>' + standaloneOrdersXML;
   standaloneOrdersXML += '</Orders>';
 
+  //Remove newlines
+  standaloneOrdersXML = standaloneOrdersXML.replace(/[\r\n]/g, '');
+
   // Create the DiscernObjectFactory and use that to call AddNewOrdersToScratchpad() with the values from above
   try {
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
