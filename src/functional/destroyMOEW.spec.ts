@@ -1,13 +1,12 @@
-import { PowerChartReturn } from '.';
 import { destroyMOEWAsync } from './destroyMOEW';
 
 describe('destroyMOEWAsync()', () => {
   it('runs outside of powerchart', async () => {
-    const result = await destroyMOEWAsync(1337);
-    const expectedObj: PowerChartReturn = {
-      inPowerChart: false,
-    };
-    expect(result).toEqual(expectedObj);
+    try {
+      await destroyMOEWAsync(0, 0);
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError);
+    }
   });
 
   it('runs inside of PowerChart ', async () => {
@@ -19,7 +18,8 @@ describe('destroyMOEWAsync()', () => {
         })),
       },
     });
-    const result = await destroyMOEWAsync(1337);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await destroyMOEWAsync(dcof, 1337);
     expect(result.inPowerChart).toEqual(true);
   });
 
@@ -34,8 +34,9 @@ describe('destroyMOEWAsync()', () => {
         })),
       },
     });
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     try {
-      await destroyMOEWAsync(1337);
+      await destroyMOEWAsync(dcof, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');

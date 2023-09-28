@@ -178,8 +178,12 @@ export const submitPowerOrdersAsync = async (
     //Initialize the MOEW handle
     let m_hMOEW: number = 0;
 
+    //Create the DiscernObjectFactory and pass this SAME object to each async function
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+
     //Create the MOEW
     const createMOEW = await createMOEWAsync(
+      dcof,
       personId,
       encounterId,
       dwCustomizeFlag,
@@ -209,6 +213,7 @@ export const submitPowerOrdersAsync = async (
     //Add PowerPlan orders (if present)
     if (powerPlanOrders && powerPlanOrders.length >= 1) {
       const addPowerPlans = await addPowerPlanWithDetailsAsync(
+        dcof,
         m_hMOEW,
         powerPlanOrders
       );
@@ -233,6 +238,7 @@ export const submitPowerOrdersAsync = async (
     //Add standalone orders (if present)
     if (standaloneOrders && standaloneOrders.length >= 1) {
       const addStandaloneOrders = await addNewOrdersToScratchpadAsync(
+        dcof,
         m_hMOEW,
         standaloneOrders,
         m_bSignTimeInteractionChecking
@@ -260,7 +266,7 @@ export const submitPowerOrdersAsync = async (
 
     //Display the MOEW (if user has chosen to not silent sign)
     if (signSilently === false) {
-      const displayMOEW = await displayMOEWAsync(m_hMOEW);
+      const displayMOEW = await displayMOEWAsync(dcof, m_hMOEW);
 
       //If not in PowerChart, state so and return
       if (displayMOEW.inPowerChart === false) {
@@ -281,7 +287,7 @@ export const submitPowerOrdersAsync = async (
 
     //Try to sign orders silently (if chosen by user)
     if (signSilently === true) {
-      const signOrders = await signOrdersAsync(m_hMOEW);
+      const signOrders = await signOrdersAsync(dcof, m_hMOEW);
 
       //If not in PowerChart, state so and return
       if (signOrders.inPowerChart === false) {
@@ -293,7 +299,7 @@ export const submitPowerOrdersAsync = async (
     }
 
     //Obtain the XML return information
-    const getXML = await getXMLOrdersMOEWAsync(m_hMOEW);
+    const getXML = await getXMLOrdersMOEWAsync(dcof, m_hMOEW);
 
     //If not in PowerChart, state so and return
     if (getXML.inPowerChart === false) {
@@ -317,7 +323,7 @@ export const submitPowerOrdersAsync = async (
     retData.status = getXML.status;
 
     //Destroy the MOEW at the end of the ordering process (and after obtaining our XML)
-    const destroyMOEW = await destroyMOEWAsync(m_hMOEW);
+    const destroyMOEW = await destroyMOEWAsync(dcof, m_hMOEW);
 
     //If not in PowerChart, state so and return
     if (destroyMOEW.inPowerChart === false) {

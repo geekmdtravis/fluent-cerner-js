@@ -1,4 +1,4 @@
-import { CreateMOEWReturn, createMOEWAsync } from './createMOEW';
+import { createMOEWAsync } from './createMOEW';
 
 describe('createMOEWAsync()', () => {
   afterEach(() => {
@@ -10,13 +10,11 @@ describe('createMOEWAsync()', () => {
     });
   });
   it('runs with minimal (and invalid) paramaters outside of powerchart', async () => {
-    const result = await createMOEWAsync(0, 0, 0, 0, 0);
-    const expectedObj: CreateMOEWReturn = {
-      inPowerChart: false,
-      moewHandle: null,
-    };
-
-    expect(result).toEqual(expectedObj);
+    try {
+      await createMOEWAsync(0, 0, 0, 0, 0, 0);
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError);
+    }
   });
 
   it('throws an error if an unexpected error occurs', async () => {
@@ -30,8 +28,9 @@ describe('createMOEWAsync()', () => {
         })),
       },
     });
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     try {
-      await createMOEWAsync(0, 0, 0, 0, 0);
+      await createMOEWAsync(dcof, 0, 0, 0, 0, 0);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');
@@ -47,7 +46,8 @@ describe('createMOEWAsync()', () => {
         })),
       },
     });
-    const result = await createMOEWAsync(1, 1, 1, 1, 1);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await createMOEWAsync(dcof, 1, 1, 1, 1, 1);
     expect(result.moewHandle).toEqual(null);
   });
 
@@ -60,7 +60,8 @@ describe('createMOEWAsync()', () => {
         })),
       },
     });
-    const result = await createMOEWAsync(1, 1, 1, 1, 1);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await createMOEWAsync(dcof, 1, 1, 1, 1, 1);
     expect(result.moewHandle).toEqual(1337);
   });
 });

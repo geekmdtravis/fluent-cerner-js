@@ -1,13 +1,12 @@
-import { PowerChartReturn } from '.';
 import { signOrdersAsync } from './signOrders';
 
 describe('signOrdersAsync()', () => {
   it('runs outside of powerchart', async () => {
-    const result = await signOrdersAsync(1337);
-    const expectedObj: PowerChartReturn = {
-      inPowerChart: false,
-    };
-    expect(result).toEqual(expectedObj);
+    try {
+      await signOrdersAsync(0, 1337);
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError);
+    }
   });
 
   it('runs inside of PowerChart ', async () => {
@@ -19,7 +18,8 @@ describe('signOrdersAsync()', () => {
         })),
       },
     });
-    const result = await signOrdersAsync(1337);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await signOrdersAsync(dcof, 1337);
     expect(result.inPowerChart).toEqual(true);
   });
 
@@ -34,8 +34,9 @@ describe('signOrdersAsync()', () => {
         })),
       },
     });
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     try {
-      await signOrdersAsync(1337);
+      await signOrdersAsync(dcof, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');

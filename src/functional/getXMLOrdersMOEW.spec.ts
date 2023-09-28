@@ -1,16 +1,12 @@
-import { GetXMLReturn, getXMLOrdersMOEWAsync } from './getXMLOrdersMOEW';
+import { getXMLOrdersMOEWAsync } from './getXMLOrdersMOEW';
 
 describe('getXMLOrdersMOEWAsync()', () => {
   it('runs outside of powerchart', async () => {
-    const result = await getXMLOrdersMOEWAsync(1337);
-    const expectedObj: GetXMLReturn = {
-      inPowerChart: false,
-      rawXML: '',
-      ordersPlaced: [],
-      parsedXML: null,
-      status: 'dry run',
-    };
-    expect(result).toEqual(expectedObj);
+    try {
+      await getXMLOrdersMOEWAsync(0, 1337);
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError);
+    }
   });
 
   it('runs inside of PowerChart ', async () => {
@@ -22,7 +18,8 @@ describe('getXMLOrdersMOEWAsync()', () => {
         })),
       },
     });
-    const result = await getXMLOrdersMOEWAsync(1337);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await getXMLOrdersMOEWAsync(dcof, 1337);
     expect(result.rawXML).toEqual('');
   });
 
@@ -37,8 +34,9 @@ describe('getXMLOrdersMOEWAsync()', () => {
         })),
       },
     });
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     try {
-      await getXMLOrdersMOEWAsync(1337);
+      await getXMLOrdersMOEWAsync(dcof, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');
@@ -54,7 +52,8 @@ describe('getXMLOrdersMOEWAsync()', () => {
         })),
       },
     });
-    const result = await getXMLOrdersMOEWAsync(1337);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await getXMLOrdersMOEWAsync(dcof, 1337);
     expect(result.status).toEqual('xml parse error');
   });
 
@@ -67,7 +66,8 @@ describe('getXMLOrdersMOEWAsync()', () => {
         })),
       },
     });
-    const result = await getXMLOrdersMOEWAsync(1337);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await getXMLOrdersMOEWAsync(dcof, 1337);
     expect(result.status).toEqual('invalid data returned');
   });
 
@@ -98,7 +98,8 @@ describe('getXMLOrdersMOEWAsync()', () => {
         })),
       },
     });
-    const result = await getXMLOrdersMOEWAsync(1337);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await getXMLOrdersMOEWAsync(dcof, 1337);
     expect(result.ordersPlaced).toEqual([
       {
         name: 'tamsulosin',

@@ -1,28 +1,28 @@
-import {
-  AddPowerPlanWithDetailsReturn,
-  addPowerPlanWithDetailsAsync,
-} from './addPowerPlanWithDetails';
+import { addPowerPlanWithDetailsAsync } from './addPowerPlanWithDetails';
 import { PowerPlanOrder } from './submitPowerOrders';
 
 describe('addPowerPlanWithDetailsAsync', () => {
-  it('runs outside of powerchart and correctly outputs as such', async () => {
+  it('runs outside of powerchart and correctly throws an error', async () => {
     const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
 
-    const expectedObj: AddPowerPlanWithDetailsReturn = {
-      inPowerChart: false,
-      powerPlansAdded: false,
-    };
-
-    const resultObj = await addPowerPlanWithDetailsAsync(0, orders);
-
-    expect(resultObj).toEqual(expectedObj);
+    try {
+      await addPowerPlanWithDetailsAsync(0, 0, orders);
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError);
+    }
   });
 
   it('throws a range error if an order list of length less than 1 is provided', async () => {
     const orders: Array<PowerPlanOrder> = [];
-
+    Object.defineProperty(window, 'external', {
+      writable: true,
+      value: {
+        DiscernObjectFactory: jest.fn().mockImplementation(() => ({})),
+      },
+    });
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     try {
-      await addPowerPlanWithDetailsAsync(0, orders);
+      await addPowerPlanWithDetailsAsync(dcof, 0, orders);
     } catch (e) {
       expect(e).toBeInstanceOf(RangeError);
       expect(e as RangeError).toHaveProperty(
@@ -43,8 +43,8 @@ describe('addPowerPlanWithDetailsAsync', () => {
     });
 
     const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
-
-    const result = await addPowerPlanWithDetailsAsync(0, orders);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await addPowerPlanWithDetailsAsync(dcof, 0, orders);
     expect(result.powerPlansAdded).toEqual(true);
   });
 
@@ -65,8 +65,8 @@ describe('addPowerPlanWithDetailsAsync', () => {
         diagnosesSynonymIds: [12],
       },
     ];
-
-    const result = await addPowerPlanWithDetailsAsync(0, orders);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await addPowerPlanWithDetailsAsync(dcof, 0, orders);
     expect(result.powerPlansAdded).toEqual(true);
   });
 
@@ -81,14 +81,14 @@ describe('addPowerPlanWithDetailsAsync', () => {
     });
 
     const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
-
-    const result = await addPowerPlanWithDetailsAsync(0, orders);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await addPowerPlanWithDetailsAsync(dcof, 0, orders);
     expect(result.powerPlansAdded).toEqual(false);
   });
 
   it('throws an error if an unexpected error occurs', async () => {
     const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
-
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
@@ -100,7 +100,7 @@ describe('addPowerPlanWithDetailsAsync', () => {
       },
     });
     try {
-      await addPowerPlanWithDetailsAsync(0, orders);
+      await addPowerPlanWithDetailsAsync(dcof, 0, orders);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');

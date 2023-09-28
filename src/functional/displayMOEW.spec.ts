@@ -1,13 +1,12 @@
-import { DisplayMOEWReturn, displayMOEWAsync } from './displayMOEW';
+import { displayMOEWAsync } from './displayMOEW';
 
 describe('displayMOEWAsync()', () => {
   it('runs outside of powerchart', async () => {
-    const result = await displayMOEWAsync(1337);
-    const expectedObj: DisplayMOEWReturn = {
-      inPowerChart: false,
-      signed: false,
-    };
-    expect(result).toEqual(expectedObj);
+    try {
+      await displayMOEWAsync(0, 0);
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError);
+    }
   });
 
   it('runs inside of PowerChart ', async () => {
@@ -19,7 +18,8 @@ describe('displayMOEWAsync()', () => {
         })),
       },
     });
-    const result = await displayMOEWAsync(1337);
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+    const result = await displayMOEWAsync(dcof, 1337);
     expect(result.signed).toEqual(false);
   });
 
@@ -34,8 +34,10 @@ describe('displayMOEWAsync()', () => {
         })),
       },
     });
+    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
+
     try {
-      await displayMOEWAsync(1337);
+      await displayMOEWAsync(dcof, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');

@@ -3,6 +3,7 @@ import { outsideOfPowerChartError } from '../utils';
 
 /**
  * Destroys the modal order entry window (MOEW).
+ * @param {any} dcof  - the reference to the DisernObjectFactory object
  * @param {number} moewHandle - the handle to the MOEW.
  * @description The value returned by DestroyMOEW() is not used and is not believed to be meaningful, but is logged to the console for development purposes.
  * @returns a `Promise` indicating whether called from PowerChart or not.
@@ -10,15 +11,14 @@ import { outsideOfPowerChartError } from '../utils';
  */
 
 export async function destroyMOEWAsync(
+  dcof: any,
   moewHandle: number
 ): Promise<PowerChartReturn> {
   let retData: PowerChartReturn = {
     inPowerChart: true,
   };
 
-  // Create the DiscernObjectFactory and use that to call DestroyMOEW() with the handle from above
   try {
-    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     const response = await dcof.DestroyMOEW(moewHandle);
 
     console.log('Response from DestroyMOEW() is: ', response);

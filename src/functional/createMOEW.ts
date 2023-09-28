@@ -3,6 +3,7 @@ import { outsideOfPowerChartError } from '../utils';
 
 /**
  * Creates an MOEW handle.
+ * @param {any} dcof  - the to reference the DisernObjectFactory object
  * @param {number} personId  - the patient Id
  * @param {number} encounterId  - the encounter Id in which orders would be placed
  * @param {number} dwCustomizeFlag  - the bitmask that determines available MOEW options
@@ -13,6 +14,7 @@ import { outsideOfPowerChartError } from '../utils';
  */
 
 export async function createMOEWAsync(
+  dcof: any,
   personId: number,
   encounterId: number,
   dwCustomizeFlag: number,
@@ -24,9 +26,8 @@ export async function createMOEWAsync(
     moewHandle: null,
   };
 
-  //Create the DiscernObjectFactory and use that to call CreateMOEW()
+  //Use the DCOF to call CreateMOEW()
   try {
-    const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     const response = await dcof.CreateMOEW(
       personId,
       encounterId,
