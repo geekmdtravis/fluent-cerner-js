@@ -276,6 +276,8 @@ export const submitPowerOrdersAsync = async (
         return retData;
       }
 
+      /*
+      //NOTE: this section has been commented out due to inconsistent data return from PowerChart's DisplayMOEW() function within DOF.
       //If the orders are not signed by the user for some reason, state so
       if (displayMOEW.signed === false) {
         retData.inPowerChart = true;
@@ -283,6 +285,7 @@ export const submitPowerOrdersAsync = async (
         retData.status = 'cancelled, failed, or invalid parameters provided';
         return retData;
       }
+      */
     }
 
     //Try to sign orders silently (if chosen by user)
