@@ -16,9 +16,10 @@ A modern API for interacting with the Cerner Millennium application. Modern Type
 
 | Discern                                        | _fluent-cerner-js_                  | Description                                                                |
 | ---------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------- |
-| `APPLINK`                                      | &mdash;                             | Opens an app, chart, or tab.                                               |
-|                                                | &rdsh; `openOrganizeTabAsync`       | Opens a tab at the organizer level.                                        |
+| `APPLINK`                                      | `openApplicationAsync`              | Opens a file, URL, executable, shell executable, or application object     |
+|                                                | &rdsh; `openOrganizerTabAsync`      | Opens a tab at the organizer level.                                        |
 |                                                | &rdsh; `openPatientTabAsync`        | Opens a tab at the patient level.                                          |
+|                                                | &rdsh; `openWebsiteByUrlAsync`      | Opens a URL in a new window from PowerChart.                               |
 | `CCLEVENT`                                     | (no support planned)                | Evoke special solution-specific events from within a web page.             |
 | `CCLLINK`                                      | (no support planned)                | Link CCL reports within a given MPage.                                     |
 | `CCLLINKPOPUP`                                 | (no support planned)                | Link CCL reports, launch in a new Internet Explorer&reg; pop-up.           |
