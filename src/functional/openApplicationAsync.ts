@@ -34,6 +34,7 @@ export type OpenApplicationArgument = {
  * was invalid. Given the underlying Cerner Discern implementation, we cannot
  * determine which parameter was invalid.
  * @throws If an unexpected error occurs while attempting to open the tab.
+ * @throws If the mode is 'by solution name' or 'by application object' and the `args` parameter is undefined.
  *
  * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
