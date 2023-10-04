@@ -220,6 +220,8 @@ declare global {
         eid: number,
         workflowId: number
       ): Promise<null>;
+      // TODO: update return type and JSDOc
+      LaunchDischargeDialog(): Promise<null>;
     }>;
     /**
      * Funtion that returns a Cerner Windows COM object for an XMLCclRequest.
