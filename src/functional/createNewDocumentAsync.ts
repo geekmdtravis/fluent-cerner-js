@@ -1,22 +1,15 @@
 import { PowerChartReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
-
-export type NewDocumentOpts = {
-  eid: number;
-  pid: number;
-  refTemplateId?: number;
-  noteTypeCd?: number;
-  workflowId?: number;
-};
-
 /**
  * Create a new document for a given patient and encounter using the
  * DYNDOC Discern COM object. The document can be created using either
  * a reference template ID or a reference template ID and an optional note type code,
  * depending on the chosen method of 'by workflow' or 'by reference template'.
- * @param method {'by workflow' | 'by reference template'} - the method to use to create the document
- * @param opts {NewDocumentOpts} - an object containing the patient ID, encounter ID, and either a
- * reference template ID (plus or minus an optional note type CD), or a workflow ID.
+ * @param method {'by workflow' | 'by reference template'} - the method to use to create the document.
+ * @param personId {number} - the patient ID to launch the document for.
+ * @param encounterId {number} - the encounter ID to launch the document in.
+ * @param id {number} - the ID of the reference template or workflow to use to create the document.
+ * @param noteTypeCd {number} - (optional) the note type code to use to create the document.
  * @resolves {PowerChartReturn & { success: boolean }} - a `Promise` which resolves to an object
  * containing a boolean indicating whether the user is in PowerChart and a boolean indicating
  * whether the action was successful.
@@ -28,51 +21,27 @@ export type NewDocumentOpts = {
  */
 export async function createNewDocumentAsync(
   method: 'by workflow' | 'by reference template',
-  opts: NewDocumentOpts
+  personId: number,
+  encounterId: number,
+  id: number,
+  noteTypeCd?: number
 ): Promise<PowerChartReturn & { success: boolean }> {
-  const { eid, pid, refTemplateId, noteTypeCd, workflowId } = opts;
-
-  if (!refTemplateId && !workflowId) {
-    throw new Error(
-      'Either a reference template ID or a workflow ID must be provided.'
-    );
-  }
-
-  if (refTemplateId && workflowId) {
-    throw new Error(
-      'Only one of a reference template ID or a workflow ID can be provided, exclusively.'
-    );
-  }
-
-  if (method === 'by workflow' && !workflowId) {
-    throw new Error(
-      'A workflow ID must be provided when creating a document by workflow.'
-    );
-  }
-
-  if (method === 'by reference template' && !refTemplateId) {
-    throw new Error(
-      'A reference template ID must be provided when creating a document by reference template.'
-    );
-  }
-
   if (method === 'by workflow' && noteTypeCd) {
     console.warn(
       'A note type code was provided, but it will be ignored when creating a document by workflow'
     );
   }
 
-
   let retVal: PowerChartReturn & { success: boolean } = {
     inPowerChart: true,
     success: false,
   };
 
-  if (method === 'by workflow' && workflowId) {
+  if (method === 'by workflow') {
     try {
       const dcof = await window.external.DiscernObjectFactory('DYNDOC');
       let response: 0 | 1 | null = null;
-      response = await dcof.OpenDynDocByWorkFlowId(pid, eid, workflowId);
+      response = await dcof.OpenDynDocByWorkFlowId(personId, encounterId, id);
       if (response === 1) {
         retVal.success = true;
       }
@@ -87,22 +56,22 @@ export async function createNewDocumentAsync(
     }
   }
 
-  if (method === 'by reference template' && refTemplateId) {
+  if (method === 'by reference template') {
     try {
       const dcof = await window.external.DiscernObjectFactory('DYNDOC');
       let response: 0 | 1 | null = null;
       if (noteTypeCd) {
         response = await dcof.OpenNewDocumentByReferenceTemplateIdAndNoteType(
-          pid,
-          eid,
-          refTemplateId,
+          personId,
+          encounterId,
+          id,
           noteTypeCd
         );
       } else {
         response = await dcof.OpenNewDocumentByReferenceTemplateId(
-          pid,
-          eid,
-          refTemplateId
+          personId,
+          encounterId,
+          id
         );
         if (response === 1) {
           retVal.success = true;

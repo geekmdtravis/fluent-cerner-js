@@ -55,10 +55,7 @@ export type InheretanceProps = {
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
 export type ClinicalNoteOpts = {
-  personId: number;
-  encounterId: number;
-  eventIds: Array<number>;
-  windowTitle: string;
+  windowTitle?: string;
   viewOptionFlags?: Array<ViewOption>;
   inheritanceProps?: InheretanceProps;
 };
@@ -75,16 +72,13 @@ export type ClinicalNoteOpts = {
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
 export const launchClinicalNoteAsync = async (
+  personId: number,
+  encounterId: number,
+  eventIds: Array<number>,
   opts: ClinicalNoteOpts
 ): Promise<MPageEventReturn> => {
-  const {
-    personId,
-    encounterId,
-    eventIds,
-    windowTitle,
-    viewOptionFlags,
-  } = opts;
-  const { viewName, viewSeq, compName, compSeq } = opts.inheritanceProps || {};
+  const { viewOptionFlags, inheritanceProps, windowTitle } = opts;
+  const { viewName, viewSeq, compName, compSeq } = inheritanceProps || {};
 
   let inPowerChart = true;
   const params: Array<string> = [`${personId}`, `${encounterId}`];
@@ -95,7 +89,10 @@ export const launchClinicalNoteAsync = async (
       : viewOptionFlags;
 
   params.push(`[${eventIds.join('|')}]`);
-  params.push(`${windowTitle}`);
+  params.push(
+    `${windowTitle ||
+      `Clinical Note for patient with PID ${personId} on encounter with EID ${encounterId}`}`
+  );
   params.push(`${calculateViewOptionFlag(_viewOptsFlags)}`);
   params.push(`${viewName || ''}`);
   params.push(`${viewSeq || ''}`);

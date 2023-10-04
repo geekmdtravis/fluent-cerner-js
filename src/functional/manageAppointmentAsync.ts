@@ -18,7 +18,7 @@ export type AppointmentReturn = PowerChartReturn & {
  * following actions can be performed: check in, check out, cancel, no show,
  * view appointment dialog, and view appointment history. This is a wrapper function
  * for the `PEXSCHEDULINGACTIONS` Discern COM object.
- * @param id {number} - the event ID of the appointment to check in.
+ * @param eventId {number} - the event ID of the appointment to check in.
  * @param action {string} - the action to perform on the appointment. The available
  * actions are: 'check in', 'check out', 'cancel', 'no show', 'view appt dialog',
  * and 'view appt history'.
@@ -30,11 +30,13 @@ export type AppointmentReturn = PowerChartReturn & {
  * @throws an `Error` if an unexpected error occurs.
  */
 export async function manageAppointmentAsync(
-  id: number,
+  eventId: number,
   action: AppointmentAction
 ): Promise<AppointmentReturn> {
-  if (id < 1) {
-    throw new RangeError('The provided appointment ID must be greater than 0');
+  if (eventId < 1) {
+    throw new RangeError(
+      'The provided appointment event ID must be greater than 0'
+    );
   }
 
   let actionSuccess: 0 | 1 = 0;
@@ -46,22 +48,22 @@ export async function manageAppointmentAsync(
     );
     switch (action) {
       case 'check in':
-        actionSuccess = await dcof.CheckInAppointment(id);
+        actionSuccess = await dcof.CheckInAppointment(eventId);
         break;
       case 'check out':
-        actionSuccess = await dcof.CheckOutAppointment(id);
+        actionSuccess = await dcof.CheckOutAppointment(eventId);
         break;
       case 'cancel':
-        actionSuccess = await dcof.CancelAppointment(id);
+        actionSuccess = await dcof.CancelAppointment(eventId);
         break;
       case 'no show':
-        actionSuccess = await dcof.NoShowAppointment(id);
+        actionSuccess = await dcof.NoShowAppointment(eventId);
         break;
       case 'view appt dialog':
-        actionSuccess = await dcof.ShowView(id);
+        actionSuccess = await dcof.ShowView(eventId);
         break;
       case 'view appt history':
-        actionSuccess = await dcof.ShowHistoryView(id);
+        actionSuccess = await dcof.ShowHistoryView(eventId);
         break;
       default:
         throw new Error('Invalid appointment action');

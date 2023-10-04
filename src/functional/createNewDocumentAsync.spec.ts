@@ -12,11 +12,9 @@ describe('createNewDocumentAsync', () => {
   it('returns inPowerChart as false when outside of PowerChart when created by reference ID', async () => {
     const { inPowerChart } = await createNewDocumentAsync(
       'by reference template',
-      {
-        pid: 1,
-        eid: 1,
-        refTemplateId: 1,
-      }
+      1,
+      1,
+      1
     );
     expect(inPowerChart).toBe(false);
   });
@@ -32,11 +30,9 @@ describe('createNewDocumentAsync', () => {
     });
     const { inPowerChart } = await createNewDocumentAsync(
       'by reference template',
-      {
-        pid: 1,
-        eid: 1,
-        refTemplateId: 1,
-      }
+      1,
+      1,
+      1
     );
     expect(inPowerChart).toBe(true);
   });
@@ -52,21 +48,20 @@ describe('createNewDocumentAsync', () => {
     });
     const { inPowerChart } = await createNewDocumentAsync(
       'by reference template',
-      {
-        pid: 1,
-        eid: 1,
-        refTemplateId: 1,
-        noteTypeCd: 1,
-      }
+      1,
+      1,
+      1,
+      1
     );
     expect(inPowerChart).toBe(true);
   });
   it('returns inPowerChart as false when outside of PowerChart when created by workflow ID', async () => {
-    const { inPowerChart } = await createNewDocumentAsync('by workflow', {
-      pid: 1,
-      eid: 1,
-      workflowId: 1,
-    });
+    const { inPowerChart } = await createNewDocumentAsync(
+      'by workflow',
+      1,
+      1,
+      1
+    );
     expect(inPowerChart).toBe(false);
   });
   it('returns inPowerChart as true when inside of PowerChart when created by workflow ID', async () => {
@@ -78,16 +73,17 @@ describe('createNewDocumentAsync', () => {
         })),
       },
     });
-    const { inPowerChart } = await createNewDocumentAsync('by workflow', {
-      pid: 1,
-      eid: 1,
-      workflowId: 1,
-    });
+    const { inPowerChart } = await createNewDocumentAsync(
+      'by workflow',
+      1,
+      1,
+      1
+    );
     expect(inPowerChart).toBe(true);
   });
   it('throws an Error when there is neither a refTemplate ID nor a workflow ID provide', async () => {
     try {
-      await createNewDocumentAsync('by workflow', { pid: 1, eid: 1 });
+      await createNewDocumentAsync('by workflow', 1, 1, 1);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty(
@@ -98,12 +94,7 @@ describe('createNewDocumentAsync', () => {
   });
   it('throws an Error when there is both a refTemplate ID and a workflow ID provided', async () => {
     try {
-      await createNewDocumentAsync('by reference template', {
-        pid: 1,
-        eid: 1,
-        refTemplateId: 1,
-        workflowId: 1,
-      });
+      await createNewDocumentAsync('by reference template', 1, 1, 1, 1);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty(
@@ -114,11 +105,7 @@ describe('createNewDocumentAsync', () => {
   });
   it('throws an Error when there is no workflow ID provided when creating a document by workflow', async () => {
     try {
-      await createNewDocumentAsync('by workflow', {
-        pid: 1,
-        eid: 1,
-        refTemplateId: 1,
-      });
+      await createNewDocumentAsync('by workflow', 1, 1, 1);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty(
@@ -129,11 +116,7 @@ describe('createNewDocumentAsync', () => {
   });
   it('throws an Error when there is no refTemplate ID provided when creating a document by reference template', async () => {
     try {
-      await createNewDocumentAsync('by reference template', {
-        pid: 1,
-        eid: 1,
-        workflowId: 1,
-      });
+      await createNewDocumentAsync('by reference template', 1, 1, 1);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty(
@@ -144,12 +127,7 @@ describe('createNewDocumentAsync', () => {
   });
   it('calls console.warn when a note type code is provided when creating a document by workflow', async () => {
     const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-    await createNewDocumentAsync('by workflow', {
-      pid: 1,
-      eid: 1,
-      workflowId: 1,
-      noteTypeCd: 1,
-    });
+    await createNewDocumentAsync('by workflow', 1, 1, 1, 1);
     expect(spy).toHaveBeenCalled();
     spy.mockRestore();
   });
@@ -173,12 +151,7 @@ describe('createNewDocumentAsync', () => {
       },
     });
     return expect(
-      async () =>
-        await createNewDocumentAsync('by workflow', {
-          pid: 1,
-          eid: 1,
-          workflowId: 1,
-        })
+      async () => await createNewDocumentAsync('by workflow', 1, 1, 1)
     ).rejects.toThrow(Error);
   });
   it('throws an Error when an unexpected error occurs when attempting to create new document by referene template', async () => {
@@ -193,12 +166,7 @@ describe('createNewDocumentAsync', () => {
       },
     });
     return expect(
-      async () =>
-        await createNewDocumentAsync('by reference template', {
-          pid: 1,
-          eid: 1,
-          refTemplateId: 1,
-        })
+      async () => await createNewDocumentAsync('by reference template', 1, 1, 1)
     ).rejects.toThrow(Error);
   });
   it('successfully create a new document by reference template when a note type code is provided', async () => {

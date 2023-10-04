@@ -20,22 +20,6 @@ export type CclCallParam = {
 };
 
 /**
- * A type which represents the full set of data required to make an XmlCclRequest, which is wrapped
- * by `makeCclRequest`.
- * @param {string} prg - The name of the CCL program to run, e.g. 12_USER_DETAILS.
- * @param {CclCallParam[]} params - An array of CclCallParam objects, each of which represents
- * a strongly typed parameter.
- * @param {boolean?} excludeMine - Determines whether or not to include the "MINE" parameter as the
- * first parameter in the CCL call. This defaults to `false`, and almost all cases will require
- * the "MINE" parameter to be included.
- */
-export type CclOpts = {
-  prg: string;
-  params: Array<CclCallParam>;
-  excludeMine?: boolean;
-};
-
-/**
  * A type functioning as a convience wrapper for the ready state of an XmlCclRequest.
  */
 export type XmlCclReadyState =
@@ -95,7 +79,10 @@ statusCodeMap.set(500, 'internal server exception');
  * Make AJAX calls to CCL end-points to retrieve data from the Cerner PowerChart
  * application. This function is a wrapper around the `XMLCclRequest` function
  * provided by the Cerner PowerChart application that greatly simplifies it's use.
- * @param {CclOpts} opts - Required options for the CCL request.
+ * @param prg {string} - the name of the CCL program to call.
+ * @param params {Array<CclCallParam|string|number>} - an array of parameters to pass to the CCL program.
+ * @param excludeMine {boolean} - (optional) determines whether or not to include the "MINE" parameter as the
+ * first parameter in the CCL request. Defaults to `false`.
  * @returns a `Promise` of type `CclRequestResponse<T>` where `T` is the type
  * or interface which represents the resolved data from the CCL request. If
  * no data are returned, that is an empty string, from the XMLCclRequest then
@@ -111,9 +98,10 @@ statusCodeMap.set(500, 'internal server exception');
  * @documentation - [XMLCclRequest](https://wiki.cerner.com/display/MPAGES/MPages+JavaScript+Reference#MPagesJavaScriptReference-XMLCclRequest)
  */
 export async function makeCclRequestAsync<T>(
-  opts: CclOpts
+  prg: string,
+  params: Array<CclCallParam | string | number>,
+  excludeMine?: boolean
 ): Promise<CclRequestResponse<T>> {
-  const { prg, excludeMine, params } = opts;
   const paramsList = processCclRequestParams(params, excludeMine || false);
 
   let response: CclRequestResponse<T> | undefined;

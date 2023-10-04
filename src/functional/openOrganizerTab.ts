@@ -33,5 +33,5 @@ export async function openOrganizerTabAsync(
       value: tab,
     },
   ];
-  return await openApplicationAsync('by executable', 'Powerchart.ext', args);
+  return await openApplicationAsync('by executable', 'Powerchart.exe', args);
 }

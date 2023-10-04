@@ -3,7 +3,7 @@ import { outsideOfPowerChartError } from '../utils';
 
 /**
  * A type which represents the parameters to be be passed into the launchPowerForm() function.
- * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * @param {number} patientId - The identifier for the patient to whom the note belongs.
  * Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this note will be launched. Cerner context variable: VIS_EncntrId.
@@ -18,7 +18,7 @@ import { outsideOfPowerChartError } from '../utils';
  * @documentation [MPAGES_EVENT - POWERFORM](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERFORM)
  **/
 export type PowerFormOpts = {
-  personId: number;
+  patientId: number;
   encounterId: number;
   target: 'new form' | 'completed form' | 'new form search';
   targetId?: number;
@@ -41,7 +41,13 @@ export type PowerFormOpts = {
 export const launchPowerFormAsync = async (
   opts: PowerFormOpts
 ): Promise<MPageEventReturn> => {
-  const { personId, encounterId, target, targetId, permissions } = opts;
+  const {
+    patientId: personId,
+    encounterId,
+    target,
+    targetId,
+    permissions,
+  } = opts;
 
   if ((target === 'new form' || target === 'completed form') && !targetId) {
     throw new Error(

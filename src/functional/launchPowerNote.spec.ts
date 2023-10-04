@@ -5,7 +5,7 @@ describe('launchPowerNoteAsync', () => {
     const expected = '123456|78910||1337';
 
     const opts: PowerNoteOpts = {
-      personId: 123456,
+      patientId: 123456,
       encounterId: 78910,
       target: 'existing',
       targetId: 1337,
@@ -18,7 +18,7 @@ describe('launchPowerNoteAsync', () => {
     const expected = '8316243|12575702|CKI!EPS HAIR LOSS|0';
 
     const opts: PowerNoteOpts = {
-      personId: 8316243,
+      patientId: 8316243,
       encounterId: 12575702,
       target: 'new',
       targetId: 'CKI!EPS HAIR LOSS',
@@ -29,7 +29,7 @@ describe('launchPowerNoteAsync', () => {
   });
   it('throws an error if `new` is provided but targetId is not a string', async () => {
     const opts: PowerNoteOpts = {
-      personId: 123456,
+      patientId: 123456,
       encounterId: 78910,
       target: 'new',
       targetId: 1337,
@@ -46,7 +46,7 @@ describe('launchPowerNoteAsync', () => {
   });
   it('throws an error if `existing` is provided but targetId not a number', async () => {
     const opts: PowerNoteOpts = {
-      personId: 123456,
+      patientId: 123456,
       encounterId: 78910,
       target: 'existing',
       targetId: 'CKI!EPS HAIR LOSS',
@@ -63,7 +63,7 @@ describe('launchPowerNoteAsync', () => {
   });
   it('returns false for `inPowerChart` when called outside of PowerChart', async () => {
     const opts: PowerNoteOpts = {
-      personId: 123456,
+      patientId: 123456,
       encounterId: 78910,
       target: 'existing',
       targetId: 1337,

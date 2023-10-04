@@ -8,7 +8,7 @@ import {
  * Attempts to open a tab with the name given to the `tab` variable in a
  * patients chart given in the context of a given encounter.  Uses the function from
  * this library `openApplicationAsync`.
- * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * @param {number} patientId - The identifier for the patient to whom the note belongs.
  * Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this note will be launched. Cerner context variable: VIS_EncntrId.
@@ -29,14 +29,14 @@ import {
  * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
 export async function openPatientTabAsync(
-  personId: number,
+  patientId: number,
   encounterId: number,
   tab: string
 ): Promise<ApplinkReturn> {
   const args: Array<OpenApplicationArgument> = [
     {
       argument: 'PERSONID',
-      value: personId,
+      value: patientId,
     },
     {
       argument: 'ENCNTRID',

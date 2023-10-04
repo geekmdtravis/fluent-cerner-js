@@ -5,8 +5,8 @@ import { outsideOfPowerChartError } from '../utils';
  * Add an addendum to an existing document for a given patient and encounter using the
  * DYNDOC Discern COM object. Of note, Cerner PowerChart references the "addendum" action
  * with the "modify" terminology.
- * @param pid {number} - the patient ID to launch the document for
- * @param eid {number} - the encounter ID to launch the document in
+ * @param personId {number} - the patient ID to launch the document for
+ * @param encounterId {number} - the encounter ID to launch the document in
  * @param eventId {number} - the event ID of the document to modify.
  * @resolves {PowerChartReturn & { success: boolean }} - a `Promise` which resolves to an object
  * containing a boolean indicating whether the user is in PowerChart and a boolean indicating
@@ -15,8 +15,8 @@ import { outsideOfPowerChartError } from '../utils';
  */
 
 export async function addAddendumToDocumentAsync(
-  pid: number,
-  eid: number,
+  personId: number,
+  encounterId: number,
   eventId: number
 ): Promise<PowerChartReturn & { success: boolean }> {
   let retVal: PowerChartReturn & { success: boolean } = {
@@ -27,7 +27,11 @@ export async function addAddendumToDocumentAsync(
   try {
     const dcof = await window.external.DiscernObjectFactory('DYNDOC');
     let response: 0 | 1 | null = null;
-    response = await dcof.ModifyExistingDocumentByEventId(pid, eid, eventId);
+    response = await dcof.ModifyExistingDocumentByEventId(
+      personId,
+      encounterId,
+      eventId
+    );
     retVal.success = response === 1;
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
