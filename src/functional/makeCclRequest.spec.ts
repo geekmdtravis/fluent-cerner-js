@@ -8,10 +8,7 @@ import {
 describe('makeCclRequestAsync', () => {
   it('throws PowerChartError when outside of PowerChart', async () => {
     try {
-      await makeCclRequestAsync({
-        prg: 'TEST',
-        params: [{ type: 'string', param: 'param1' }],
-      });
+      await makeCclRequestAsync('TEST', [{ type: 'string', param: 'param1' }]);
     } catch (e) {
       expect(e).toBeInstanceOf(PowerChartError);
       expect(e).toHaveProperty(
@@ -45,10 +42,7 @@ describe('makeCclRequestAsync', () => {
       },
     });
     try {
-      await makeCclRequestAsync({
-        prg: 'TEST',
-        params: [{ type: 'string', param: 'param1' }],
-      });
+      await makeCclRequestAsync('TEST', [{ type: 'string', param: 'param1' }]);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e).toHaveProperty(
@@ -78,10 +72,7 @@ describe('makeCclRequestAsync', () => {
       },
     });
     try {
-      await makeCclRequestAsync({
-        prg: 'TEST',
-        params: [{ type: 'string', param: 'param1' }],
-      });
+      await makeCclRequestAsync('TEST', ['param1']);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }

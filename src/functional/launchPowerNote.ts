@@ -24,9 +24,9 @@ import { outsideOfPowerChartError } from '../utils';
  * @documentation [MPAGES_EVENT - POWERNOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERNOTE)
  **/
 export const launchPowerNoteAsync = async (
+  target: 'new' | 'existing',
   patientId: number,
   encounterId: number,
-  target: 'new' | 'existing',
   targetId: string | number
 ): Promise<MPageEventReturn> => {
   if (target === 'new' && typeof targetId !== 'string') {
