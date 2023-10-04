@@ -25,7 +25,7 @@ A modern API for interacting with the Cerner Millennium application. Modern Type
 | `CCLLINKPOPUP`                                 | (no support planned)                | Link CCL reports, launch in a new Internet Explorer&reg; pop-up.           |
 | `CCLNEWSESSIONWINDOW`                          | (will review)                       | Open a link (a URL) in a new _Discern Output Viewer_ window.               |
 | `DiscernObjectFactory("CINFOBUTTONLINK")`      | (will review)                       | Communicate information between MPages and the Infobutton service.         |
-| `DiscernObjectFactory("DISCHARGEPROCESS")`     | (planned)                           | Launch the discharge process module.                                       |
+| `DiscernObjectFactory("DISCHARGEPROCESS")`     | `launchDischargeProcessAsync`       | Launch the discharge process module.                                       |
 | `DiscernObjectFactory("DYNDOC")`               | &mdash;                             | Create new Dynamic Documentation notes and modify existing ones.           |
 |                                                | &rdsh; `createNewDocumentAsync`     | Create a new document, launching the DYNDOC modal.                         |
 |                                                | &rdsh; `addAddendumToDocumentAsync` | Add an addendum to an existing document.                                   |
