@@ -32,7 +32,7 @@ export async function addAddendumToDocumentAsync(
       encounterId,
       eventId
     );
-    retVal.success = response === 1;
+    retVal.success = Boolean(response);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       retVal.inPowerChart = false;
