@@ -62,7 +62,12 @@ export type ClinicalNoteOpts = {
 
 /**
  * Launch a ClinicalNote in Cerner's PowerChart.
- * @param {ClinicalNoteOpts} opts - The parameters passed, as specified in `ClinicalNoteOpts`
+ * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * Cerner context variable: PAT_PersonId.
+ * @param {number} encounterId - The identifier for the encounter belonging to the patient where
+ * this note will be launched. Cerner context variable: VIS_EncntrId.
+ * @param {Array<number>} eventIds - An array of `event_id`'s of the clinical note(s) to be displayed.
+ * @param {ClinicalNoteOpts} opts - (optional) The parameters passed, as specified in `ClinicalNoteOpts`
  * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
  * and `inPowerChart` values. Of note, we cannot provide additional information about the
  * success or failure of the invocation because this information is not provided by the
@@ -75,9 +80,9 @@ export const launchClinicalNoteAsync = async (
   personId: number,
   encounterId: number,
   eventIds: Array<number>,
-  opts: ClinicalNoteOpts
+  opts?: ClinicalNoteOpts
 ): Promise<MPageEventReturn> => {
-  const { viewOptionFlags, inheritanceProps, windowTitle } = opts;
+  const { viewOptionFlags, inheritanceProps, windowTitle } = opts || {};
   const { viewName, viewSeq, compName, compSeq } = inheritanceProps || {};
 
   let inPowerChart = true;
