@@ -14,6 +14,13 @@ import {
   manageAppointmentAsync,
   NewOrderStrOpts,
   openOrganizerTabAsync,
+  orderString,
+  submitOrdersAsync,
+  submitPowerOrdersAsync,
+  CclCallParam,
+  CclOpts,
+  CclRequestResponse,
+  ClinicalNoteOpts,
   openPatientTabAsync,
   OrderAction,
   orderString,
@@ -39,6 +46,7 @@ export {
   openPatientTabAsync,
   orderString,
   submitOrdersAsync,
+  submitPowerOrdersAsync,
 };
 
 export {
@@ -128,6 +136,76 @@ declare global {
     DiscernObjectFactory: (
       comObject: DiscernCOMObjects
     ) => Promise<{
+      /**
+       * Creates the MOEW handle.
+       * @param dPersonId {number} - the patient ID
+       * @param dEncntrId {number} - the encounter ID in which orders would be placed
+       * @param dwCustomizeFlag {number} - mask used to determine options available within the MOEW
+       * @param dwTabFlag {number} - the type of list being customized (2 for orders, 3 for medications).
+       * @param dwTabDisplayOptionsFlag {number} - mask specifying the components to display on the list.
+       * @returns a `Promise` which resolves to an integer representing a handle to the MOEW instance. 0 indicates an invalid call or call from outside PowerChart.
+       */
+      CreateMOEW: (
+        dPersonId: number,
+        dEncntrId: number,
+        dwCustomizeFlag: number,
+        dwTabFlag: number,
+        dwTabDisplayOptionsFlag: number
+      ) => Promise<number>;
+
+      /**
+       * Creates PowerPlan objects from the pathway catalog IDs. CreateMOEW() must be called first.
+       * @param lMOEWHandle {number} - the handle to the MOEW
+       * @param planDetailsXMLBstr {string} - XML string containing the plan/pathway catalog IDs
+       * @returns a `Promise` which resolves to an integer: 1 if the plan was added successfully, and 0 otherwise.
+       */
+      AddPowerPlanWithDetails: (
+        lMOEWHandle: number,
+        planDetailsXMLBstr: string
+      ) => Promise<number>;
+
+      /**
+       * Attempts to add standalone orders to the scratchpad. CreateMOEW() must be called first.
+       * @param lMOEWHandle {number} - the handle to the MOEW
+       * @param newOrdersXMLBstr {string} - XML string containing the order details, including synonym IDs
+       * @param bSignTimeInteractionChecking {boolean} - indicates if interaction checking should be performed at order sign time.
+       * @returns a `Promise` which resolves to an integer: 1 if the orders were added successfully, and 0 otherwise.
+       */
+      AddNewOrdersToScratchpad: (
+        lMOEWHandle: number,
+        newOrdersXMLBstr: string,
+        bSignTimeInteractionChecking: boolean
+      ) => Promise<number>;
+
+      /**
+       * Displays the modal order entry window (MOEW).
+       * @param {number} lMOEWHandle - the handle to the MOEW.
+       * @returns a `Promise` which resolves to an integer (0). This appears to be returned upon either a successful or unsuccessful launch.
+       */
+      DisplayMOEW: (lMOEWHandle: number) => Promise<number>;
+
+      /**
+       * Attempts to silently sign orders on the scratchpad. If the orders cannot be signed silently, will display the MOEW.
+       * @param {number} lMOEWHandle - the handle to the MOEW.
+       * @returns a `Promise` which resolves to an integer: 0 if called with invalid/improperly structured paramters, and 1 otherwise.
+       */
+      SignOrders: (lMOEWHandle: number) => Promise<number>;
+
+      /**
+       * Retrieves the XML representation of the order information signed during the previous MOEW invocation.
+       * @param {number} lMOEWHandle - the handle to the MOEW.
+       * @returns a `Promise` which resolves to a string containing prior order information. If none or invalid, the string will be empty.
+       */
+      GetXMLOrdersMOEW: (lMOEWHandle: number) => Promise<string>;
+
+      /**
+       * Destroys the modal order entry window (MOEW).
+       * @param {number} lMOEWHandle - the handle to the MOEW.
+       * @returns a `Promise` which resolves to null. This appears to be returned upon either a successful or unsuccessful destruction.
+       * @throws `Error` if an unexpected error occurs.
+       */
+      DestroyMOEW: (lMOEWHandle: number) => Promise<null>;
+
       /**
        * Get valid encounter ID's for a given patient.
        * @param pid {number} - the patient ID of the patient to get encounters for.

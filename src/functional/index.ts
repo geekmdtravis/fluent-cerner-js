@@ -22,6 +22,7 @@ import {
   NewOrderStrOpts,
 } from './orderString';
 import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
+import { submitPowerOrdersAsync } from './submitPowerOrders';
 import { createNewDocumentAsync } from './createNewDocumentAsync';
 import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
 
@@ -55,6 +56,7 @@ export {
   openOrganizerTabAsync,
   orderString,
   submitOrdersAsync,
+  submitPowerOrdersAsync,
 };
 
 // Export types; cannot use the `export type` syntax.

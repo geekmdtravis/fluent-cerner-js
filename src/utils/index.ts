@@ -55,3 +55,4 @@ export const warnAttemptedOrdersOutsideOfPowerChart = (
 ): void => {
   console.warn(`window.MPAGES_EVENT('ORDERS', '${eventString}')`);
 };
+
