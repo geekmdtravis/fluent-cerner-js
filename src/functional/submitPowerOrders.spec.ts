@@ -22,7 +22,7 @@ describe('submitPowerOrders()', () => {
         sentenceId: 1,
       },
     ];
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+    const result = await submitPowerOrdersAsync(1, 1, orderArray);
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: false,
       status: 'dry run',
@@ -34,7 +34,7 @@ describe('submitPowerOrders()', () => {
   it('throws an error if no orders are provided', async () => {
     const orderArray: Array<PowerPlanOrder | StandaloneOrder> = [];
     try {
-      await submitPowerOrdersAsync('order', 1, 1, orderArray);
+      await submitPowerOrdersAsync(1, 1, orderArray);
     } catch (e) {
       expect(e).toBeInstanceOf(SyntaxError);
       expect(e as SyntaxError).toHaveProperty(
@@ -56,7 +56,7 @@ describe('submitPowerOrders()', () => {
       },
     ];
 
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+    const result = await submitPowerOrdersAsync(1, 1, orderArray);
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: false,
       status: 'dry run',
@@ -72,7 +72,7 @@ describe('submitPowerOrders()', () => {
       },
     ];
     try {
-      await submitPowerOrdersAsync('order', 1, 1, orderArray);
+      await submitPowerOrdersAsync(1, 1, orderArray);
     } catch (e) {
       expect(e).toBeInstanceOf(SyntaxError);
       expect(e as SyntaxError).toHaveProperty(
@@ -121,7 +121,7 @@ describe('submitPowerOrders()', () => {
         sentenceId: 1,
       },
     ];
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+    const result = await submitPowerOrdersAsync(1, 1, orderArray);
 
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: true,
@@ -171,7 +171,7 @@ describe('submitPowerOrders()', () => {
         sentenceId: 1,
       },
     ];
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+    const result = await submitPowerOrdersAsync(1, 1, orderArray);
 
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: true,
@@ -527,7 +527,7 @@ describe('submitPowerOrders()', () => {
         diagnosesSynonymIds: [3, 4],
       },
     ];
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+    const result = await submitPowerOrdersAsync(1, 1, orderArray);
 
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: true,
@@ -566,7 +566,7 @@ describe('submitPowerOrders()', () => {
         pathwayCatalogId: 1,
       },
     ];
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+    const result = await submitPowerOrdersAsync(1, 1, orderArray);
 
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: true,
@@ -599,7 +599,7 @@ describe('submitPowerOrders()', () => {
         origination: 'prescription order',
       },
     ];
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+    const result = await submitPowerOrdersAsync(1, 1, orderArray);
 
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: true,
@@ -632,7 +632,7 @@ describe('submitPowerOrders()', () => {
         origination: 'prescription order',
       },
     ];
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray);
+    const result = await submitPowerOrdersAsync(1, 1, orderArray);
 
     const expectedObj: SubmitPowerOrdersReturn = {
       inPowerChart: true,
@@ -665,7 +665,7 @@ describe('submitPowerOrders()', () => {
         origination: 'prescription order',
       },
     ];
-    const result = await submitPowerOrdersAsync('order', 1, 1, orderArray, {
+    const result = await submitPowerOrdersAsync(1, 1, orderArray, {
       signSilently: true,
       standaloneOrderInteractionChecking: true,
     });
@@ -697,7 +697,7 @@ describe('submitPowerOrders()', () => {
     ];
 
     try {
-      await submitPowerOrdersAsync('order', 1, 1, orderArray, {
+      await submitPowerOrdersAsync(1, 1, orderArray, {
         signSilently: true,
         standaloneOrderInteractionChecking: true,
       });

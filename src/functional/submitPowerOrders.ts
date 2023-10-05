@@ -97,8 +97,7 @@ export type PowerOrdersOrderOpts = {
 
 /**
  * Submits a combination of standalone orders and/or PowerPlan orders by utilizing underlying Cerner - POWERORDERS functionality.
- * @param {'order' | 'medications'} orderType - Configures the MOEW to allow customizations to either the 'order' list or the 'medications' list
- * @param {number} personId - The identifier for the patient. Cerner context variable: PAT_PersonId.
+ * @param {number} patientId - The identifier for the patient. Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this order will be placed. Cerner context variable: VIS_EncntrId.
  * @param {Array<StandaloneOrder | PowerPlanOrder>} orders - An array of `StandaloneOrder` and/or `PowerPlanOrder`
@@ -108,6 +107,8 @@ export type PowerOrdersOrderOpts = {
  * @param { Array<PowerOrdersMOEWFlags>} moewFlags - An *optional* array of strings defining the MOEW behavior/appearance. If not provided,
  * the values will default to the the order setting as well as recommended
  * values for the MOEW to be configured with PowerPlan support. If any values are provided, those will be the only values used.
+ * @param {'order' | 'medications'} targetTab - (optional) Determines which list to target when lauching the MOEW.
+ * Either the order list or the medication list (subset). Defaults to the complete order list if not provided.
  * @returns {SubmitPowerOrdersReturn} - an object with several high value properties: a boolean flag set to notify the user if the
  * attempt was made outside of PowerChart, the `status` of the order attempt, an object
  * representing the XML response string (converted to an array of the orders placed with order `name`,
@@ -117,12 +118,12 @@ export type PowerOrdersOrderOpts = {
  * @documentation [POWERORDERS] (https://wiki.cerner.com/display/public/MPDEVWIKI/POWERORDERS)
  */
 export const submitPowerOrdersAsync = async (
-  orderType: 'order' | 'medications',
-  personId: number,
+  patientId: number,
   encounterId: number,
   orders: Array<StandaloneOrder | PowerPlanOrder>,
   orderOpts?: PowerOrdersOrderOpts,
-  moewFlags?: Array<PowerOrdersMOEWFlags>
+  moewFlags?: Array<PowerOrdersMOEWFlags>,
+  targetTab?: 'orders tab' | 'medications tab'
 ): Promise<SubmitPowerOrdersReturn> => {
   //If orderOpts is not provided, default parameters chosen, otherwise just use the provided object
   orderOpts = !orderOpts
@@ -137,7 +138,7 @@ export const submitPowerOrdersAsync = async (
     dwCustomizeFlag,
     dwTabFlag,
     dwTabDisplayOptionsFlag,
-  } = calculateMOEWBitmask(orderType, moewFlags);
+  } = calculateMOEWBitmask(targetTab || 'orders tab', moewFlags);
 
   //Obtain user's chosen interaction checking setting & silent sign setting
   const m_bSignTimeInteractionChecking =
@@ -184,7 +185,7 @@ export const submitPowerOrdersAsync = async (
     //Create the MOEW
     const createMOEW = await createMOEWAsync(
       dcof,
-      personId,
+      patientId,
       encounterId,
       dwCustomizeFlag,
       dwTabFlag,

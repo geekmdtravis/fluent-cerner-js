@@ -32,7 +32,7 @@ type CernerMOEWFlags =
  * @returns The bitmask numbers (dwCustomizeFlag, dwTabFlag, and dwTabDisplayOptionsFlag) to be used with PowerChart's CreateMOEW() function.
  */
 export const calculateMOEWBitmask = (
-  orderType: 'order' | 'medications',
+  targetTab: 'orders tab' | 'medications tab',
   inputFlags: Array<PowerOrdersMOEWFlags>
 ): {
   dwCustomizeFlag: number;
@@ -45,11 +45,11 @@ export const calculateMOEWBitmask = (
   let dwTabDisplayOptionsFlag: number = 0;
 
   // Calculate the dwTabFlag parameter
-  if (orderType === 'order') {
+  if (targetTab === 'orders tab') {
     dwTabFlag = 2;
   }
 
-  if (orderType === 'medications') {
+  if (targetTab === 'medications tab') {
     dwTabFlag = 3;
   }
 

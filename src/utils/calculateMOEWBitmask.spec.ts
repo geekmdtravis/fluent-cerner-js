@@ -2,7 +2,7 @@ import { calculateMOEWBitmask } from './calculateMOEWBitmask';
 
 describe('calculateMOEWBitmask()', () => {
   it('accepts all parameters and yields expected flag values', async () => {
-    const result = calculateMOEWBitmask('order', [
+    const result = calculateMOEWBitmask('orders tab', [
       'sign later',
       'read only',
       'allow power plans',
@@ -33,7 +33,7 @@ describe('calculateMOEWBitmask()', () => {
   });
 
   it('correctly handles the `medications` order type', async () => {
-    const result = calculateMOEWBitmask('medications', []);
+    const result = calculateMOEWBitmask('medications tab', []);
     const expectedObj = {
       dwCustomizeFlag: 152,
       dwTabFlag: 3,
@@ -43,7 +43,7 @@ describe('calculateMOEWBitmask()', () => {
   });
 
   it('can handle the alternate `show flags`', async () => {
-    const result = calculateMOEWBitmask('medications', [
+    const result = calculateMOEWBitmask('medications tab', [
       'show med rec',
       'show demographics',
     ]);
