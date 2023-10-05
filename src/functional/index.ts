@@ -1,3 +1,4 @@
+import { manageAppointmentAsync } from './manageAppointmentAsync';
 import { getValidEncountersAsync } from './getValidEncounters';
 import {
   launchClinicalNoteAsync,
@@ -5,11 +6,10 @@ import {
 } from './launchClinicalNote';
 import { launchPatientEducationAsync } from './launchPatientEducation';
 import { launchPowerFormAsync, PowerFormOpts } from './launchPowerForm';
-import { launchPowerNoteAsync, PowerNoteOpts } from './launchPowerNote';
+import { launchPowerNoteAsync } from './launchPowerNote';
 import {
   makeCclRequestAsync,
   CclCallParam,
-  CclOpts,
   XmlCclStatus,
   CclRequestResponse,
 } from './makeCclRequest';
@@ -23,6 +23,8 @@ import {
 } from './orderString';
 import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
 import { submitPowerOrdersAsync } from './submitPowerOrders';
+import { createNewDocumentAsync } from './createNewDocumentAsync';
+import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
 
 export type PowerChartReturn = {
   inPowerChart: boolean;
@@ -41,12 +43,15 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 // Export functions
 export {
+  createNewDocumentAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
   launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
+  manageAppointmentAsync,
+  addAddendumToDocumentAsync,
   openPatientTabAsync,
   openOrganizerTabAsync,
   orderString,
@@ -57,14 +62,12 @@ export {
 // Export types; cannot use the `export type` syntax.
 export {
   CclCallParam,
-  CclOpts,
   CclRequestResponse,
   ClinicalNoteOpts,
   NewOrderStrOpts,
   OrderAction,
   OrderStrOpts,
   PowerFormOpts,
-  PowerNoteOpts,
   SubmitOrderOpts,
   XmlCclStatus,
 };

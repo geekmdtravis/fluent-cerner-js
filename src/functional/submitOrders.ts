@@ -60,7 +60,7 @@ export type SubmitOrderReturn = MPageEventReturn & {
  * Submit orders for a patient in a given encounter through the _Cerner PowerChart_ `MPAGES_EVENT` function.
  * By default, the seach for _PowerPlans_ are disabled (potential bug in _PowerChart_), _PowerOrders_ are disabled,
  * the target tab is set to orders, and will launch to the signature view.
- * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * @param {number} patientId - The identifier for the patient to whom the note belongs.
  * Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this note will be launched. Cerner context variable: VIS_EncntrId.
@@ -81,7 +81,7 @@ export type SubmitOrderReturn = MPageEventReturn & {
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export const submitOrdersAsync = async (
-  personId: number,
+  patientId: number,
   encounterId: number,
   orders: Array<string>,
   opts?: SubmitOrderOpts
@@ -93,7 +93,7 @@ export const submitOrdersAsync = async (
     targetTab === 'power orders' || targetTab === 'power medications';
 
   let params: Array<string> = [
-    `${personId}`,
+    `${patientId}`,
     `${encounterId}`,
     orders.join(''),
   ];

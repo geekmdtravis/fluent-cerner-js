@@ -1,3 +1,4 @@
+import { PowerChartError } from '../lib/PowerChartError';
 import {
   composeXmlCclReqRejectMsg,
   outsideOfPowerChartError,
@@ -16,22 +17,6 @@ import {
 export type CclCallParam = {
   type: 'string' | 'number';
   param: string | number;
-};
-
-/**
- * A type which represents the full set of data required to make an XmlCclRequest, which is wrapped
- * by `makeCclRequest`.
- * @param {string} prg - The name of the CCL program to run, e.g. 12_USER_DETAILS.
- * @param {boolean?} excludeMine - Determines whether or not to include the "MINE" parameter as the
- * first parameter in the CCL call. This defaults to `false`, and almost all cases will require
- * the "MINE" parameter to be included.
- * @param {CclCallParam[]} params - An array of CclCallParam objects, each of which represents
- * a strongly typed parameter.
- */
-export type CclOpts = {
-  prg: string;
-  excludeMine?: boolean;
-  params: Array<CclCallParam>;
 };
 
 /**
@@ -70,7 +55,7 @@ export type CclRequestResponse<T> = {
     statusDetails: string;
     prgName: string;
     prgArguments: string;
-    __original: XMLCclRequest;
+    __original: XMLCclRequest | null;
   };
   data: T | undefined;
 };
@@ -91,9 +76,13 @@ statusCodeMap.set(493, 'memory error');
 statusCodeMap.set(500, 'internal server exception');
 
 /**
- * A generic wrapper function for `XMLCclRequest`, which is a native function
- * in Cerner's Discern platform, which simplifies it's use.
- * @param {CclOpts} opts - Required options for the CCL request.
+ * Make AJAX calls to CCL end-points to retrieve data from the Cerner PowerChart
+ * application. This function is a wrapper around the `XMLCclRequest` function
+ * provided by the Cerner PowerChart application that greatly simplifies it's use.
+ * @param prg {string} - the name of the CCL program to call.
+ * @param params {Array<CclCallParam|string|number>} - an array of parameters to pass to the CCL program.
+ * @param excludeMine {boolean} - (optional) determines whether or not to include the "MINE" parameter as the
+ * first parameter in the CCL request. Defaults to `false`.
  * @returns a `Promise` of type `CclRequestResponse<T>` where `T` is the type
  * or interface which represents the resolved data from the CCL request. If
  * no data are returned, that is an empty string, from the XMLCclRequest then
@@ -109,54 +98,45 @@ statusCodeMap.set(500, 'internal server exception');
  * @documentation - [XMLCclRequest](https://wiki.cerner.com/display/MPAGES/MPages+JavaScript+Reference#MPagesJavaScriptReference-XMLCclRequest)
  */
 export async function makeCclRequestAsync<T>(
-  opts: CclOpts
+  prg: string,
+  params: Array<CclCallParam | string | number>,
+  excludeMine?: boolean
 ): Promise<CclRequestResponse<T>> {
-  const { prg, excludeMine, params } = opts;
   const paramsList = processCclRequestParams(params, excludeMine || false);
 
-  return new Promise((resolve, reject) => {
-    try {
-      // @ts-ignore - From Powerchart context
-      const request: XMLCclRequest = window.external.XMLCclRequest();
+  let response: CclRequestResponse<T> | undefined;
+  try {
+    const request = await window.external.XMLCclRequest();
 
-      request.open('GET', `${prg}`);
-      request.send(paramsList);
-      request.onreadystatechange = function() {
-        const readyState = readyStateMap.get(request.readyState);
+    request.open('GET', `${prg}`);
+    request.send(paramsList);
+    request.onreadystatechange = function() {
+      const _response = handleReadyStateChange<T>(request);
 
-        if (readyState !== 'completed') return;
+      if (!_response) return;
 
-        const statusText = statusCodeMap.get(request.status);
-        const responseText = processXmlCclReqResponseText(request.responseText);
-        const data: T | undefined = responseText && JSON.parse(responseText);
-
-        const response: CclRequestResponse<T> = {
-          meta: {
-            responseText: responseText || 'no response text',
-            status: request.status,
-            statusText: statusText || 'status refers to unknown error',
-            statusDetails: request.statusText,
-            prgName: request.url,
-            prgArguments: request.requestText,
-            __original: request,
-          },
-          data,
-        };
-
-        if (statusText === 'success') {
-          resolve(response);
-        } else {
-          reject(composeXmlCclReqRejectMsg(request, prg, paramsList));
-        }
-      };
-    } catch (e) {
-      if (outsideOfPowerChartError(e)) {
-        reject((e as Error).message);
-      } else {
-        throw e;
+      if (_response.meta.statusText !== 'success') {
+        throw new Error(composeXmlCclReqRejectMsg(request, prg, paramsList));
       }
+      response = _response;
+    };
+  } catch (e) {
+    if (outsideOfPowerChartError(e)) {
+      throw new PowerChartError(
+        `call to ${prg} with params ${paramsList} failed as a result of being outside the PowerChart environment`
+      );
+    } else {
+      throw e;
     }
-  });
+  }
+
+  if (!response) {
+    throw new Error(
+      'An unexpected error occurred and the CCL response returned undefined or null.'
+    );
+  }
+
+  return response;
 }
 
 /**
@@ -196,4 +176,35 @@ export function processCclRequestParams(
     .join(',');
 
   return paramString;
+}
+
+/**
+ * A function which processes the response text from an XmlCclRequest, mapping
+ * the contents to a JavaScript object of type `CclRequestResponse<T>`.
+ * @param request {XMLCclRequest} - the request object that is updated when the
+ * state of the request changes. Contents are not guaranteed to be valid until
+ * the request is in the "completed" state.
+ * @returns an object of type `CclRequestResponse<T>` where `T` is the type.
+ */
+function handleReadyStateChange<T>(
+  request: XMLCclRequest
+): CclRequestResponse<T> {
+  // const readyState = readyStateMap.get(request.readyState);
+
+  const statusText = statusCodeMap.get(request.status);
+  const responseText = processXmlCclReqResponseText(request.responseText);
+  const data: T | undefined = responseText && JSON.parse(responseText);
+
+  return {
+    meta: {
+      responseText: responseText || 'no response text',
+      status: request.status,
+      statusText: statusText || 'status refers to unknown error',
+      statusDetails: request.statusText,
+      prgName: request.url,
+      prgArguments: request.requestText,
+      __original: request,
+    },
+    data,
+  };
 }

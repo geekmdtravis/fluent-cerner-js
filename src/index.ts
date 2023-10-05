@@ -1,11 +1,18 @@
 import {
+  addAddendumToDocumentAsync,
+  createNewDocumentAsync,
+  CclCallParam,
+  CclOpts,
+  CclRequestResponse,
+  ClinicalNoteOpts,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
   launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
-  openPatientTabAsync,
+  manageAppointmentAsync,
+  NewOrderStrOpts,
   openOrganizerTabAsync,
   orderString,
   submitOrdersAsync,
@@ -14,24 +21,29 @@ import {
   CclOpts,
   CclRequestResponse,
   ClinicalNoteOpts,
+  openPatientTabAsync,
   OrderAction,
+  orderString,
   OrderStrOpts,
-  NewOrderStrOpts,
   PowerFormOpts,
   PowerNoteOpts,
   SubmitOrderOpts,
+  submitOrdersAsync,
   XmlCclStatus,
 } from './functional';
 
 export {
+  addAddendumToDocumentAsync,
+  createNewDocumentAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
   launchPowerFormAsync,
   launchPowerNoteAsync,
   makeCclRequestAsync,
-  openPatientTabAsync,
+  manageAppointmentAsync,
   openOrganizerTabAsync,
+  openPatientTabAsync,
   orderString,
   submitOrdersAsync,
   submitPowerOrdersAsync,
@@ -42,9 +54,9 @@ export {
   CclOpts,
   CclRequestResponse,
   ClinicalNoteOpts,
+  NewOrderStrOpts,
   OrderAction,
   OrderStrOpts,
-  NewOrderStrOpts,
   PowerFormOpts,
   PowerNoteOpts,
   SubmitOrderOpts,
@@ -219,15 +231,84 @@ declare global {
        * @returns a `Promise` which always returns `null`.
        */
       DoModal(): Promise<null>;
+      /**
+       * Launches a dialog to check in the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      CheckInAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Launches a dialog to check out the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      CheckOutAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Launches a dialog to cancel the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      CancelAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Launches a dialog to put a hold on the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      HoldAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Launches a dialog to mark the specified appointment as 'no show'.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      NoShowAppointment(eventId: number): Promise<0 | 1>;
+      /**
+       * Display the appointment view dialog for the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      ShowView(eventId: number): Promise<0 | 1>;
+      /**
+       * Display the appointment history view dialog for the specified appointment.
+       * @param eventId {number} - the event ID of the appointment to check in.
+       * @resolves to `0` if the action was successful, `1` otherwise.
+       */
+      ShowHistoryView(eventId: number): Promise<0 | 1>;
+      // TODO: update return type and JSDOc
+      OpenNewDocumentByReferenceTemplateId(
+        pid: number,
+        eid: number,
+        refTemplateId: number
+      ): Promise<null>;
+      // TODO: update return type and JSDOc
+      OpenNewDocumentByReferenceTemplateIdAndNoteType(
+        pid: number,
+        eid: number,
+        refTemplateId: number,
+        noteTypeCd: number
+      ): Promise<null>;
+      // TODO: update return type and JSDOc
+      ModifyExistingDocumentByEventId(
+        pid: number,
+        eid: number,
+        docEventId: number
+      ): Promise<null>;
+      // TODO: update return type and JSDOc
+      OpenDynDocByWorkFlowId(
+        pid: number,
+        eid: number,
+        workflowId: number
+      ): Promise<null>;
+      // TODO: update return type and JSDOc
+      LaunchDischargeDialog(): Promise<null>;
     }>;
     /**
-     * Interface for the Cerner Windows COM object for an XMLCclRequest.
+     * Funtion that returns a Cerner Windows COM object for an XMLCclRequest.
      * Useful for development but not intended for production use. Use of
      * this method in that context requires the following meta tag in the
      * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
      * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/XMLCCLREQUEST)
      */
-    XMLCclRequest: XMLCclRequest;
+    XMLCclRequest: () => Promise<XMLCclRequest>;
     /**
      * Interface for the Cerner Discern native function which provides the function
      * responsible for opening an application, chart tab, or organization level tab.

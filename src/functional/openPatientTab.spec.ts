@@ -14,10 +14,10 @@ describe('openPatientTab', () => {
   });
   test('returns an appropriately formatted eventString without quickadd', async () => {
     const { eventString } = await openPatientTabAsync(0, 1, 'Tab Name');
-    expect(eventString).toBe(`/PERSONID=0 /ENCNTRID=1 /FIRSTTAB=^TAB NAME^`);
+    expect(eventString).toBe(`/PERSONID=0 /ENCNTRID=1 /FIRSTTAB=^TAB NAME+^`);
   });
   test('returns an appropriately formatted eventString with quickadd', async () => {
-    const { eventString } = await openPatientTabAsync(0, 1, 'Tab Name', true);
+    const { eventString } = await openPatientTabAsync(0, 1, 'Tab Name');
     expect(eventString).toBe(`/PERSONID=0 /ENCNTRID=1 /FIRSTTAB=^TAB NAME+^`);
   });
   test('badInput returns false if response is anything other than null', async () => {
