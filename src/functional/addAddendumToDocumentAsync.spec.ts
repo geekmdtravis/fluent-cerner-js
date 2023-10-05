@@ -36,9 +36,9 @@ describe('addAddendumToDocumentAsync', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+        DiscernObjectFactory: jest.fn().mockImplementation(async () => ({
           ModifyExistingDocumentByEventId: async () => {
-            Promise.resolve(1);
+            return Promise.resolve(1);
           },
         })),
       },
@@ -50,9 +50,9 @@ describe('addAddendumToDocumentAsync', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        DiscernObjectFactory: jest.fn().mockImplementation(() => ({
+        DiscernObjectFactory: jest.fn().mockImplementation(async () => ({
           ModifyExistingDocumentByEventId: async () => {
-            Promise.resolve(0);
+            return Promise.resolve(0);
           },
         })),
       },

@@ -19,8 +19,8 @@ export async function launchDischargeProcessAsync(): Promise<PowerChartReturn> {
     dcof.LaunchDischargeDialog();
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-    } else {
       retData.inPowerChart = false;
+    } else {
       throw e;
     }
   }
