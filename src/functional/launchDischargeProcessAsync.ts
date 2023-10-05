@@ -8,7 +8,6 @@ import { outsideOfPowerChartError } from '../utils';
  * @param providerPid {number} - the provider ID to get valid encounters for.
  * @returns a `Promise` of `PowerChartReturn` which includes a boolean indicating
  * whether the user is in PowerChart.
- * @throws `Error` if an unexpected error occurs.
  */
 export async function launchDischargeProcessAsync(): Promise<PowerChartReturn> {
   const retData: PowerChartReturn = {
