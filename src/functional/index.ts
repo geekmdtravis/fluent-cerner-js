@@ -6,11 +6,10 @@ import {
 } from './launchClinicalNote';
 import { launchPatientEducationAsync } from './launchPatientEducation';
 import { launchPowerFormAsync, PowerFormOpts } from './launchPowerForm';
-import { launchPowerNoteAsync, PowerNoteOpts } from './launchPowerNote';
+import { launchPowerNoteAsync } from './launchPowerNote';
 import {
   makeCclRequestAsync,
   CclCallParam,
-  CclOpts,
   XmlCclStatus,
   CclRequestResponse,
 } from './makeCclRequest';
@@ -61,14 +60,12 @@ export {
 // Export types; cannot use the `export type` syntax.
 export {
   CclCallParam,
-  CclOpts,
   CclRequestResponse,
   ClinicalNoteOpts,
   NewOrderStrOpts,
   OrderAction,
   OrderStrOpts,
   PowerFormOpts,
-  PowerNoteOpts,
   SubmitOrderOpts,
   XmlCclStatus,
 };
