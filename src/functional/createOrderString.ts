@@ -25,7 +25,7 @@ export type OrderSting = string;
  *
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
-export type CompleteOrderAction =
+type CompleteOrderAction =
   | 'launch moew'
   | 'activate existing'
   | 'cancel-discontinue'

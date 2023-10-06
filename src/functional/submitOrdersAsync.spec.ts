@@ -1,7 +1,13 @@
-import { createOrderString } from './createOrderString';
-import { SubmitOrderAsyncOpts, submitOrdersAsync } from './submitOrdersAsync';
+import {
+  Order,
+  SubmitOrderAsyncOpts,
+  submitOrdersAsync,
+} from './submitOrdersAsync';
 
-const order = createOrderString('new order', 1);
+const order: Order = {
+  id: 1,
+  action: 'new order',
+};
 
 describe('submitOrders', () => {
   afterEach(() => {
@@ -31,8 +37,8 @@ describe('submitOrders', () => {
     expect(inPowerChart).toBe(false);
   });
   test("effectively adds orders to the 'eventString'", async () => {
-    const order1 = createOrderString('new order', 11);
-    const order2 = createOrderString('new order', 22);
+    const order1: Order = { action: 'new order', id: 11 };
+    const order2: Order = { action: 'new order', id: 22 };
     const { eventString } = await submitOrdersAsync(1, 2, [order1, order2]);
     const foundOrdersString = eventString.includes(
       '{ORDER|11|0|0|0|0}{ORDER|22|0|0|0|0}'

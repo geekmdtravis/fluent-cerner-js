@@ -1,9 +1,10 @@
 import { XMLParser } from 'fast-xml-parser';
-import { MPageEventReturn } from '.';
+import { MPageEventReturn, OrderStrOpts } from '.';
 import {
   outsideOfPowerChartError,
   warnAttemptedOrdersOutsideOfPowerChart,
 } from '../utils';
+import { OrderAction, createOrderString } from './createOrderString';
 
 const launchViewMap = new Map()
   .set('search', 8)
@@ -56,6 +57,12 @@ export type SubmitOrderAsyncReturn = MPageEventReturn & {
   ordersPlaced: Array<{ name: string; oid: number; display: string }> | null;
 };
 
+export type Order = {
+  id: number;
+  action: OrderAction;
+  opts?: OrderStrOpts;
+};
+
 /**
  * Submit orders for a patient in a given encounter through the _Cerner PowerChart_ `MPAGES_EVENT` function.
  * By default, the seach for _PowerPlans_ are disabled (potential bug in _PowerChart_), _PowerOrders_ are disabled,
@@ -83,7 +90,7 @@ export type SubmitOrderAsyncReturn = MPageEventReturn & {
 export const submitOrdersAsync = async (
   patientId: number,
   encounterId: number,
-  orders: Array<string>,
+  orders: Array<Order>,
   opts?: SubmitOrderAsyncOpts
 ): Promise<SubmitOrderAsyncReturn> => {
   let { targetTab, launchView, signSilently, dryRun } = opts || {};
@@ -92,10 +99,14 @@ export const submitOrdersAsync = async (
   const enablePowerPlans =
     targetTab === 'power orders' || targetTab === 'power medications';
 
+  const orderStrings = orders.map(({ action, id, opts }) =>
+    createOrderString(action, id, opts)
+  );
+
   let params: Array<string> = [
     `${patientId}`,
     `${encounterId}`,
-    orders.join(''),
+    orderStrings.join(''),
   ];
 
   params.push(enablePowerPlans ? '24' : '0');
