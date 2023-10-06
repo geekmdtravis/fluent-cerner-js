@@ -23,7 +23,12 @@ export type ViewOption =
  * preferences after. An invalid compName loads the clinical note with the default preferences.
  * @param {number} compSeq - 	The component sequence for the component-level preference of the tab to model
  * the preferences after. An invalid compSeq loads the clinical note with the default preferences.
- *
+ * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
+ * and `inPowerChart` values. Of note, we cannot provide additional information about the
+ * success or failure of the invocation because this information is not provided by the
+ * underlying Discern native function call's return, which awlays returns `null` no matter
+ * the outcome of the call.
+ * @throw if an unexpected error has occurred.
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  */
 export type InheretanceProps = {
@@ -50,32 +55,35 @@ export type InheretanceProps = {
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
 export type ClinicalNoteOpts = {
-  personId: number;
-  encounterId: number;
-  eventIds: Array<number>;
-  windowTitle: string;
+  windowTitle?: string;
   viewOptionFlags?: Array<ViewOption>;
   inheritanceProps?: InheretanceProps;
 };
 
 /**
  * Launch a ClinicalNote in Cerner's PowerChart.
- * @param {ClinicalNoteOpts} opts - The parameters passed, as specified in `ClinicalNoteOpts`
- * @returns {MPageEventReturn} - An object containing the `eventString` and `inPowerChart` values.
+ * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * Cerner context variable: PAT_PersonId.
+ * @param {number} encounterId - The identifier for the encounter belonging to the patient where
+ * this note will be launched. Cerner context variable: VIS_EncntrId.
+ * @param {Array<number>} eventIds - An array of `event_id`'s of the clinical note(s) to be displayed.
+ * @param {ClinicalNoteOpts} opts - (optional) The parameters passed, as specified in `ClinicalNoteOpts`
+ * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
+ * and `inPowerChart` values. Of note, we cannot provide additional information about the
+ * success or failure of the invocation because this information is not provided by the
+ * underlying Discern native function call's return, which awlays returns `null` no matter
+ * the outcome of the call.
  *
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
-export const launchClinicalNote = (
-  opts: ClinicalNoteOpts
-): MPageEventReturn => {
-  const {
-    personId,
-    encounterId,
-    eventIds,
-    windowTitle,
-    viewOptionFlags,
-  } = opts;
-  const { viewName, viewSeq, compName, compSeq } = opts.inheritanceProps || {};
+export const launchClinicalNoteAsync = async (
+  personId: number,
+  encounterId: number,
+  eventIds: Array<number>,
+  opts?: ClinicalNoteOpts
+): Promise<MPageEventReturn> => {
+  const { viewOptionFlags, inheritanceProps, windowTitle } = opts || {};
+  const { viewName, viewSeq, compName, compSeq } = inheritanceProps || {};
 
   let inPowerChart = true;
   const params: Array<string> = [`${personId}`, `${encounterId}`];
@@ -86,7 +94,10 @@ export const launchClinicalNote = (
       : viewOptionFlags;
 
   params.push(`[${eventIds.join('|')}]`);
-  params.push(`${windowTitle}`);
+  params.push(
+    `${windowTitle ||
+      `Clinical Note for patient with PID ${personId} on encounter with EID ${encounterId}`}`
+  );
   params.push(`${calculateViewOptionFlag(_viewOptsFlags)}`);
   params.push(`${viewName || ''}`);
   params.push(`${viewSeq || ''}`);
@@ -95,7 +106,7 @@ export const launchClinicalNote = (
 
   const eventString = `${params.join('|')}`;
   try {
-    window.MPAGES_EVENT('CLINICALNOTE', eventString);
+    await window.external.MPAGES_EVENT('CLINICALNOTE', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;

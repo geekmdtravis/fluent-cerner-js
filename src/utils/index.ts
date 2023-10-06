@@ -36,12 +36,13 @@ export const processXmlCclReqResponseText = (
 export function outsideOfPowerChartError(e: unknown) {
   return (
     (e instanceof TypeError &&
-      e.message === 'window.MPAGES_EVENT is not a function') ||
+      e.message === 'window.external.MPAGES_EVENT is not a function') ||
     (e instanceof TypeError &&
-      e.message === 'window.XMLCclRequest is not a function') ||
+      e.message === 'window.external.XMLCclRequest is not a function') ||
     (e instanceof TypeError &&
-      e.message === 'window.APPLINK is not a function') ||
-    (e instanceof ReferenceError && e.message === 'window is not defined')
+      e.message === 'window.external.APPLINK is not a function') ||
+    (e instanceof TypeError &&
+      e.message === 'window.external.DiscernObjectFactory is not a function')
   );
 }
 
@@ -54,3 +55,4 @@ export const warnAttemptedOrdersOutsideOfPowerChart = (
 ): void => {
   console.warn(`window.MPAGES_EVENT('ORDERS', '${eventString}')`);
 };
+

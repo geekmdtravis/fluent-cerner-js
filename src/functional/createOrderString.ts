@@ -42,6 +42,8 @@ export type CompleteOrderAction =
   | 'suspend';
 
 /**
+ * @param {Array<number>} nomenclatureIds - (optional) An array of nomenclature ids for the order.
+ * @param {number} orderSentenceId - (optional) The order sentence id value for the order to activate.
  * @param {number} orderId - (optional) The order id value for the order to activate.
  * @param {NewOrderOpts}newOrderOpts - (optional) The options for the new order.
  *
@@ -154,8 +156,9 @@ export type OrderAction =
 /**
  * A helper function consumed by submotOrdersAsync function.  Creates a new pipe-delimited
  * order string consumed by an MPAGES_EVENT call with the ORDERS directive.
- * @since 0.4.0
+ * @since 0.10.0-alpha.0
  * @param {OrderAction} action - The action to be performed on the order.
+ * @param {number} id - The id of the order. This is the synonym id for new orders and the order id for existing orders.
  * @param {OrderStrOpts} opts - (optional) The options for the order.
  * @returns {string} - A pipe-delimited string which can be integrated into an MPage Event for one or more orders.
  * @throws {Error} - If the action is not a valid order action.
@@ -168,4 +171,7 @@ export const createOrderString = (
   opts?: OrderStrOpts
 ) => _createOrderString(action, id, opts);
 
+/**
+ * A constant string for the `launch moew` action.
+ */
 export const LAUNCH_MOEW_ORDER_STRING = _createOrderString('launch moew');

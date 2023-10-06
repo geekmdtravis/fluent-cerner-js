@@ -3,7 +3,7 @@ import { outsideOfPowerChartError } from '../utils';
 
 /**
  * A type which represents the parameters to be be passed into the launchPowerForm() function.
- * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * @param {number} patientId - The identifier for the patient to whom the note belongs.
  * Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this note will be launched. Cerner context variable: VIS_EncntrId.
@@ -18,7 +18,7 @@ import { outsideOfPowerChartError } from '../utils';
  * @documentation [MPAGES_EVENT - POWERFORM](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERFORM)
  **/
 export type PowerFormOpts = {
-  personId: number;
+  patientId: number;
   encounterId: number;
   target: 'new form' | 'completed form' | 'new form search';
   targetId?: number;
@@ -28,12 +28,26 @@ export type PowerFormOpts = {
 /**
  * Launch a PowerForm in Cerner's PowerChart.
  * @param {PowerFormOpts} opts - The parameters passed, as specified in `PowerFormOpts`
- * @returns {MPageEventReturn} - An object containing the `eventString` and `inPowerChart` values.
+ * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
+ * and `inPowerChart` values. Of note, we cannot provide additional information about the
+ * success or failure of the invocation because this information is not provided by the
+ * underlying Discern native function call's return, which awlays returns `null` no matter
+ * the outcome of the call.
+ * @throws if there is a type mismatch between the provided option for `target` and `targetId`,
+ * or if an unexpected error has occured.
  *
  * @documentation [MPAGES_EVENT - POWERFORM](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERFORM)
  **/
-export const launchPowerForm = (opts: PowerFormOpts): MPageEventReturn => {
-  const { personId, encounterId, target, targetId, permissions } = opts;
+export const launchPowerFormAsync = async (
+  opts: PowerFormOpts
+): Promise<MPageEventReturn> => {
+  const {
+    patientId: personId,
+    encounterId,
+    target,
+    targetId,
+    permissions,
+  } = opts;
 
   if ((target === 'new form' || target === 'completed form') && !targetId) {
     throw new Error(
@@ -60,7 +74,7 @@ export const launchPowerForm = (opts: PowerFormOpts): MPageEventReturn => {
   const eventString = `${params.join('|')}`;
 
   try {
-    window.MPAGES_EVENT('POWERFORM', eventString);
+    await window.external.MPAGES_EVENT('POWERFORM', eventString);
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
       inPowerChart = false;
