@@ -11,12 +11,27 @@ import {
 import { openPatientTab } from './openPatientTab';
 import { openOrganizerTab } from './openOrganizerTab';
 import {
-  orderString,
+  createOrderString,
   OrderAction,
   OrderStrOpts,
   NewOrderStrOpts,
+<<<<<<< Updated upstream
 } from './orderString';
 import { submitOrders, SubmitOrderOpts } from './submitOrders';
+=======
+} from './createOrderString';
+import {
+  takeOrderActionAsync,
+  SubmitOrderAsyncOpts,
+} from './submitOrdersAsync';
+import { submitPowerOrdersAsync } from './submitPowerOrders';
+import { createNewDocumentAsync } from './createNewDocumentAsync';
+import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
+
+export type PowerChartReturn = {
+  inPowerChart: boolean;
+};
+>>>>>>> Stashed changes
 
 /**
  * A type which represents the object to be returned from the launchClinicalNote() function.
@@ -30,6 +45,7 @@ export type MPageEventReturn = {
 
 // Export functions
 export {
+<<<<<<< Updated upstream
   launchClinicalNote,
   launchPowerForm,
   launchPowerNote,
@@ -38,6 +54,22 @@ export {
   openOrganizerTab,
   orderString,
   submitOrders,
+=======
+  createNewDocumentAsync,
+  getValidEncountersAsync,
+  launchClinicalNoteAsync,
+  launchPatientEducationAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  manageAppointmentAsync,
+  addAddendumToDocumentAsync,
+  openPatientTabAsync,
+  openOrganizerTabAsync,
+  createOrderString as orderString,
+  takeOrderActionAsync as submitOrdersAsync,
+  submitPowerOrdersAsync,
+>>>>>>> Stashed changes
 };
 
 // Export types; cannot use the `export type` syntax.
@@ -50,7 +82,11 @@ export {
   OrderAction,
   OrderStrOpts,
   PowerFormOpts,
+<<<<<<< Updated upstream
   PowerNoteOpts,
   SubmitOrderOpts,
+=======
+  SubmitOrderAsyncOpts as SubmitOrderOpts,
+>>>>>>> Stashed changes
   XmlCclStatus,
 };
