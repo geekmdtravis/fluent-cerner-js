@@ -12,7 +12,7 @@ import { StandaloneOrder } from './submitPowerOrders';
  * @throws `Error` if an unexpected error occurs or if the array provided is empty
  */
 export async function addNewOrdersToScratchpadAsync(
-  dcof: any,
+  dcof: DiscernObjectFactorReturn,
   moewHandle: number,
   standaloneOrders: Array<StandaloneOrder>,
   interactionChecking: boolean
