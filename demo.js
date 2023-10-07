@@ -1,5 +1,4 @@
-const lib = require('./dist');
-const { submitPowerOrdersAsync } = lib;
+const { submitPowerOrdersAsync } = require('./dist');
 
 Object.defineProperty(global, 'window', {
   writable: true,
