@@ -15,11 +15,7 @@ import {
 } from './makeCclRequestAsync';
 import { openPatientTabAsync } from './openPatientTabAsync';
 import { openOrganizerTabAsync } from './openOrganizerTabAsync';
-import {
-  createOrderString,
-  OrderAction,
-  OrderStrOpts,
-} from './createOrderString';
+import { OrderAction, OrderStrOpts } from './utils/createOrderString';
 import { submitOrdersAsync } from './submitOrdersAsync';
 
 import { SubmitOrderAsyncOpts } from './submitOrdersAsync';
@@ -47,7 +43,6 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 export {
   addAddendumToDocumentAsync,
   createNewDocumentAsync,
-  createOrderString as orderString,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchPatientEducationAsync,
@@ -69,6 +64,6 @@ export {
   OrderAction,
   OrderStrOpts,
   PowerFormOpts,
-  SubmitOrderAsyncOpts as SubmitOrderOpts,
+  SubmitOrderAsyncOpts,
   XmlCclStatus,
 };

@@ -1,5 +1,5 @@
 import { PowerChartReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from './utils';
 /**
  * Create a new document for a given patient and encounter using the
  * DYNDOC Discern COM object. The document can be created using either

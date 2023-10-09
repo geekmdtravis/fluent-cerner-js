@@ -1,5 +1,5 @@
 import { ApplinkReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from './utils';
 
 export type OpenApplicationMode =
   | 'by solution name'

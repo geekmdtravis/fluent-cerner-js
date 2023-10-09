@@ -17,7 +17,7 @@ import {
   orderString,
   OrderStrOpts,
   PowerFormOpts,
-  SubmitOrderOpts,
+  SubmitOrderAsyncOpts,
   submitOrdersAsync,
   submitPowerOrdersAsync,
   XmlCclStatus,
@@ -47,7 +47,7 @@ export {
   OrderAction,
   OrderStrOpts,
   PowerFormOpts,
-  SubmitOrderOpts,
+  SubmitOrderAsyncOpts as SubmitOrderOpts,
   XmlCclStatus,
 };
 

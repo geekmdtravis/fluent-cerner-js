@@ -1,5 +1,5 @@
 import { PowerChartReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from './utils';
 
 /**
  * Add an addendum to an existing document for a given patient and encounter using the

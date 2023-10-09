@@ -1,5 +1,5 @@
 import { PowerChartReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from './utils';
 
 export type AppointmentAction =
   | 'check in'

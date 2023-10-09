@@ -1,15 +1,15 @@
-import { outsideOfPowerChartError } from '../utils';
-import { calculateMOEWBitmask } from '../utils/calculateMOEWBitmask';
-import { addNewOrdersToScratchpadAsync } from './addNewOrdersToScratchPadAsync';
-import { addPowerPlanWithDetailsAsync } from './addPowerPlanWithDetailsAsync';
-import { createMOEWAsync } from './createMOEWAsync';
-import { destroyMOEWAsync } from './destroyMOEWAsync';
-import { displayMOEWAsync } from './displayMOEWAsync';
+import { outsideOfPowerChartError } from './utils';
+import { calculateMOEWBitmask } from './utils/calculateMOEWBitmask';
+import { addNewOrdersToScratchpadAsync } from './utils/addNewOrdersToScratchPadAsync';
+import { addPowerPlanWithDetailsAsync } from './utils/addPowerPlanWithDetailsAsync';
+import { createMOEWAsync } from './utils/createMOEWAsync';
+import { destroyMOEWAsync } from './utils/destroyMOEWAsync';
+import { displayMOEWAsync } from './utils/displayMOEWAsync';
 import {
   SubmitPowerOrdersStatus,
   getXMLOrdersMOEWAsync,
-} from './getXMLOrdersMOEWAsync';
-import { signOrdersAsync } from './signOrdersAsync';
+} from './utils/getXMLOrdersMOEWAsync';
+import { signOrdersAsync } from './utils/signOrdersAsync';
 
 /**
  * PowerOrdersMOEWFlags is a type which represents an optional array of flags to  customize the MOEW. If not provided, the values will default to the recommended values for the MOEW

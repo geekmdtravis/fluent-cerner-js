@@ -1,5 +1,5 @@
 import { MPageEventReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from './utils';
 
 /**
  * A type which represents the parameters to be be passed into the launchPowerForm() function.

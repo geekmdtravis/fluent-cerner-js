@@ -1,5 +1,5 @@
 import { MPageEventReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from './utils';
 
 /**
  * Available options for the Clinical Note view.

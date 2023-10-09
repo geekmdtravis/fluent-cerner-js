@@ -3,7 +3,7 @@ import {
   composeXmlCclReqRejectMsg,
   outsideOfPowerChartError,
   processXmlCclReqResponseText,
-} from '../utils';
+} from './utils';
 
 /**
  * A type which represents the input parameter for an `XmlCclRequest`, which is wrapped by `makeCclRequest`.

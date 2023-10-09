@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
-import { PowerChartReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { PowerChartReturn } from '..';
+import { outsideOfPowerChartError } from '.';
 
 /**
  * Retrieves the XML representation of the order information signed during the previous MOEW invocation.

@@ -1,5 +1,5 @@
 import { PowerChartReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from './utils';
 
 /**
  * Get a list of valid encounter ID's for a given patient.

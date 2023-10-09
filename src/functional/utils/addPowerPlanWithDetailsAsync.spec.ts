@@ -1,5 +1,5 @@
 import { addPowerPlanWithDetailsAsync } from './addPowerPlanWithDetailsAsync';
-import { PowerPlanOrder } from './submitPowerOrdersAsync';
+import { PowerPlanOrder } from '../submitPowerOrdersAsync';
 
 describe('addPowerPlanWithDetailsAsync', () => {
   it('runs outside of powerchart and correctly throws an error', async () => {

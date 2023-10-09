@@ -1,5 +1,5 @@
-import { PowerChartReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { PowerChartReturn } from '..';
+import { outsideOfPowerChartError } from '.';
 
 /**
  * Attempts to silently sign orders on the scratchpad. If the orders cannot be signed silently, will display the MOEW.

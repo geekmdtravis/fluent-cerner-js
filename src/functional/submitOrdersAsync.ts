@@ -3,8 +3,8 @@ import { MPageEventReturn, OrderStrOpts } from '.';
 import {
   outsideOfPowerChartError,
   warnAttemptedOrdersOutsideOfPowerChart,
-} from '../utils';
-import { OrderAction, createOrderString } from './createOrderString';
+} from './utils';
+import { OrderAction, createOrderString } from './utils/createOrderString';
 
 const launchViewMap = new Map()
   .set('search', 8)

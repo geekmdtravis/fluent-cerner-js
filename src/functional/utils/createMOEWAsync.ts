@@ -1,5 +1,5 @@
-import { PowerChartReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { PowerChartReturn } from '..';
+import { outsideOfPowerChartError } from '.';
 
 /**
  * Creates an MOEW handle.
