@@ -1,4 +1,4 @@
-import { launchPowerFormAsync, PowerFormOpts } from './launchPowerForm';
+import { launchPowerFormAsync, PowerFormOpts } from './launchPowerFormAsync';
 
 describe('launchPowerForm', () => {
   it('properly constructs a valid power form request with `new form` selected', async () => {

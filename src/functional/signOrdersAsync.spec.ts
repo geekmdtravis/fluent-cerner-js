@@ -1,9 +1,9 @@
-import { destroyMOEWAsync } from './destroyMOEW';
+import { signOrdersAsync } from './signOrdersAsync';
 
-describe('destroyMOEWAsync()', () => {
+describe('signOrdersAsync()', () => {
   it('runs outside of powerchart', async () => {
     try {
-      await destroyMOEWAsync(0, 0);
+      await signOrdersAsync({} as DiscernObjectFactoryReturn, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(TypeError);
     }
@@ -14,12 +14,12 @@ describe('destroyMOEWAsync()', () => {
       writable: true,
       value: {
         DiscernObjectFactory: jest.fn().mockImplementation(() => ({
-          DestroyMOEW: async () => Promise.resolve(null),
+          SignOrders: async () => Promise.resolve(1),
         })),
       },
     });
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
-    const result = await destroyMOEWAsync(dcof, 1337);
+    const result = await signOrdersAsync(dcof, 1337);
     expect(result.inPowerChart).toEqual(true);
   });
 
@@ -28,7 +28,7 @@ describe('destroyMOEWAsync()', () => {
       writable: true,
       value: {
         DiscernObjectFactory: jest.fn().mockImplementation(() => ({
-          DestroyMOEW: async () => {
+          SignOrders: async () => {
             throw new Error('This is a test error.');
           },
         })),
@@ -36,7 +36,7 @@ describe('destroyMOEWAsync()', () => {
     });
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     try {
-      await destroyMOEWAsync(dcof, 1337);
+      await signOrdersAsync(dcof, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');

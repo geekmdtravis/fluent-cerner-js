@@ -1,6 +1,6 @@
 import { PowerChartReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
-import { PowerPlanOrder } from './submitPowerOrders';
+import { PowerPlanOrder } from './submitPowerOrdersAsync';
 
 /**
  * Attempts to add a PowerPlan and creates PowerPlan objects from the pathway catalog Ids. CreateMOEW() must be called first.

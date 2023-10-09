@@ -1,4 +1,4 @@
-import { launchPowerNoteAsync } from './launchPowerNote';
+import { launchPowerNoteAsync } from './launchPowerNoteAsync';
 
 describe('launchPowerNoteAsync', () => {
   it('properly constructs a valid power note request to load an *existing* power note', async () => {

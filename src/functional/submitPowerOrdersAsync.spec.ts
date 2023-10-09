@@ -3,7 +3,7 @@ import {
   StandaloneOrder,
   SubmitPowerOrdersReturn,
   submitPowerOrdersAsync,
-} from './submitPowerOrders';
+} from './submitPowerOrdersAsync';
 
 //Clear the window object before each test
 beforeEach(() => {

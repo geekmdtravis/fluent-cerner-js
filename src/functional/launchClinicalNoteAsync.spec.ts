@@ -1,7 +1,7 @@
 import {
   launchClinicalNoteAsync,
   ClinicalNoteOpts,
-} from './launchClinicalNote';
+} from './launchClinicalNoteAsync';
 
 describe('launchPowerNote', () => {
   it('properly constructs a valid multiple clinical note request', async () => {

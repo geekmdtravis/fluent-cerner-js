@@ -1,6 +1,6 @@
 import { PowerChartReturn } from '.';
 import { outsideOfPowerChartError } from '../utils';
-import { StandaloneOrder } from './submitPowerOrders';
+import { StandaloneOrder } from './submitPowerOrdersAsync';
 
 /**
  * Attempts to add new standalone orders to the scratchpad

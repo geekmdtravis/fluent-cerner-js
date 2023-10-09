@@ -1,4 +1,4 @@
-import { getValidEncountersAsync } from './getValidEncounters';
+import { getValidEncountersAsync } from './getValidEncountersAsync';
 
 describe('getValidEncountersAsync', () => {
   it('throws a range error if an integer less than 1 is provided', async () => {

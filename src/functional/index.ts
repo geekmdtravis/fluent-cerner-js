@@ -1,20 +1,20 @@
 import { manageAppointmentAsync } from './manageAppointmentAsync';
-import { getValidEncountersAsync } from './getValidEncounters';
+import { getValidEncountersAsync } from './getValidEncountersAsync';
 import {
   launchClinicalNoteAsync,
   ClinicalNoteOpts,
-} from './launchClinicalNote';
-import { launchPatientEducationAsync } from './launchPatientEducation';
-import { launchPowerFormAsync, PowerFormOpts } from './launchPowerForm';
-import { launchPowerNoteAsync } from './launchPowerNote';
+} from './launchClinicalNoteAsync';
+import { launchPatientEducationAsync } from './launchPatientEducationAsync';
+import { launchPowerFormAsync, PowerFormOpts } from './launchPowerFormAsync';
+import { launchPowerNoteAsync } from './launchPowerNoteAsync';
 import {
   makeCclRequestAsync,
   CclCallParam,
   XmlCclStatus,
   CclRequestResponse,
-} from './makeCclRequest';
-import { openPatientTabAsync } from './openPatientTab';
-import { openOrganizerTabAsync } from './openOrganizerTab';
+} from './makeCclRequestAsync';
+import { openPatientTabAsync } from './openPatientTabAsync';
+import { openOrganizerTabAsync } from './openOrganizerTabAsync';
 import {
   createOrderString,
   OrderAction,
@@ -24,7 +24,7 @@ import { submitOrdersAsync } from './submitOrdersAsync';
 
 import { SubmitOrderAsyncOpts } from './submitOrdersAsync';
 
-import { submitPowerOrdersAsync } from './submitPowerOrders';
+import { submitPowerOrdersAsync } from './submitPowerOrdersAsync';
 import { createNewDocumentAsync } from './createNewDocumentAsync';
 import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
 

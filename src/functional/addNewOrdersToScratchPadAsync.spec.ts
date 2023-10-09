@@ -1,5 +1,5 @@
-import { addNewOrdersToScratchpadAsync } from './addNewOrdersToScratchPad';
-import { StandaloneOrder } from './submitPowerOrders';
+import { addNewOrdersToScratchpadAsync } from './addNewOrdersToScratchPadAsync';
+import { StandaloneOrder } from './submitPowerOrdersAsync';
 
 describe('addNewOrdersToScratchpadAsync', () => {
   it('runs outside of powerchart and correctly thorws an error', async () => {

@@ -1,4 +1,4 @@
-import { openPatientTabAsync } from './openPatientTab';
+import { openPatientTabAsync } from './openPatientTabAsync';
 
 describe('openPatientTab', () => {
   test('returns an ApplinkReturn object', async () => {

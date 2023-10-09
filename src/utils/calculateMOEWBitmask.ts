@@ -1,4 +1,4 @@
-import { PowerOrdersMOEWFlags } from '../functional/submitPowerOrders';
+import { PowerOrdersMOEWFlags } from '../functional/submitPowerOrdersAsync';
 
 type CernerMOEWFlags =
   | 'add rx to filter'

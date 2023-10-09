@@ -1,9 +1,9 @@
-import { getXMLOrdersMOEWAsync } from './getXMLOrdersMOEW';
+import { getXMLOrdersMOEWAsync } from './getXMLOrdersMOEWAsync';
 
 describe('getXMLOrdersMOEWAsync()', () => {
   it('runs outside of powerchart', async () => {
     try {
-      await getXMLOrdersMOEWAsync(0, 1337);
+      await getXMLOrdersMOEWAsync({} as DiscernObjectFactoryReturn, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(TypeError);
     }

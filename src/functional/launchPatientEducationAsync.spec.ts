@@ -1,4 +1,4 @@
-import { launchPatientEducationAsync } from './launchPatientEducation';
+import { launchPatientEducationAsync } from './launchPatientEducationAsync';
 
 describe('launchPatientEducationAsync', () => {
   test('throws range error of pid (patient id) is less than 1', async () => {

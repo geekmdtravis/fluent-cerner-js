@@ -3,7 +3,7 @@ import {
   processCclRequestParams,
   CclCallParam,
   makeCclRequestAsync,
-} from './makeCclRequest';
+} from './makeCclRequestAsync';
 
 describe('makeCclRequestAsync', () => {
   it('throws PowerChartError when outside of PowerChart', async () => {

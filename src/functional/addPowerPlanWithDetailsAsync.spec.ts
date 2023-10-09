@@ -1,12 +1,16 @@
-import { addPowerPlanWithDetailsAsync } from './addPowerPlanWithDetails';
-import { PowerPlanOrder } from './submitPowerOrders';
+import { addPowerPlanWithDetailsAsync } from './addPowerPlanWithDetailsAsync';
+import { PowerPlanOrder } from './submitPowerOrdersAsync';
 
 describe('addPowerPlanWithDetailsAsync', () => {
   it('runs outside of powerchart and correctly throws an error', async () => {
     const orders: Array<PowerPlanOrder> = [{ pathwayCatalogId: 1337 }];
 
     try {
-      await addPowerPlanWithDetailsAsync(0, 0, orders);
+      await addPowerPlanWithDetailsAsync(
+        {} as DiscernObjectFactoryReturn,
+        0,
+        orders
+      );
     } catch (e) {
       expect(e).toBeInstanceOf(TypeError);
     }

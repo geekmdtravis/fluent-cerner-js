@@ -1,4 +1,4 @@
-import { createMOEWAsync } from './createMOEW';
+import { createMOEWAsync } from './createMOEWAsync';
 
 describe('createMOEWAsync()', () => {
   afterEach(() => {
@@ -11,7 +11,7 @@ describe('createMOEWAsync()', () => {
   });
   it('runs with minimal (and invalid) paramaters outside of powerchart', async () => {
     try {
-      await createMOEWAsync(0, 0, 0, 0, 0, 0);
+      await createMOEWAsync({} as DiscernObjectFactoryReturn, 0, 0, 0, 0, 0);
     } catch (e) {
       expect(e).toBeInstanceOf(TypeError);
     }
