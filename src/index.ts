@@ -114,7 +114,7 @@ declare global {
   interface Window {
     readonly external: External;
   }
-  export type DiscernObjectFactorReturn = {
+  export type DiscernObjectFactoryReturn = {
     /**
      * Creates the MOEW handle.
      * @param dPersonId {number} - the patient ID
@@ -283,7 +283,7 @@ declare global {
      */
     DiscernObjectFactory: (
       comObject: DiscernCOMObjects
-    ) => Promise<DiscernObjectFactorReturn>;
+    ) => Promise<DiscernObjectFactoryReturn>;
     /**
      * Funtion that returns a Cerner Windows COM object for an XMLCclRequest.
      * Useful for development but not intended for production use. Use of

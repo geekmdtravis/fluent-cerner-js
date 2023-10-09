@@ -11,7 +11,12 @@ describe('addNewOrdersToScratchpadAsync', () => {
       },
     ];
     try {
-      await addNewOrdersToScratchpadAsync(0, 0, orders, true);
+      await addNewOrdersToScratchpadAsync(
+        {} as DiscernObjectFactoryReturn,
+        0,
+        orders,
+        true
+      );
     } catch (e) {
       expect(e).toBeInstanceOf(TypeError);
     }

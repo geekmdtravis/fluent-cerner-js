@@ -3,7 +3,7 @@ import { outsideOfPowerChartError } from '../utils';
 
 /**
  * Attempts to silently sign orders on the scratchpad. If the orders cannot be signed silently, will display the MOEW.
- * @param {any} dcof  - the reference to the DisernObjectFactory object
+ * @param {DiscernObjectFactoryReturn} dcof  - the reference to the DisernObjectFactory object
  * @param {number} moewHandle - the handle to the MOEW.
  * @returns a `Promise` which resolves to a PowerChartReturn.
  * @description The value returned by SignOrders() is not used and is not believed to be meaningful, but is logged to the console for development purposes.
@@ -12,7 +12,7 @@ import { outsideOfPowerChartError } from '../utils';
  */
 
 export async function signOrdersAsync(
-  dcof: any,
+  dcof: DiscernObjectFactoryReturn,
   moewHandle: number
 ): Promise<PowerChartReturn> {
   let retData: PowerChartReturn = {

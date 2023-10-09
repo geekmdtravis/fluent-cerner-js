@@ -4,7 +4,7 @@ import { PowerPlanOrder } from './submitPowerOrders';
 
 /**
  * Attempts to add a PowerPlan and creates PowerPlan objects from the pathway catalog Ids. CreateMOEW() must be called first.
- * @param {any} dcof  - the reference to the DisernObjectFactory object
+ * @param {DiscernObjectFactoryReturn} dcof  - the reference to the DisernObjectFactory object
  * @param {number} moewHandle - the handle to the MOEW.
  * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog Ids and, optionally, personalized plan Ids and diagnosis code Ids, for PowerPlan orders to be placed.
  * @returns a `Promise` which resolves to a PowerChartReturn and a boolean, indicating whether or not PowerPlan orders were successfully added
@@ -12,7 +12,7 @@ import { PowerPlanOrder } from './submitPowerOrders';
  */
 
 export async function addPowerPlanWithDetailsAsync(
-  dcof: any,
+  dcof: DiscernObjectFactoryReturn,
   moewHandle: number,
   powerPlanOrders: Array<PowerPlanOrder>
 ): Promise<AddPowerPlanWithDetailsReturn> {

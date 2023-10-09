@@ -4,7 +4,7 @@ import { StandaloneOrder } from './submitPowerOrders';
 
 /**
  * Attempts to add new standalone orders to the scratchpad
- * @param {any} dcof  - the reference to the DisernObjectFactory object
+ * @param {DiscernObjectFactoryReturn} dcof  - the reference to the DisernObjectFactory object
  * @param {number} moewHandle - the handle to the MOEW
  * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym Ids, order origination flags and, optionally, sentence Ids, for standalone orders to be placed
  * @param {boolean} interactionChecking - A boolean value indicating whether or not order interaction checking should be performed (strongly recommended to be set to true)
@@ -12,7 +12,7 @@ import { StandaloneOrder } from './submitPowerOrders';
  * @throws `Error` if an unexpected error occurs or if the array provided is empty
  */
 export async function addNewOrdersToScratchpadAsync(
-  dcof: DiscernObjectFactorReturn,
+  dcof: DiscernObjectFactoryReturn,
   moewHandle: number,
   standaloneOrders: Array<StandaloneOrder>,
   interactionChecking: boolean

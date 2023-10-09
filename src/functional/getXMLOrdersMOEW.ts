@@ -4,14 +4,14 @@ import { outsideOfPowerChartError } from '../utils';
 
 /**
  * Retrieves the XML representation of the order information signed during the previous MOEW invocation.
- * @param {any} dcof  - the reference to the DisernObjectFactory object
+ * @param {DiscernObjectFactoryReturn} dcof  - the reference to the DisernObjectFactory object
  * @param {number} moewHandle - the handle to the MOEW.
  * @returns a `Promise` which resolves to a PowerChartReturn and an array of orders placed, parsed XML, unparsed/raw XML, and an order attempt status string.
  * @throws `Error` if an unexpected error occurs.
  */
 
 export async function getXMLOrdersMOEWAsync(
-  dcof: any,
+  dcof: DiscernObjectFactoryReturn,
   moewHandle: number
 ): Promise<GetXMLReturn> {
   let retData: GetXMLReturn = {
