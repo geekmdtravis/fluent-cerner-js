@@ -1,10 +1,10 @@
 import { XMLParser } from 'fast-xml-parser';
-import { MPageEventReturn, OrderStrOpts } from '.';
+import { MPageEventReturn, OrderAction, OrderStrOpts } from '.';
 import {
   outsideOfPowerChartError,
   warnAttemptedOrdersOutsideOfPowerChart,
 } from './utils';
-import { OrderAction, createOrderString } from './utils/createOrderString';
+import { createOrderString } from './utils/createOrderString';
 
 const launchViewMap = new Map()
   .set('search', 8)
@@ -73,7 +73,7 @@ export type Order = {
  * this note will be launched. Cerner context variable: VIS_EncntrId.
  * @param orders - The orders to be submitted. Orders are given in the form of a a series of pipe-delimited
  * parameters as specified in the `MPAGES_EVENT` documentation (below). Use the `fluent-cerner-js` library's
- * `orderString` function to simplify building these pipe-delimited order strings.
+ * `` function to simplify building these pipe-delimited order strings.
  * @param opts - (optional) User defined options for the order submission event. The options allow for
  * changing the target tab, the view to be launched, and whether or not the orders should be signed silently.
  * @returns an object with several high value properties. The standard MPageEventReturn properties are present
@@ -99,15 +99,11 @@ export const submitOrdersAsync = async (
   const enablePowerPlans =
     targetTab === 'power orders' || targetTab === 'power medications';
 
-  const orderStrings = orders.map(({ action, id, opts }) =>
+  const s = orders.map(({ action, id, opts }) =>
     createOrderString(action, id, opts)
   );
 
-  let params: Array<string> = [
-    `${patientId}`,
-    `${encounterId}`,
-    orderStrings.join(''),
-  ];
+  let params: Array<string> = [`${patientId}`, `${encounterId}`, s.join('')];
 
   params.push(enablePowerPlans ? '24' : '0');
 

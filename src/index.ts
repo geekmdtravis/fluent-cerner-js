@@ -14,7 +14,6 @@ import {
   openOrganizerTabAsync,
   openPatientTabAsync,
   OrderAction,
-  orderString,
   OrderStrOpts,
   PowerFormOpts,
   SubmitOrderAsyncOpts,
@@ -35,7 +34,6 @@ export {
   manageAppointmentAsync,
   openOrganizerTabAsync,
   openPatientTabAsync,
-  orderString,
   submitOrdersAsync,
   submitPowerOrdersAsync,
 };
