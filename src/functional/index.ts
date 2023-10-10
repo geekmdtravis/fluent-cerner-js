@@ -1,28 +1,26 @@
 import { manageAppointmentAsync } from './manageAppointmentAsync';
-import { getValidEncountersAsync } from './getValidEncounters';
+import { getValidEncountersAsync } from './getValidEncountersAsync';
 import {
   launchClinicalNoteAsync,
   ClinicalNoteOpts,
-} from './launchClinicalNote';
-import { launchPatientEducationAsync } from './launchPatientEducation';
-import { launchPowerFormAsync, PowerFormOpts } from './launchPowerForm';
-import { launchPowerNoteAsync } from './launchPowerNote';
+} from './launchClinicalNoteAsync';
+import { launchPatientEducationAsync } from './launchPatientEducationAsync';
+import { launchPowerFormAsync, PowerFormOpts } from './launchPowerFormAsync';
+import { launchPowerNoteAsync } from './launchPowerNoteAsync';
 import {
   makeCclRequestAsync,
   CclCallParam,
   XmlCclStatus,
   CclRequestResponse,
-} from './makeCclRequest';
-import { openPatientTabAsync } from './openPatientTab';
-import { openOrganizerTabAsync } from './openOrganizerTab';
-import {
-  orderString,
-  OrderAction,
-  OrderStrOpts,
-  NewOrderStrOpts,
-} from './orderString';
-import { submitOrdersAsync, SubmitOrderOpts } from './submitOrders';
-import { submitPowerOrdersAsync } from './submitPowerOrders';
+} from './makeCclRequestAsync';
+import { openPatientTabAsync } from './openPatientTabAsync';
+import { openOrganizerTabAsync } from './openOrganizerTabAsync';
+import { OrderAction, OrderStrOpts } from './utils/createOrderString';
+import { submitOrdersAsync } from './submitOrdersAsync';
+
+import { SubmitOrderAsyncOpts } from './submitOrdersAsync';
+
+import { submitPowerOrdersAsync } from './submitPowerOrdersAsync';
 import { createNewDocumentAsync } from './createNewDocumentAsync';
 import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
 
@@ -43,6 +41,7 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 // Export functions
 export {
+  addAddendumToDocumentAsync,
   createNewDocumentAsync,
   getValidEncountersAsync,
   launchClinicalNoteAsync,
@@ -51,12 +50,10 @@ export {
   launchPowerNoteAsync,
   makeCclRequestAsync,
   manageAppointmentAsync,
-  addAddendumToDocumentAsync,
-  openPatientTabAsync,
   openOrganizerTabAsync,
-  orderString,
-  submitOrdersAsync,
+  openPatientTabAsync,
   submitPowerOrdersAsync,
+  submitOrdersAsync,
 };
 
 // Export types; cannot use the `export type` syntax.
@@ -64,10 +61,9 @@ export {
   CclCallParam,
   CclRequestResponse,
   ClinicalNoteOpts,
-  NewOrderStrOpts,
   OrderAction,
   OrderStrOpts,
   PowerFormOpts,
-  SubmitOrderOpts,
+  SubmitOrderAsyncOpts,
   XmlCclStatus,
 };

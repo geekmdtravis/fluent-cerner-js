@@ -1,11 +1,8 @@
 import { PowerChartReturn } from '.';
-import { outsideOfPowerChartError } from '../utils';
+import { outsideOfPowerChartError } from './utils';
 
 /**
  * Launch Discharge Process dialog for a given patient and encounter.
- * @param pid {number} - the patient ID to get valid encounters for.
- * @param eid {number} - the encounter ID to get valid encounters for.
- * @param providerPid {number} - the provider ID to get valid encounters for.
  * @returns a `Promise` of `PowerChartReturn` which includes a boolean indicating
  * whether the user is in PowerChart.
  */

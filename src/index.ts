@@ -11,14 +11,13 @@ import {
   launchPowerNoteAsync,
   makeCclRequestAsync,
   manageAppointmentAsync,
-  NewOrderStrOpts,
   openOrganizerTabAsync,
   openPatientTabAsync,
   OrderAction,
   orderString,
   OrderStrOpts,
   PowerFormOpts,
-  SubmitOrderOpts,
+  SubmitOrderAsyncOpts,
   submitOrdersAsync,
   submitPowerOrdersAsync,
   XmlCclStatus,
@@ -45,11 +44,10 @@ export {
   CclCallParam,
   CclRequestResponse,
   ClinicalNoteOpts,
-  NewOrderStrOpts,
   OrderAction,
   OrderStrOpts,
   PowerFormOpts,
-  SubmitOrderOpts,
+  SubmitOrderAsyncOpts as SubmitOrderOpts,
   XmlCclStatus,
 };
 
@@ -116,6 +114,166 @@ declare global {
   interface Window {
     readonly external: External;
   }
+  export type DiscernObjectFactoryReturn = {
+    /**
+     * Creates the MOEW handle.
+     * @param dPersonId {number} - the patient ID
+     * @param dEncntrId {number} - the encounter ID in which orders would be placed
+     * @param dwCustomizeFlag {number} - mask used to determine options available within the MOEW
+     * @param dwTabFlag {number} - the type of list being customized (2 for orders, 3 for medications).
+     * @param dwTabDisplayOptionsFlag {number} - mask specifying the components to display on the list.
+     * @returns a `Promise` which resolves to an integer representing a handle to the MOEW instance. 0 indicates an invalid call or call from outside PowerChart.
+     */
+    CreateMOEW: (
+      dPersonId: number,
+      dEncntrId: number,
+      dwCustomizeFlag: number,
+      dwTabFlag: number,
+      dwTabDisplayOptionsFlag: number
+    ) => Promise<number>;
+    /**
+     * Creates PowerPlan objects from the pathway catalog IDs. CreateMOEW() must be called first.
+     * @param lMOEWHandle {number} - the handle to the MOEW
+     * @param planDetailsXMLBstr {string} - XML string containing the plan/pathway catalog IDs
+     * @returns a `Promise` which resolves to an integer: 1 if the plan was added successfully, and 0 otherwise.
+     */
+    AddPowerPlanWithDetails: (
+      lMOEWHandle: number,
+      planDetailsXMLBstr: string
+    ) => Promise<number>;
+    /**
+     * Attempts to add standalone orders to the scratchpad. CreateMOEW() must be called first.
+     * @param lMOEWHandle {number} - the handle to the MOEW
+     * @param newOrdersXMLBstr {string} - XML string containing the order details, including synonym IDs
+     * @param bSignTimeInteractionChecking {boolean} - indicates if interaction checking should be performed at order sign time.
+     * @returns a `Promise` which resolves to an integer: 1 if the orders were added successfully, and 0 otherwise.
+     */
+    AddNewOrdersToScratchpad: (
+      lMOEWHandle: number,
+      newOrdersXMLBstr: string,
+      bSignTimeInteractionChecking: boolean
+    ) => Promise<number>;
+    /**
+     * Displays the modal order entry window (MOEW).
+     * @param {number} lMOEWHandle - the handle to the MOEW.
+     * @returns a `Promise` which resolves to an integer (0). This appears to be returned upon either a successful or unsuccessful launch.
+     */
+    DisplayMOEW: (lMOEWHandle: number) => Promise<number>;
+    /**
+     * Attempts to silently sign orders on the scratchpad. If the orders cannot be signed silently, will display the MOEW.
+     * @param {number} lMOEWHandle - the handle to the MOEW.
+     * @returns a `Promise` which resolves to an integer: 0 if called with invalid/improperly structured paramters, and 1 otherwise.
+     */
+    SignOrders: (lMOEWHandle: number) => Promise<number>;
+    /**
+     * Retrieves the XML representation of the order information signed during the previous MOEW invocation.
+     * @param {number} lMOEWHandle - the handle to the MOEW.
+     * @returns a `Promise` which resolves to a string containing prior order information. If none or invalid, the string will be empty.
+     */
+    GetXMLOrdersMOEW: (lMOEWHandle: number) => Promise<string>;
+    /**
+     * Destroys the modal order entry window (MOEW).
+     * @param {number} lMOEWHandle - the handle to the MOEW.
+     * @returns a `Promise` which resolves to null. This appears to be returned upon either a successful or unsuccessful destruction.
+     * @throws `Error` if an unexpected error occurs.
+     */
+    DestroyMOEW: (lMOEWHandle: number) => Promise<null>;
+    /**
+     * Get valid encounter ID's for a given patient.
+     * @param pid {number} - the patient ID of the patient to get encounters for.
+     * @returns a `Promise` of a string representing the valid encounter ID's for the patient.
+     */
+    GetValidEncounters: (pid: number) => Promise<string>;
+    /**
+     * Provide patient context to the Discern COM object.
+     * @param pid {number} - the patient ID of the patient provided for context.
+     *
+     * @returns a `Promise` which always returns `null`.
+     */
+    SetPatient(pid: number, eid: number): Promise<null>;
+    /**
+     * Provide patient context to the Discern COM object.
+     * @param tab {0 | 1} - the tab to target upon opening. Instruction component is `0` and
+     * Follow-up component is `1`.
+     * @returns a `Promise` which always returns `null`.
+     */
+    SetDefaultTab(tab: 0 | 1): Promise<null>;
+    /**
+     * Open the modal for the targeted COM object.
+     * @returns a `Promise` which always returns `null`.
+     */
+    DoModal(): Promise<null>;
+    /**
+     * Launches a dialog to check in the specified appointment.
+     * @param eventId {number} - the event ID of the appointment to check in.
+     * @resolves to `0` if the action was successful, `1` otherwise.
+     */
+    CheckInAppointment(eventId: number): Promise<0 | 1>;
+    /**
+     * Launches a dialog to check out the specified appointment.
+     * @param eventId {number} - the event ID of the appointment to check in.
+     * @resolves to `0` if the action was successful, `1` otherwise.
+     */
+    CheckOutAppointment(eventId: number): Promise<0 | 1>;
+    /**
+     * Launches a dialog to cancel the specified appointment.
+     * @param eventId {number} - the event ID of the appointment to check in.
+     * @resolves to `0` if the action was successful, `1` otherwise.
+     */
+    CancelAppointment(eventId: number): Promise<0 | 1>;
+    /**
+     * Launches a dialog to put a hold on the specified appointment.
+     * @param eventId {number} - the event ID of the appointment to check in.
+     * @resolves to `0` if the action was successful, `1` otherwise.
+     */
+    HoldAppointment(eventId: number): Promise<0 | 1>;
+    /**
+     * Launches a dialog to mark the specified appointment as 'no show'.
+     * @param eventId {number} - the event ID of the appointment to check in.
+     * @resolves to `0` if the action was successful, `1` otherwise.
+     */
+    NoShowAppointment(eventId: number): Promise<0 | 1>;
+    /**
+     * Display the appointment view dialog for the specified appointment.
+     * @param eventId {number} - the event ID of the appointment to check in.
+     * @resolves to `0` if the action was successful, `1` otherwise.
+     */
+    ShowView(eventId: number): Promise<0 | 1>;
+    /**
+     * Display the appointment history view dialog for the specified appointment.
+     * @param eventId {number} - the event ID of the appointment to check in.
+     * @resolves to `0` if the action was successful, `1` otherwise.
+     */
+    ShowHistoryView(eventId: number): Promise<0 | 1>;
+    // TODO: update return type and JSDOc
+    OpenNewDocumentByReferenceTemplateId(
+      pid: number,
+      eid: number,
+      refTemplateId: number
+    ): Promise<null>;
+    // TODO: update return type and JSDOc
+    OpenNewDocumentByReferenceTemplateIdAndNoteType(
+      pid: number,
+      eid: number,
+      refTemplateId: number,
+      noteTypeCd: number
+    ): Promise<null>;
+    // TODO: update return type and JSDOc
+    ModifyExistingDocumentByEventId(
+      pid: number,
+      eid: number,
+      docEventId: number
+    ): Promise<null>;
+    // TODO: update return type and JSDOc
+    OpenDynDocByWorkFlowId(
+      pid: number,
+      eid: number,
+      workflowId: number
+    ): Promise<null>;
+    // TODO: update return type and JSDOc
+    LaunchDischargeDialog(): Promise<null>;
+  };
+
   interface External {
     /**
      * A factory function which returns a Discern COM object.
@@ -125,172 +283,7 @@ declare global {
      */
     DiscernObjectFactory: (
       comObject: DiscernCOMObjects
-    ) => Promise<{
-      /**
-       * Creates the MOEW handle.
-       * @param dPersonId {number} - the patient ID
-       * @param dEncntrId {number} - the encounter ID in which orders would be placed
-       * @param dwCustomizeFlag {number} - mask used to determine options available within the MOEW
-       * @param dwTabFlag {number} - the type of list being customized (2 for orders, 3 for medications).
-       * @param dwTabDisplayOptionsFlag {number} - mask specifying the components to display on the list.
-       * @returns a `Promise` which resolves to an integer representing a handle to the MOEW instance. 0 indicates an invalid call or call from outside PowerChart.
-       */
-      CreateMOEW: (
-        dPersonId: number,
-        dEncntrId: number,
-        dwCustomizeFlag: number,
-        dwTabFlag: number,
-        dwTabDisplayOptionsFlag: number
-      ) => Promise<number>;
-
-      /**
-       * Creates PowerPlan objects from the pathway catalog IDs. CreateMOEW() must be called first.
-       * @param lMOEWHandle {number} - the handle to the MOEW
-       * @param planDetailsXMLBstr {string} - XML string containing the plan/pathway catalog IDs
-       * @returns a `Promise` which resolves to an integer: 1 if the plan was added successfully, and 0 otherwise.
-       */
-      AddPowerPlanWithDetails: (
-        lMOEWHandle: number,
-        planDetailsXMLBstr: string
-      ) => Promise<number>;
-
-      /**
-       * Attempts to add standalone orders to the scratchpad. CreateMOEW() must be called first.
-       * @param lMOEWHandle {number} - the handle to the MOEW
-       * @param newOrdersXMLBstr {string} - XML string containing the order details, including synonym IDs
-       * @param bSignTimeInteractionChecking {boolean} - indicates if interaction checking should be performed at order sign time.
-       * @returns a `Promise` which resolves to an integer: 1 if the orders were added successfully, and 0 otherwise.
-       */
-      AddNewOrdersToScratchpad: (
-        lMOEWHandle: number,
-        newOrdersXMLBstr: string,
-        bSignTimeInteractionChecking: boolean
-      ) => Promise<number>;
-
-      /**
-       * Displays the modal order entry window (MOEW).
-       * @param {number} lMOEWHandle - the handle to the MOEW.
-       * @returns a `Promise` which resolves to an integer (0). This appears to be returned upon either a successful or unsuccessful launch.
-       */
-      DisplayMOEW: (lMOEWHandle: number) => Promise<number>;
-
-      /**
-       * Attempts to silently sign orders on the scratchpad. If the orders cannot be signed silently, will display the MOEW.
-       * @param {number} lMOEWHandle - the handle to the MOEW.
-       * @returns a `Promise` which resolves to an integer: 0 if called with invalid/improperly structured paramters, and 1 otherwise.
-       */
-      SignOrders: (lMOEWHandle: number) => Promise<number>;
-
-      /**
-       * Retrieves the XML representation of the order information signed during the previous MOEW invocation.
-       * @param {number} lMOEWHandle - the handle to the MOEW.
-       * @returns a `Promise` which resolves to a string containing prior order information. If none or invalid, the string will be empty.
-       */
-      GetXMLOrdersMOEW: (lMOEWHandle: number) => Promise<string>;
-
-      /**
-       * Destroys the modal order entry window (MOEW).
-       * @param {number} lMOEWHandle - the handle to the MOEW.
-       * @returns a `Promise` which resolves to null. This appears to be returned upon either a successful or unsuccessful destruction.
-       * @throws `Error` if an unexpected error occurs.
-       */
-      DestroyMOEW: (lMOEWHandle: number) => Promise<null>;
-
-      /**
-       * Get valid encounter ID's for a given patient.
-       * @param pid {number} - the patient ID of the patient to get encounters for.
-       * @returns a `Promise` of a string representing the valid encounter ID's for the patient.
-       */
-      GetValidEncounters: (pid: number) => Promise<string>;
-      /**
-       * Provide patient context to the Discern COM object.
-       * @param pid {number} - the patient ID of the patient provided for context.
-       *
-       * @returns a `Promise` which always returns `null`.
-       */
-      SetPatient(pid: number, eid: number): Promise<null>;
-      /**
-       * Provide patient context to the Discern COM object.
-       * @param tab {0 | 1} - the tab to target upon opening. Instruction component is `0` and
-       * Follow-up component is `1`.
-       * @returns a `Promise` which always returns `null`.
-       */
-      SetDefaultTab(tab: 0 | 1): Promise<null>;
-      /**
-       * Open the modal for the targeted COM object.
-       * @returns a `Promise` which always returns `null`.
-       */
-      DoModal(): Promise<null>;
-      /**
-       * Launches a dialog to check in the specified appointment.
-       * @param eventId {number} - the event ID of the appointment to check in.
-       * @resolves to `0` if the action was successful, `1` otherwise.
-       */
-      CheckInAppointment(eventId: number): Promise<0 | 1>;
-      /**
-       * Launches a dialog to check out the specified appointment.
-       * @param eventId {number} - the event ID of the appointment to check in.
-       * @resolves to `0` if the action was successful, `1` otherwise.
-       */
-      CheckOutAppointment(eventId: number): Promise<0 | 1>;
-      /**
-       * Launches a dialog to cancel the specified appointment.
-       * @param eventId {number} - the event ID of the appointment to check in.
-       * @resolves to `0` if the action was successful, `1` otherwise.
-       */
-      CancelAppointment(eventId: number): Promise<0 | 1>;
-      /**
-       * Launches a dialog to put a hold on the specified appointment.
-       * @param eventId {number} - the event ID of the appointment to check in.
-       * @resolves to `0` if the action was successful, `1` otherwise.
-       */
-      HoldAppointment(eventId: number): Promise<0 | 1>;
-      /**
-       * Launches a dialog to mark the specified appointment as 'no show'.
-       * @param eventId {number} - the event ID of the appointment to check in.
-       * @resolves to `0` if the action was successful, `1` otherwise.
-       */
-      NoShowAppointment(eventId: number): Promise<0 | 1>;
-      /**
-       * Display the appointment view dialog for the specified appointment.
-       * @param eventId {number} - the event ID of the appointment to check in.
-       * @resolves to `0` if the action was successful, `1` otherwise.
-       */
-      ShowView(eventId: number): Promise<0 | 1>;
-      /**
-       * Display the appointment history view dialog for the specified appointment.
-       * @param eventId {number} - the event ID of the appointment to check in.
-       * @resolves to `0` if the action was successful, `1` otherwise.
-       */
-      ShowHistoryView(eventId: number): Promise<0 | 1>;
-      // TODO: update return type and JSDOc
-      OpenNewDocumentByReferenceTemplateId(
-        pid: number,
-        eid: number,
-        refTemplateId: number
-      ): Promise<null>;
-      // TODO: update return type and JSDOc
-      OpenNewDocumentByReferenceTemplateIdAndNoteType(
-        pid: number,
-        eid: number,
-        refTemplateId: number,
-        noteTypeCd: number
-      ): Promise<null>;
-      // TODO: update return type and JSDOc
-      ModifyExistingDocumentByEventId(
-        pid: number,
-        eid: number,
-        docEventId: number
-      ): Promise<null>;
-      // TODO: update return type and JSDOc
-      OpenDynDocByWorkFlowId(
-        pid: number,
-        eid: number,
-        workflowId: number
-      ): Promise<null>;
-      // TODO: update return type and JSDOc
-      LaunchDischargeDialog(): Promise<null>;
-    }>;
+    ) => Promise<DiscernObjectFactoryReturn>;
     /**
      * Funtion that returns a Cerner Windows COM object for an XMLCclRequest.
      * Useful for development but not intended for production use. Use of
