@@ -10,7 +10,7 @@ import { launchPowerNoteAsync } from './launchPowerNoteAsync';
 import {
   makeCclRequestAsync,
   CclCallParam,
-  XmlCclStatus,
+  XmlCclResult,
   CclRequestResponse,
 } from './makeCclRequestAsync';
 import { openPatientTabAsync } from './openPatientTabAsync';
@@ -65,5 +65,5 @@ export {
   OrderStrOpts,
   PowerFormOpts,
   SubmitOrderAsyncOpts,
-  XmlCclStatus,
+  XmlCclResult as XmlCclStatus,
 };

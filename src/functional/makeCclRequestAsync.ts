@@ -1,16 +1,11 @@
-import { PowerChartError } from '../lib/PowerChartError';
-import {
-  composeXmlCclReqRejectMsg,
-  outsideOfPowerChartError,
-  processXmlCclReqResponseText,
-} from './utils';
+import { PowerChartReturn } from '.';
+import { outsideOfPowerChartError } from './utils';
 
 /**
- * A type which represents the input parameter for an `XmlCclRequest`, which is wrapped by `makeCclRequest`.
- * The parameters are passed in a string, and numbers and strings are interpreted within this string by
- * the presence of quotes within quotes (e.g. single within double or vice versa). By strongly typing
- * the CclCallParam we can ensure that the parameters are always passed in a way that properly represents
- * their type.
+ * An input parameter for a CCL call. In internal testing, there were cases
+ * where the CCL call would fail if the parameter was not wrapped in single
+ * quotes. This type allows for the explicit definition of the type of the
+ * parameter and the ability to wrap the parameter in single quotes if needed.
  * @param {'string'|'number'} type - The type of the parameter.
  * @param {string} param - The string representing the parameters value.
  */
@@ -20,7 +15,7 @@ export type CclCallParam = {
 };
 
 /**
- * A type functioning as a convience wrapper for the ready state of an XmlCclRequest.
+ * A text-based representation of the ready state of an XmlCclRequest.
  */
 export type XmlCclReadyState =
   | 'uninitialized'
@@ -30,71 +25,71 @@ export type XmlCclReadyState =
   | 'completed';
 
 /**
- * A type functioning as a convience wrapper for several status
- * codes, respresented as strings, that are returned by XMLCclRequest.
+ * A text-based representation of the status of an XmlCclRequest.
  */
-export type XmlCclStatus =
+export type XmlCclResult =
   | 'success'
   | 'method not allowed'
   | 'invalid state'
   | 'non-fatal error'
   | 'memory error'
-  | 'internal server exception'
-  | 'status refers to unknown error';
+  | 'internal server exception';
 
 /**
- * A type which represents the full set of data returned from an XmlCclRequest and important, formatted
- * metadata to help with debugging and error management. This is a generic type and data will represent
- * the type `T` which is the type or interface which represents the resolved data from the CCL request.
+ * A type which represents the full set of data returned from an XmlCclRequest
+ * and important, formatted metadata to help with debugging and error management.
+ * This is a generic type and data will represent the type `T` which is the
+ * type or interface which represents the resolved data from the CCL request. The
+ * names of the properties **are not** the same as the properties returned by the
+ * XmlCclRequest, but are instead named to be more descriptive and to avoid
+ * confusion with the native XmlCclRequest properties. A mapping of the native
+ * properties to the properties of this type is as follows:
+ *
+ * | CclRequestResponse         | XmlCclRequest                                 |
+ * |----------------------------|-----------------------------------------------|
+ * | `code`                     | `status` code                                 |
+ * | `result`                   | text representation of `status`               |
+ * | `status`                   | text representation of `readyState`           |
+ * | `details`                  | `statusText`                                  |
+ * | `data`                     | parsed JSON of `responseText`                 |
+ * | `__request`                | full request object returned by XMLCclReqeust |
+ *
+ * A description of the `CclRequestResponse` properties is as follows:
+ * @param {number} code - The status code of the request. The values are
+ * 200 (success), 405 (method not allowed), 409 (invalid state), 492 (non-fatal error),
+ * 493 (memory error), and 500 (internal server exception). There may be other
+ * values not listed by the Cerner documentation.
+ * @param {XmlCclResult} result - The text representation of the status code. The values
+ * are "success", "method not allowed", "invalid state", "non-fatal error", "memory error",
+ * and "internal server exception". There may be other values not listed by the Cerner
+ * documentation.
+ * @param {XmlCclReadyState} status - The text representation of the ready state.
+ * The values are "uninitialized", "loading", "loaded", "interactive", and "completed". The
+ * underlying `readyState` numbers are 0, 1, 2, 3, and 4 respectively.
+ * @param {string} details - The status text of the request.
+ * @param {T} data - The parsed JSON from the response text.
+ * @param {XMLCclRequest} __request - The full request object.
  */
-export type CclRequestResponse<T> = {
-  meta: {
-    responseText: string;
-    status: number;
-    statusText: XmlCclStatus;
-    statusDetails: string;
-    prgName: string;
-    prgArguments: string;
-    __original: XMLCclRequest | null;
-  };
-  data: T | undefined;
+export type CclRequestResponse<T> = PowerChartReturn & {
+  code?: number;
+  result?: XmlCclResult;
+  status?: XmlCclReadyState;
+  details?: string;
+  data?: T;
+  __request?: XMLCclRequest;
 };
-
-const readyStateMap: Map<number, XmlCclReadyState> = new Map();
-readyStateMap.set(0, 'uninitialized');
-readyStateMap.set(1, 'loading');
-readyStateMap.set(2, 'loaded');
-readyStateMap.set(3, 'interactive');
-readyStateMap.set(4, 'completed');
-
-const statusCodeMap: Map<number, XmlCclStatus> = new Map();
-statusCodeMap.set(200, 'success');
-statusCodeMap.set(405, 'method not allowed');
-statusCodeMap.set(409, 'invalid state');
-statusCodeMap.set(492, 'non-fatal error');
-statusCodeMap.set(493, 'memory error');
-statusCodeMap.set(500, 'internal server exception');
 
 /**
  * Make AJAX calls to CCL end-points to retrieve data from the Cerner PowerChart
- * application. This function is a wrapper around the `XMLCclRequest` function
- * provided by the Cerner PowerChart application that greatly simplifies it's use.
+ * application. This function is a wrapper around the `XMLCclRequest` native Discern function
+ * provided by the Cerner PowerChart application that greatly simplifies it's use. This
+ * request is ultimately a wrapper around the `XMLHttpRequest` object and is only set to
+ * handle GET requests.
  * @param prg {string} - the name of the CCL program to call.
  * @param params {Array<CclCallParam|string|number>} - an array of parameters to pass to the CCL program.
  * @param excludeMine {boolean} - (optional) determines whether or not to include the "MINE" parameter as the
- * first parameter in the CCL request. Defaults to `false`.
- * @returns a `Promise` of type `CclRequestResponse<T>` where `T` is the type
- * or interface which represents the resolved data from the CCL request. If
- * no data are returned, that is an empty string, from the XMLCclRequest then
- * the `data` field will be set to `undefined`. The objects `meta` field
- * includes `responseText`, `status`, and `statusTest` fields.
- * @resolves the `CclRequestResponse<T>` where `T` is the type
- * or interface which represents the resolved data from the CCL request. If
- * no data are returned, that is an empty string, from the XMLCclRequest then
- * the `data` field will be set to `undefined`. The objects `meta` field
- * includes `responseText`, `status`, and `statusTest` fields.
- * @rejects with an error message if the CCL request fails.
- *
+ * first parameter in the CCL request's argument list.
+ * @returns a `Promise` of type `CclRequestResponse<T>`.
  * @documentation - [XMLCclRequest](https://wiki.cerner.com/display/MPAGES/MPages+JavaScript+Reference#MPagesJavaScriptReference-XMLCclRequest)
  */
 export async function makeCclRequestAsync<T>(
@@ -102,41 +97,31 @@ export async function makeCclRequestAsync<T>(
   params: Array<CclCallParam | string | number>,
   excludeMine?: boolean
 ): Promise<CclRequestResponse<T>> {
-  const paramsList = processCclRequestParams(params, excludeMine || false);
+  let res: CclRequestResponse<T> = {
+    inPowerChart: true,
+  };
 
-  let response: CclRequestResponse<T> | undefined;
   try {
-    const request = await window.external.XMLCclRequest();
-
-    request.open('GET', `${prg}`);
-    request.send(paramsList);
-    request.onreadystatechange = function() {
-      const _response = handleReadyStateChange<T>(request);
-
-      if (!_response) return;
-
-      if (_response.meta.statusText !== 'success') {
-        throw new Error(composeXmlCclReqRejectMsg(request, prg, paramsList));
-      }
-      response = _response;
+    const req = await window.external.XMLCclRequest();
+    req.open('GET', prg);
+    req.send(formattedParams(params, excludeMine));
+    req.onreadystatechange = function() {
+      res.code = req.status;
+      res.result = statusCodeMap.get(req.status);
+      res.status = readyStateMap.get(req.readyState);
+      res.details = req.statusText;
+      res.data = parsedResponseText<T>(req.responseText);
+      res.__request = req;
     };
   } catch (e) {
     if (outsideOfPowerChartError(e)) {
-      throw new PowerChartError(
-        `call to ${prg} with params ${paramsList} failed as a result of being outside the PowerChart environment`
-      );
+      res.inPowerChart = false;
     } else {
       throw e;
     }
   }
 
-  if (!response) {
-    throw new Error(
-      'An unexpected error occurred and the CCL response returned undefined or null.'
-    );
-  }
-
-  return response;
+  return res;
 }
 
 /**
@@ -145,13 +130,13 @@ export async function makeCclRequestAsync<T>(
  * type, or strings and numbers when implicitly defining type, each of which represents
  * @param excludeMine {boolean} Determines whether or not to include the "MINE" parameter as the
  * @returns {string} the XmlCclRequest compatible string.
+ * @throws {TypeError} if an invalid parameter type is passed.
  */
-export function processCclRequestParams(
+export function formattedParams(
   params?: Array<CclCallParam | string | number>,
   excludeMine?: boolean
 ) {
   params = params || [];
-  excludeMine = excludeMine || false;
 
   const processedParams: Array<CclCallParam> = params.map(param => {
     if (typeof param === 'string') {
@@ -161,50 +146,50 @@ export function processCclRequestParams(
     } else if (typeof param === 'object' && param.param && param.type) {
       return param;
     } else {
-      throw new Error(
-        `Invalid parameter type. Expected string, number, or a valid CclCallParam object. Received ${typeof param}`
+      throw new TypeError(
+        `makeCclRequestAsync params can only be string, number, or CclCallParam`
       );
     }
   });
 
-  const finalParams = excludeMine
-    ? [...processedParams]
-    : [{ type: 'string', param: 'MINE' }, ...processedParams];
+  const mineParam: CclCallParam = {
+    type: 'string',
+    param: 'MINE',
+  };
 
-  const paramString = finalParams
+  if (!excludeMine) {
+    processedParams.unshift(mineParam);
+  }
+  const paramString = processedParams
     .map(({ type, param }) => (type === 'string' ? `'${param}'` : param))
     .join(',');
 
   return paramString;
 }
 
-/**
- * A function which processes the response text from an XmlCclRequest, mapping
- * the contents to a JavaScript object of type `CclRequestResponse<T>`.
- * @param request {XMLCclRequest} - the request object that is updated when the
- * state of the request changes. Contents are not guaranteed to be valid until
- * the request is in the "completed" state.
- * @returns an object of type `CclRequestResponse<T>` where `T` is the type.
- */
-function handleReadyStateChange<T>(
-  request: XMLCclRequest
-): CclRequestResponse<T> {
-  // const readyState = readyStateMap.get(request.readyState);
-
-  const statusText = statusCodeMap.get(request.status);
-  const responseText = processXmlCclReqResponseText(request.responseText);
-  const data: T | undefined = responseText && JSON.parse(responseText);
-
-  return {
-    meta: {
-      responseText: responseText || 'no response text',
-      status: request.status,
-      statusText: statusText || 'status refers to unknown error',
-      statusDetails: request.statusText,
-      prgName: request.url,
-      prgArguments: request.requestText,
-      __original: request,
-    },
-    data,
-  };
+function parsedResponseText<T>(responseText: string): T | undefined {
+  try {
+    return JSON.parse(responseText) as T;
+  } catch (e) {
+    if (e instanceof SyntaxError) {
+      return undefined;
+    } else {
+      throw e;
+    }
+  }
 }
+
+const readyStateMap: Map<number, XmlCclReadyState> = new Map();
+readyStateMap.set(0, 'uninitialized');
+readyStateMap.set(1, 'loading');
+readyStateMap.set(2, 'loaded');
+readyStateMap.set(3, 'interactive');
+readyStateMap.set(4, 'completed');
+
+const statusCodeMap: Map<number, XmlCclResult> = new Map();
+statusCodeMap.set(200, 'success');
+statusCodeMap.set(405, 'method not allowed');
+statusCodeMap.set(409, 'invalid state');
+statusCodeMap.set(492, 'non-fatal error');
+statusCodeMap.set(493, 'memory error');
+statusCodeMap.set(500, 'internal server exception');

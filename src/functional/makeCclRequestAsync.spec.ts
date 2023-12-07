@@ -1,23 +1,15 @@
-import { PowerChartError } from '../lib/PowerChartError';
 import {
-  processCclRequestParams,
+  formattedParams,
   CclCallParam,
   makeCclRequestAsync,
 } from './makeCclRequestAsync';
 
 describe('makeCclRequestAsync', () => {
-  it('throws PowerChartError when outside of PowerChart', async () => {
-    try {
-      await makeCclRequestAsync('TEST', [{ type: 'string', param: 'param1' }]);
-    } catch (e) {
-      expect(e).toBeInstanceOf(PowerChartError);
-      expect(e).toHaveProperty(
-        'message',
-        `call to TEST with params 'MINE','param1' failed as a result of being outside the PowerChart environment`
-      );
-      expect(e).toHaveProperty('name', 'PowerChartError');
-      console.error(e);
-    }
+  it('return inPowerChart as false outside of PowerChart', async () => {
+    const { inPowerChart } = await makeCclRequestAsync('TEST', [
+      { type: 'string', param: 'param1' },
+    ]);
+    expect(inPowerChart).toBe(false);
   });
 
   it('throws an error when the response returns undefined or null', async () => {
@@ -80,7 +72,7 @@ describe('makeCclRequestAsync', () => {
 });
 
 describe('processCclRequestParams', () => {
-  it('returns a proper request params string when given string, number, and all options', () => {
+  it('returns a proper params string when given inputs as CclCallParams', () => {
     const params: Array<CclCallParam> = [
       {
         type: 'string',
@@ -91,41 +83,41 @@ describe('processCclRequestParams', () => {
         param: 1,
       },
     ];
-    const result = processCclRequestParams(params, false);
+    const result = formattedParams(params, false);
     expect(result).toEqual("'MINE','test',1");
   });
 
-  it('handles a case with no parameters provided', () => {
-    const result = processCclRequestParams();
+  it('missing params returns only MINE', () => {
+    const result = formattedParams();
     expect(result).toEqual("'MINE'");
   });
 
-  it('handles a case with empty parameters', () => {
+  it('empty params list return only MINE', () => {
     const params: Array<CclCallParam> = [];
-    const result = processCclRequestParams(params);
+    const result = formattedParams(params);
     expect(result).toEqual("'MINE'");
   });
-  it('handles a case with exlude mine parameter excluded', () => {
+  it('includes MINE as the first parameter when excludeMine is excluded', () => {
     const params: Array<CclCallParam> = [
       {
         type: 'string',
         param: 'test',
       },
     ];
-    const result = processCclRequestParams(params);
+    const result = formattedParams(params);
     expect(result).toEqual("'MINE','test'");
   });
-  it('handles a case with exlude mine parameter set to true', () => {
+  it('remove MINE from the parameters when excludeMine parameter set to true', () => {
     const params: Array<CclCallParam> = [
       {
         type: 'string',
         param: 'test',
       },
     ];
-    const result = processCclRequestParams(params, true);
+    const result = formattedParams(params, true);
     expect(result).toEqual("'test'");
   });
-  it('handles properly processes parameters when the list items types are decided without explicit type declaration', () => {
+  it('properly processes parameters when the list items types are decided without explicit type declaration', () => {
     const params: Array<number | string | CclCallParam> = [
       1234,
       'test',
@@ -133,11 +125,11 @@ describe('processCclRequestParams', () => {
       'test2',
       { param: 'test3', type: 'string' },
     ];
-    const result = processCclRequestParams(params, true);
+    const result = formattedParams(params, true);
     expect(result).toEqual("1234,'test',6789,'test2','test3'");
   });
-  it('throws and error when invalid parameters are given', () => {
+  it('throws an error when invalid parameters are given', () => {
     const params: Array<number | string> = [{ test: 'test' } as any];
-    expect(() => processCclRequestParams(params, true)).toThrowError();
+    expect(() => formattedParams(params, true)).toThrowError();
   });
 });
