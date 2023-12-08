@@ -142,9 +142,7 @@ describe('createNewDocumentAsync', () => {
     await expect(
       // @ts-ignore
       createNewDocumentAsync('unsupported', 1, 1, 1)
-    ).rejects.toThrow(
-      'unsupported is not supported as a method of creating a new document.'
-    );
+    ).rejects.toThrow('createNewDocumentAsync: unsupported is not supported');
   });
   it('console.warn is called when a noteTypeCd is provided when using the by workflow method', async () => {
     Object.defineProperty(window, 'external', {

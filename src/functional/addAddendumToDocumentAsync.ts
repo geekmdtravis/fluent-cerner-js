@@ -3,15 +3,12 @@ import { outsideOfPowerChartError } from './utils';
 
 /**
  * Add an addendum to an existing document for a given patient and encounter using the
- * DYNDOC Discern COM object. Of note, Cerner PowerChart references the "addendum" action
+ * DYNDOC Discern COM object. Of note, Cerner PowerChart refers the "addendum" action
  * with the "modify" terminology.
- * @param patientId {number} - the patient ID to launch the document for
- * @param encounterId {number} - the encounter ID to launch the document in
- * @param eventId {number} - the event ID of the document to modify.
- * @resolves {PowerChartReturn & { success: boolean }} - a `Promise` which resolves to an object
- * containing a boolean indicating whether the user is in PowerChart and a boolean indicating
- * whether the action was successful.
- * @throws {Error} if an unexpected error occurs.
+ * @param {number} patientId  - the patient ID to launch the document for
+ * @param {number} encounterId - the encounter ID to launch the document in
+ * @param {number} eventId  - the event ID of the document to modify.
+ * @resolves a `Promise<{PowerChartReturn & { success: boolean }}>`.
  */
 
 export async function addAddendumToDocumentAsync(

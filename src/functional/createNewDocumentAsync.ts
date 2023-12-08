@@ -33,9 +33,7 @@ export async function createNewDocumentAsync(
     let response: 0 | 1 | null = null;
 
     if (method !== 'by workflow' && method !== 'by reference template') {
-      throw new Error(
-        `${method} is not supported as a method of creating a new document.`
-      );
+      throw new Error(`createNewDocumentAsync: ${method} is not supported`);
     }
 
     if (method === 'by workflow' && noteTypeCd) {
