@@ -18,10 +18,10 @@ export type AppointmentReturn = PowerChartReturn & {
  * following actions can be performed: check in, check out, cancel, no show,
  * view appointment dialog, and view appointment history. This is a wrapper function
  * for the `PEXSCHEDULINGACTIONS` Discern COM object.
- * @param eventId {number} - the event ID of the appointment to check in.
  * @param action {string} - the action to perform on the appointment. The available
  * actions are: 'check in', 'check out', 'cancel', 'no show', 'view appt dialog',
  * and 'view appt history'.
+ * @param eventId {number} - the event ID of the appointment to check in.
  * @resolves an `AppointmentReturn` object with the following properties:
  * - `success` - `true` if the action was successful, `false` otherwise.
  * - `inPowerChart` - `true` if the action was successful, `false` otherwise.
@@ -30,8 +30,8 @@ export type AppointmentReturn = PowerChartReturn & {
  * @throws an `Error` if an unexpected error occurs.
  */
 export async function manageAppointmentAsync(
-  eventId: number,
-  action: AppointmentAction
+  action: AppointmentAction,
+  eventId: number
 ): Promise<AppointmentReturn> {
   if (eventId < 1) {
     throw new RangeError(

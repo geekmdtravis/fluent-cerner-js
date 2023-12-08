@@ -35,12 +35,12 @@ describe('manageAppointmentAsync', () => {
     });
   });
   it('throws RangeError if the provided appointment ID is less than 1', async () => {
-    await expect(manageAppointmentAsync(0, 'check in')).rejects.toThrow(
+    await expect(manageAppointmentAsync('check in', 0)).rejects.toThrow(
       RangeError
     );
   });
   it('does not throw a RangeError if the provided appointment ID is greater than 0', async () => {
-    await expect(manageAppointmentAsync(1, 'check in')).resolves.toBeDefined();
+    await expect(manageAppointmentAsync('check in', 1)).resolves.toBeDefined();
   });
   it('returns the inPowerChart property as false when the COM object is not available', async () => {
     Object.defineProperty(window, 'external', {
@@ -49,40 +49,40 @@ describe('manageAppointmentAsync', () => {
         DiscernObjectFactory: undefined,
       },
     });
-    const { inPowerChart } = await manageAppointmentAsync(1, 'check in');
+    const { inPowerChart } = await manageAppointmentAsync('check in', 1);
     expect(inPowerChart).toBe(false);
   });
   it('returns the inPowerChart property as true when the COM object is available', async () => {
-    const { inPowerChart } = await manageAppointmentAsync(1, 'check in');
+    const { inPowerChart } = await manageAppointmentAsync('check in', 1);
     expect(inPowerChart).toBe(true);
   });
   it('returns the success property as true when CheckInAppointment returns 1', async () => {
-    const { success } = await manageAppointmentAsync(1, 'check in');
+    const { success } = await manageAppointmentAsync('check in', 1);
     expect(success).toBe(true);
   });
   it('returns the success property as true when CheckOutAppointment returns 1', async () => {
-    const { success } = await manageAppointmentAsync(1, 'check out');
+    const { success } = await manageAppointmentAsync('check out', 1);
     expect(success).toBe(true);
   });
   it('returns the success property as true when CancelAppointment returns 1', async () => {
-    const { success } = await manageAppointmentAsync(1, 'cancel');
+    const { success } = await manageAppointmentAsync('cancel', 1);
     expect(success).toBe(true);
   });
   it('returns the success property as true when NoShowAppointment returns 1', async () => {
-    const { success } = await manageAppointmentAsync(1, 'no show');
+    const { success } = await manageAppointmentAsync('no show', 1);
     expect(success).toBe(true);
   });
   it('returns the success property as true when ShowView returns 1', async () => {
-    const { success } = await manageAppointmentAsync(1, 'view appt dialog');
+    const { success } = await manageAppointmentAsync('view appt dialog', 1);
     expect(success).toBe(true);
   });
   it('returns the success property as true when ShowHistoryView returns 1', async () => {
-    const { success } = await manageAppointmentAsync(1, 'view appt history');
+    const { success } = await manageAppointmentAsync('view appt history', 1);
     expect(success).toBe(true);
   });
   it('throws an Error when the provided action is not supported', async () => {
     // @ts-ignore
-    await expect(manageAppointmentAsync(1, 'foo')).rejects.toThrow(Error);
+    await expect(manageAppointmentAsync('foo', 1)).rejects.toThrow(Error);
   });
   it('returns the success property as false when CheckInAppointment returns 0', async () => {
     Object.defineProperty(window.external, 'DiscernObjectFactory', {
@@ -94,7 +94,7 @@ describe('manageAppointmentAsync', () => {
         },
       })),
     });
-    const { success } = await manageAppointmentAsync(1, 'check in');
+    const { success } = await manageAppointmentAsync('check in', 1);
     expect(success).toBe(false);
   });
   it('returns the success property as false when CheckOutAppointment returns 0', async () => {
@@ -107,7 +107,7 @@ describe('manageAppointmentAsync', () => {
         },
       })),
     });
-    const { success } = await manageAppointmentAsync(1, 'check out');
+    const { success } = await manageAppointmentAsync('check out', 1);
     expect(success).toBe(false);
   });
   it('returns the success property as false when CancelAppointment returns 0', async () => {
@@ -120,7 +120,7 @@ describe('manageAppointmentAsync', () => {
         },
       })),
     });
-    const { success } = await manageAppointmentAsync(1, 'cancel');
+    const { success } = await manageAppointmentAsync('cancel', 1);
     expect(success).toBe(false);
   });
   it('returns the success property as false when NoShowAppointment returns 0', async () => {
@@ -133,7 +133,7 @@ describe('manageAppointmentAsync', () => {
         },
       })),
     });
-    const { success } = await manageAppointmentAsync(1, 'no show');
+    const { success } = await manageAppointmentAsync('no show', 1);
     expect(success).toBe(false);
   });
   it('returns the success property as false when ShowView returns 0', async () => {
@@ -146,7 +146,7 @@ describe('manageAppointmentAsync', () => {
         },
       })),
     });
-    const { success } = await manageAppointmentAsync(1, 'view appt dialog');
+    const { success } = await manageAppointmentAsync('view appt dialog', 1);
     expect(success).toBe(false);
   });
   it('returns the success property as false when ShowHistoryView returns 0', async () => {
@@ -159,7 +159,7 @@ describe('manageAppointmentAsync', () => {
         },
       })),
     });
-    const { success } = await manageAppointmentAsync(1, 'view appt history');
+    const { success } = await manageAppointmentAsync('view appt history', 1);
     expect(success).toBe(false);
   });
 });
