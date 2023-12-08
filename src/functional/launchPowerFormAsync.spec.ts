@@ -1,107 +1,104 @@
-import { launchPowerFormAsync, PowerFormOpts } from './launchPowerFormAsync';
+import { launchPowerFormAsync } from './launchPowerFormAsync';
 
 describe('launchPowerForm', () => {
   it('properly constructs a valid power form request with `new form` selected', async () => {
     const expected = '733757|701346|15721144|0|0';
-    const opts: PowerFormOpts = {
-      patientId: 733757,
-      encounterId: 701346,
-      target: 'new form',
-      targetId: 15721144,
-      permissions: 'modify',
-    };
 
-    const result = await launchPowerFormAsync(opts);
+    const result = await launchPowerFormAsync(
+      'new form',
+      733757,
+      701346,
+      15721144
+    );
     expect(result.eventString).toEqual(expected);
   });
 
-  it('checks for the targetID parameter when set to `new form` and throws error if not present', async () => {
-    const opts: PowerFormOpts = {
-      patientId: 733757,
-      encounterId: 701346,
-      target: 'new form',
-      targetId: undefined,
-      permissions: 'modify',
-    };
+  it("throws an error if targetId is not provided when 'new form' is targeted", async () => {
     try {
-      await launchPowerFormAsync(opts);
+      await launchPowerFormAsync('new form', 733757, 701346);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect((e as Error).message).toEqual(
-        "'targetId' is required for 'new form' and 'completed form' targets."
+        "'targetId' is required for all targets except 'new form search'."
       );
     }
   });
 
-  it('checks for the targetId parameter when set to `completed form` and throws error if not present', async () => {
-    const opts: PowerFormOpts = {
-      patientId: 733757,
-      encounterId: 701346,
-      target: 'completed form',
-      targetId: undefined,
-      permissions: 'modify',
-    };
+  it("throws an error if targetId is not provided when 'view form' is targeted", async () => {
     try {
-      await launchPowerFormAsync(opts);
+      await launchPowerFormAsync('view form', 733757, 701346);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect((e as Error).message).toEqual(
-        "'targetId' is required for 'new form' and 'completed form' targets."
+        "'targetId' is required for all targets except 'new form search'."
       );
     }
   });
 
-  it('successfully generates a power form request with the `completed form` target selected', async () => {
+  it("throws an error if targetId is not provided when 'modify form' is targeted", async () => {
+    try {
+      await launchPowerFormAsync('modify form', 733757, 701346);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+      expect((e as Error).message).toEqual(
+        "'targetId' is required for all targets except 'new form search'."
+      );
+    }
+  });
+
+  it('`modify form` generates the appropriate event string, without read-only flagged', async () => {
     const expected = '733757|701346|0|15721144|0';
-    const opts: PowerFormOpts = {
-      patientId: 733757,
-      encounterId: 701346,
-      target: 'completed form',
-      targetId: 15721144,
-      permissions: 'modify',
-    };
 
-    const result = await launchPowerFormAsync(opts);
+    const result = await launchPowerFormAsync(
+      'modify form',
+      733757,
+      701346,
+      15721144
+    );
     expect(result.eventString).toEqual(expected);
   });
 
-  it('successfully generates a power form request with the `new form search` target selected', async () => {
+  it('`new form` generates the appropriate event string, without read-only flagged', async () => {
+    const expected = '733757|701346|15721144|0|0';
+
+    const result = await launchPowerFormAsync(
+      'new form',
+      733757,
+      701346,
+      15721144
+    );
+    expect(result.eventString).toEqual(expected);
+  });
+
+  it('`new form search` generates the appropriate event string, without read-only flagged', async () => {
     const expected = '733757|701346|0|0|0';
-    const opts: PowerFormOpts = {
-      patientId: 733757,
-      encounterId: 701346,
-      target: 'new form search',
-      targetId: 15721144,
-      permissions: 'modify',
-    };
 
-    const result = await launchPowerFormAsync(opts);
+    const result = await launchPowerFormAsync(
+      'new form search',
+      733757,
+      701346
+    );
+    expect(result.eventString).toEqual(expected);
+  });
+  it('`view form` generates the appropriate event string, with read-only flagged', async () => {
+    const expected = '733757|701346|0|15721144|1';
+
+    const result = await launchPowerFormAsync(
+      'view form',
+      733757,
+      701346,
+      15721144
+    );
     expect(result.eventString).toEqual(expected);
   });
 
-  it('behaves as expected if called outside of PowerChart', async () => {
-    const opts: PowerFormOpts = {
-      patientId: 733757,
-      encounterId: 701346,
-      target: 'new form',
-      targetId: 15721144,
-      permissions: 'modify',
-    };
-
-    const result = await launchPowerFormAsync(opts);
-    expect(result.inPowerChart).toBe(false);
-  });
-
-  it('when permissions is undefined, defaults to `read-only`', async () => {
-    const expected = '733757|701346|15721144|0|1';
-    const opts: PowerFormOpts = {
-      patientId: 733757,
-      encounterId: 701346,
-      target: 'new form',
-      targetId: 15721144,
-    };
-
-    const result = await launchPowerFormAsync(opts);
-    expect(result.eventString).toEqual(expected);
+  it('returns false for inPowerChart if outside of PowerChart', async () => {
+    const { inPowerChart } = await launchPowerFormAsync(
+      'new form',
+      733757,
+      701346,
+      15721144
+    );
+    expect(inPowerChart).toBe(false);
   });
 });
