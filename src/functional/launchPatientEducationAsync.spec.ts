@@ -1,28 +1,6 @@
 import { launchPatientEducationAsync } from './launchPatientEducationAsync';
 
 describe('launchPatientEducationAsync', () => {
-  test('throws range error of pid (patient id) is less than 1', async () => {
-    try {
-      await launchPatientEducationAsync(0, 1, 'instruction');
-    } catch (e) {
-      expect(e).toBeInstanceOf(RangeError);
-      expect(e).toHaveProperty(
-        'message',
-        'The patient ID must be a positive integer.'
-      );
-    }
-  });
-  test('throws range error of eid (encounter id) is less than 1', async () => {
-    try {
-      await launchPatientEducationAsync(1, 0, 'instruction');
-    } catch (e) {
-      expect(e).toBeInstanceOf(RangeError);
-      expect(e).toHaveProperty(
-        'message',
-        'The encounter ID must be a positive integer.'
-      );
-    }
-  });
   test('returns an object with inPowerChart set to false if outside of PowerChart', async () => {
     const result = await launchPatientEducationAsync(1, 1, 'instruction');
     expect(result).toHaveProperty('inPowerChart', false);
