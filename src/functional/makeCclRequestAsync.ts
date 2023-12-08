@@ -94,7 +94,7 @@ export type CclRequestResponse<T> = PowerChartReturn & {
  */
 export async function makeCclRequestAsync<T>(
   prg: string,
-  params: Array<CclCallParam | string | number>,
+  params: Array<CclCallParam | string | number> = [],
   excludeMine?: boolean
 ): Promise<CclRequestResponse<T>> {
   let res: CclRequestResponse<T> = {
@@ -167,7 +167,12 @@ export function formattedParams(
   return paramString;
 }
 
-function parsedResponseText<T>(responseText: string): T | undefined {
+/**
+ * Parse the response text from an XmlCclRequest into a JSON object, if possible.
+ * @param responseText - the response text from the XmlCclRequest.
+ * @returns a parsed JSON object or undefined if the response text is not valid JSON.
+ */
+export function parsedResponseText<T>(responseText: string): T | undefined {
   try {
     return JSON.parse(responseText) as T;
   } catch (e) {

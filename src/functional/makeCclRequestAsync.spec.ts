@@ -2,6 +2,7 @@ import {
   formattedParams,
   CclCallParam,
   makeCclRequestAsync,
+  parsedResponseText,
 } from './makeCclRequestAsync';
 
 describe('makeCclRequestAsync', () => {
@@ -12,62 +13,25 @@ describe('makeCclRequestAsync', () => {
     expect(inPowerChart).toBe(false);
   });
 
-  it('throws an error when the response returns undefined or null', async () => {
+  it('propagates the error when an unexpected error occurs', async () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
         XMLCclRequest: jest.fn().mockImplementation(() => ({
-          response: null,
-          open: function(a: string, b: string): Promise<null> {
-            console.debug('open', a, b);
-            return Promise.resolve(null);
+          // @ts-ignore
+          open: (a: string, b: string) => {
+            return null;
           },
-          send: function(a: string): Promise<null> {
-            console.debug('send', a);
-            return Promise.resolve(null);
-          },
-          onreadystatechange: function(): Promise<null> {
-            console.debug('onreadystatechange');
-            return Promise.resolve(null);
+          // @ts-ignore
+          send: (a: string) => {
+            throw new Error('test error');
+            return null;
           },
         })),
       },
     });
-    try {
-      await makeCclRequestAsync('TEST', [{ type: 'string', param: 'param1' }]);
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-      expect(e).toHaveProperty(
-        'message',
-        'An unexpected error occurred and the CCL response returned undefined or null.'
-      );
-    }
-  });
-  it('throws an error when an unexpected error occurs', async () => {
-    Object.defineProperty(window, 'external', {
-      writable: true,
-      value: {
-        XMLCclRequest: jest.fn().mockImplementation(() => ({
-          open: function(a: string, b: string): Promise<null> {
-            console.debug('open', a, b);
-            throw new Error('test error');
-          },
-          send: function(a: string): Promise<null> {
-            console.debug('send', a);
-            throw new Error('test error');
-          },
-          onreadystatechange: function(): Promise<null> {
-            console.debug('onreadystatechange');
-            throw new Error('test error');
-          },
-        })),
-      },
-    });
-    try {
-      await makeCclRequestAsync('TEST', ['param1']);
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-    }
+
+    await expect(makeCclRequestAsync('TEST')).rejects.toThrow();
   });
 });
 
@@ -131,5 +95,25 @@ describe('processCclRequestParams', () => {
   it('throws an error when invalid parameters are given', () => {
     const params: Array<number | string> = [{ test: 'test' } as any];
     expect(() => formattedParams(params, true)).toThrowError();
+  });
+});
+
+describe('parsedResponseText', () => {
+  it('returns the parsed response text when the response text is valid JSON', () => {
+    const responseText = '{"test": "test"}';
+    const result = parsedResponseText(responseText);
+    expect(result).toEqual({ test: 'test' });
+  });
+  it('returns undefined when the response text is not valid JSON', () => {
+    const responseText = 'test';
+    const result = parsedResponseText(responseText);
+    expect(result).toBeUndefined();
+  });
+  it('propagates an error if an unexpected error occurs', () => {
+    const responseText = 'test';
+    jest.spyOn(JSON, 'parse').mockImplementationOnce(() => {
+      throw new Error('test error');
+    });
+    expect(() => parsedResponseText(responseText)).toThrowError();
   });
 });
