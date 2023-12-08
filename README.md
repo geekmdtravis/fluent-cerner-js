@@ -42,7 +42,7 @@ Please see `demo.ts` to see the API in action. To _run_ the demo, you will need 
 | `DiscernObjectFactory("POWERFORM")`            | `launchPowerFormAsync`              | Launch a PowerForm.                                                        |
 | `DiscernObjectFactory("POWERNOTE")`            | `launchPowerNoteAsync`              | Launch a PowerNote.                                                        |
 | `DiscernObjectFactory("POWERORDERS")`          | &mdash;                             | Interact with the PowerOrders MOEW dialog from within an MPage.            |
-|                                                | &rdsh; `submitPowerPlansAsync`      | Submit PowerPlan orders.                                                   |
+|                                                | &rdsh; `submitPowerOrdersAsync`     | Submit PowerPlan orders.                                                   |
 | `DiscernObjectFactory("PREGNANCY")`            | (planned)                           | Launch dialogs used for managing an active pregnancy                       |
 | `DiscernObjectFactory("PVCONTXTMPAGE")`        | `getValidEncountersAsync`           | Gets an array valid encounter ID's for a given patient.                    |
 | `DiscernObjectFactory("PVFRAMEWORKLINK")`      | (will review)                       | Communicate infomration ot the Win32 components of PowerChart.             |
@@ -56,7 +56,6 @@ Please see `demo.ts` to see the API in action. To _run_ the demo, you will need 
 | `MPAGE_EVENT("POWERFORM",...)`                 | (will review)                       | PowerForm conversation will be launched.                                   |
 | `MPAGE_EVENT("POWERNOTE",...)`                 | `launchClinicalNoteAsync`           | PowerNote conversation will be launched.                                   |
 | `MPAGE_EVENT("ORDERS",...)`                    | `submitOrdersAsync`                 | Submits one or more orders to MOEW.                                        |
-|                                                | &rdsh; `orderString`                | Creates a valid order string, for use with `submitOrdersAsync`.            |
 | `MPAGES_SVC_EVENT`                             | (planned)                           | Launch the Discern MPages Web Service.                                     |
 | `MPAGES_OVERRIDE_REFRESH`                      | (planned)                           | Change the behavior of the MPage when a refresh event is received.         |
 | `MPAGES_OVERRIDE_PRINT`                        | (planned)                           | Change the behavior of the MPage when a print event is received.           |
