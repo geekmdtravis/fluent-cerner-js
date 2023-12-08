@@ -6,7 +6,7 @@ import { outsideOfPowerChartError } from './utils';
  * a reference template ID or a reference template ID and an optional note type code,
  * depending on the chosen method of 'by workflow' or 'by reference template'.
  * @param method {'by workflow' | 'by reference template'} - the method to use to create the document.
- * @param personId {number} - the patient ID to launch the document for.
+ * @param patientId {number} - the patient ID to launch the document for.
  * @param encounterId {number} - the encounter ID to launch the document in.
  * @param id {number} - the ID of the reference template or workflow to use to create the document.
  * @param noteTypeCd {number} - (optional) the note type code to use to create the document.
@@ -17,7 +17,7 @@ import { outsideOfPowerChartError } from './utils';
  */
 export async function createNewDocumentAsync(
   method: 'by workflow' | 'by reference template',
-  personId: number,
+  patientId: number,
   encounterId: number,
   id: number,
   noteTypeCd?: number
@@ -45,12 +45,12 @@ export async function createNewDocumentAsync(
     }
 
     if (method === 'by workflow') {
-      response = await dcof.OpenDynDocByWorkFlowId(personId, encounterId, id);
+      response = await dcof.OpenDynDocByWorkFlowId(patientId, encounterId, id);
     }
 
     if (method === 'by reference template' && !noteTypeCd) {
       response = await dcof.OpenNewDocumentByReferenceTemplateId(
-        personId,
+        patientId,
         encounterId,
         id
       );
@@ -58,7 +58,7 @@ export async function createNewDocumentAsync(
 
     if (method === 'by reference template' && noteTypeCd) {
       response = await dcof.OpenNewDocumentByReferenceTemplateIdAndNoteType(
-        personId,
+        patientId,
         encounterId,
         id,
         noteTypeCd

@@ -62,7 +62,7 @@ export type ClinicalNoteOpts = {
 
 /**
  * Launch a ClinicalNote in Cerner's PowerChart.
- * @param {number} personId - The identifier for the patient to whom the note belongs.
+ * @param {number} patientId - The identifier for the patient to whom the note belongs.
  * Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this note will be launched. Cerner context variable: VIS_EncntrId.
@@ -77,7 +77,7 @@ export type ClinicalNoteOpts = {
  * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
 export const launchClinicalNoteAsync = async (
-  personId: number,
+  patientId: number,
   encounterId: number,
   eventIds: Array<number>,
   opts?: ClinicalNoteOpts
@@ -86,7 +86,7 @@ export const launchClinicalNoteAsync = async (
   const { viewName, viewSeq, compName, compSeq } = inheritanceProps || {};
 
   let inPowerChart = true;
-  const params: Array<string> = [`${personId}`, `${encounterId}`];
+  const params: Array<string> = [`${patientId}`, `${encounterId}`];
 
   const _viewOptsFlags: Array<ViewOption> =
     !viewOptionFlags || viewOptionFlags.length === 0
@@ -96,7 +96,7 @@ export const launchClinicalNoteAsync = async (
   params.push(`[${eventIds.join('|')}]`);
   params.push(
     `${windowTitle ||
-      `Clinical Note for patient with PID ${personId} on encounter with EID ${encounterId}`}`
+      `Clinical Note for patient with PID ${patientId} on encounter with EID ${encounterId}`}`
   );
   params.push(`${calculateViewOptionFlag(_viewOptsFlags)}`);
   params.push(`${viewName || ''}`);
