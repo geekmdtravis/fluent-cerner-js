@@ -1,6 +1,6 @@
 # fluent-cerner-js
 
-A modern API for interacting with the Cerner Millennium application. Modern Typescript/Javascript wrappers have been created to enhance the productivity of software engineers who are tasked with interacting with the Cerner Millennium application. This software is in it's alpha stage and should be used with caution. Additionally, it doesn't cover a full set of the Cerner Millennium application's functionality. It is a work in progress.
+A modern API for interacting with MPages in the Cerner Millennium application which have access to the Discern Native functions and COM objects. Modern `Typescript` wrapper functions were created without thoughtfullness to enhance the productivity of software engineers tasked with building out MPage solutions. This software is in it's alpha stage and should be used with caution. Additionally, it doesn't cover a full set of the Cerner Millennium application's functionality. It is a work in progress.
 
 | Environment | CI                                                                                                                             | Publish                                                                                                   |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
@@ -9,319 +9,103 @@ A modern API for interacting with the Cerner Millennium application. Modern Type
 
 ## Contributors
 
+If you'd like to become a contributor, please contact the primary author.
+
 - [Travis Nesbit, MD (geekmdtravis)](https://github.com/geekmdtravis/) - Primary Author
 - [Daniel "Danny" Lara, MD (dl2github)](https://github.com/dl2github)
 
 ## API In Action
 
-### Create and Send Orders to MOEW
+### Place Orders
 
-```js
-const o1 = orderString('copy existing', { orderId: 12345 });
+Placing orders through the `MPAGES_EVENT` fuction with the `ORDERS` directive, simplified. Just provided the patient ID, encounter ID, and an array of orders.
 
-const o2 = orderString('new order', {
-  newOrderOpts: {
-    synonymId: 1343,
-    origination: 'prescription',
-  },
-});
-
-const o3 = orderString('new order', {
-  newOrderOpts: {
-    synonymId: 3428,
-    orderSentenceId: 3,
-    nomenclatureIds: [14, 15],
-    interactionCheck: 'on sign',
-  },
-});
-
-submitOrders(123, 456, [o1, o2, o3]);
+```typescript
+const orders: Order[] = [
+  { action: 'new order', id: 32461245 },
+  { action: 'new order', id: 12341243 },
+];
+const { eventString } = await submitOrdersAsync(91294, 123424, orders);
 ```
 
-### Make a CCL Request from an MPage
+### Make a CCL Query
 
-Using the provided tooling inside of PowerChart, making a CCL request is a complex endeavor. This library abstracts away the complexity and provides a simple interface for making CCL requests and provides an easy way to handle the response asynchronously. It returns a `Promise`.
+Make a requestion for a JSON object from a CCL end-point. Just pass the CCL program name (often referenced as the URL) and the parameters as an array of either strings or numbers.
 
-#### Using `Promise` syntax
-
-```ts
-const opts: CclOpts = {
-  prg: 'MP_GET_ORDER_LIST',
-  params: [
-    { type: 'number', param: 12345 },
-    { type: 'string', param: 'joe' },
-  ],
-};
-
-makeCclRequest(opts)
-  .then(data => setData(data))
-  .catch(err => console.error(err))
-  .finally(() => console.log("I'm done!"));
+```typescript
+const {
+  data,
+  status,
+  result,
+} = await makeCclRequestAsync('1_GET_VITALS_DT_RNG', [
+  391414,
+  1234124,
+  '2022-01-01',
+  '2022-12-31',
+]);
 ```
 
-#### Using `async/await`
+### Open a Chart Level Tab
 
-```ts
-const opts: CclOpts = {
-  prg: 'MP_GET_ORDER_LIST',
-  params: [
-    { type: 'number', param: 12345 },
-    { type: 'string', param: 'joe' },
-  ],
-};
+Open a tab at the chart level. Just provide the patient ID, encounter ID, and the tab name.
 
-try {
-  const data = await makeCclRequest(opts);
-  setData(result);
-} catch (error) {
-  console.error(error);
-} finally {
-  console.log("I'm done!");
-}
+```typescript
+await openPatientTabAsync(12341, 197777, 'Orders');
 ```
 
-### Launch a Clinical Note
+### More
 
-```ts
-const opts: ClinicalNoteOpts = {
-  personId: 8316243,
-  encounterId: 12575702,
-  eventIds: [155543],
-  windowTitle: 'Clinical Notes Title',
-  viewOptionFlags: ['view-only'],
-};
+There are many more funcionalties listed below.
 
-launchClinicalNote(opts);
-```
+## Utility Map
 
-### Launch PowerForm
-
-```ts
-const opts: PowerFormOpts = {
-  personId: 733757,
-  encounterId: 701346,
-  target: 'completed form',
-  targetId: 15721144,
-  permissions: 'modify',
-};
-
-launchPowerForm(opts);
-```
-
-### Launch a PowerNote
-
-```ts
-const opts: PowerNoteOpts = {
-  personId: 123456,
-  encounterId: 78910,
-  target: 'existing',
-  targetId: 1337,
-};
-
-launchPowerNote(opts);
-```
-
-### Launch a Tab at the Organizer Level
-
-Open a tab at the organizer level (no patient context). Arguments provided are _tab name_.
-
-```ts
-openOrganizerTab('Tab Name');
-```
-
-### Launch a Tab at the Patient Level
-
-Open a tab at the patient level (patient context is present). Arguments provided are _person ID_, _encounter ID_, _tab name_, and optional _boolean_ for whether or not attempt to open a _Quick Add_ tab (not available in all tabs).
-
-```ts
-openPatientTab(12345, 51353, 'Tab Name', true);
-```
-
-### Verification and Context Validation
-
-Each function will return an object `{eventString: string, inPowerChart: boolean}`. This object can be used to verify the event string and context of the application. `eventString` does not give information about the function called, but does give a final representation of the string that is being fed into the relevant function and is therefore useful for debugging. If you're developing outside of PowerChart the error generated will be caught and logged to the console along with returning the object with the `inPowerChart` property set to `false`.
-
-```ts
-const { eventString, inPowerChart } = openPatientTab(0, 1, 'Tab Name', true);
-
-if (!inPowerChart) {
-  dispatch(
-    appWarning(
-      `You're not in PowerChart! The generated event string is ${eventString}`
-    )
-  );
-}
-```
-
-## TypeScript Support
-
-This library was developed with _TypeScript_ and all relevant types are exported.
-
-```tsx
-import { makeCclRequest, CclCallParam, CclOpts } from 'fluent-cerner-js';
-import { MyCustomResponse } from '../types';
-// Other imports omitted in this example for clarity
-
-const MyComponent = ({ user }) => {
-  const [data, setData] = useState<MyCustomResponse>({});
-
-  const handleButtonClick = () => {
-    const userPidParam: CclCallParam = { type: 'number', param: user.pid };
-
-    const opts: CclOpts = {
-      prg: 'MY_CUSTOM_PRG_FILENAME',
-      params: [userPidParam],
-    };
-
-    makeCclRequest<MyCustomResponse>(opts)
-      .then(data => setData(data))
-      .catch(error => addErrorToast(error));
-  };
-
-  return (
-    <div>
-      <h2>My Custom Component</h2>
-      <p>Welcome, {user.name}</p>
-      <button onClick={handleButtonClick}>Click Me to Get Data</button>
-    </div>
-  );
-};
-```
-
----
-
-## Resources
-
-- [MPage Developer Guide - MPAGE_EVENT Orders](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT-ORDERS)
-
-## Anatomy of an `MPAGE_EVENT` String for the `ORDER` type.
-
-### Background: Examples
-
-**Copying two orders:**
+| Discern                                        | _fluent-cerner-js_                  | Description                                                                |
+| ---------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------- |
+| `APPLINK`                                      | `openApplicationAsync`              | Opens a file, URL, executable, shell executable, or application object     |
+|                                                | &rdsh; `openOrganizerTabAsync`      | Opens a tab at the organizer level.                                        |
+|                                                | &rdsh; `openPatientTabAsync`        | Opens a tab at the patient level.                                          |
+|                                                | &rdsh; `openWebsiteByUrlAsync`      | Opens a URL in a new window from PowerChart.                               |
+| `CCLEVENT`                                     | (no support planned)                | Evoke special solution-specific events from within a web page.             |
+| `CCLLINK`                                      | (no support planned)                | Link CCL reports within a given MPage.                                     |
+| `CCLLINKPOPUP`                                 | (no support planned)                | Link CCL reports, launch in a new Internet Explorer&reg; pop-up.           |
+| `CCLNEWSESSIONWINDOW`                          | (will review)                       | Open a link (a URL) in a new _Discern Output Viewer_ window.               |
+| `DiscernObjectFactory("CINFOBUTTONLINK")`      | (will review)                       | Communicate information between MPages and the Infobutton service.         |
+| `DiscernObjectFactory("DISCHARGEPROCESS")`     | `launchDischargeProcessAsync`       | Launch the discharge process module.                                       |
+| `DiscernObjectFactory("DYNDOC")`               | &mdash;                             | Create new Dynamic Documentation notes and modify existing ones.           |
+|                                                | &rdsh; `createNewDocumentAsync`     | Create a new document, launching the DYNDOC modal.                         |
+|                                                | &rdsh; `addAddendumToDocumentAsync` | Add an addendum to an existing document.                                   |
+| `DiscernObjectFactory("KIACROSSMAPPING")`      | (will review)                       | Map a nomenclature from one nomenclature terminology set to another.       |
+| `DiscernObjectFactory("ORDERS")`               | (no support planned)                | Launch the MOEW and execute orders-related actions.                        |
+| `DiscernObjectFactory("PATIENTEDUCATION")`     | `launchPatientEducationAsync`       | Launches patient education.                                                |
+| `DiscernObjectFactory("PEXAPPLICATIONSTATUS")` | (will review)                       | Provides a means to decide if a given MPage is in view.                    |
+| `DiscernObjectFactory("PEXSCHEDULINGACTIONS")` | `manageAppointmentAsync`            | Launch various Cerner Scheduling functions.                                |
+| `DiscernObjectFactory("PMLISTMAINTENANCE")`    | (planned)                           | Launch the patient list maintenance dialog.                                |
+| `DiscernObjectFactory("POWERFORM")`            | `launchPowerFormAsync`              | Launch a PowerForm.                                                        |
+| `DiscernObjectFactory("POWERNOTE")`            | `launchPowerNoteAsync`              | Launch a PowerNote.                                                        |
+| `DiscernObjectFactory("POWERORDERS")`          | &mdash;                             | Interact with the PowerOrders MOEW dialog from within an MPage.            |
+|                                                | &rdsh; `submitPowerOrdersAsync`     | Submit PowerPlan orders.                                                   |
+| `DiscernObjectFactory("PREGNANCY")`            | (planned)                           | Launch dialogs used for managing an active pregnancy                       |
+| `DiscernObjectFactory("PVCONTXTMPAGE")`        | `getValidEncountersAsync`           | Gets an array valid encounter ID's for a given patient.                    |
+| `DiscernObjectFactory("PVFRAMEWORKLINK")`      | (will review)                       | Communicate infomration ot the Win32 components of PowerChart.             |
+| `DiscernObjectFactory("PVPATIENTFOCUS")`       | (planned)                           | Set and clear a patient's focus within the Powerchart framework.           |
+| `DiscernObjectFactory("PVPATIENTSEARCHMPAGE")` | (planned)                           | Launch the patient search dialogue.                                        |
+| `DiscernObjectFactory("PVVIEWERMPAGE")`        | (planned)                           | Launch various result viewers for docs, reminders, and more.               |
+| `DiscernObjectFactory("TASKDOC")`              | (planned)                           | Launch the task documentation dialog or to launch the print labels dialog. |
+| `MESSAGING`                                    | (planned)                           | Register, unregister, send, and receive messages between MPages.           |
+| `MPAGE_EVENT("ALLERGY",...)`                   | (planned)                           | Allergy conversation will be launched.                                     |
+| `MPAGE_EVENT("CLINICALNOTE",...)`              | `launchClinicalNoteAsync`           | Launch a clinical note.                                                    |
+| `MPAGE_EVENT("POWERFORM",...)`                 | (will review)                       | PowerForm conversation will be launched.                                   |
+| `MPAGE_EVENT("POWERNOTE",...)`                 | `launchClinicalNoteAsync`           | PowerNote conversation will be launched.                                   |
+| `MPAGE_EVENT("ORDERS",...)`                    | `submitOrdersAsync`                 | Submits one or more orders to MOEW.                                        |
+| `MPAGES_SVC_EVENT`                             | (planned)                           | Launch the Discern MPages Web Service.                                     |
+| `MPAGES_OVERRIDE_REFRESH`                      | (planned)                           | Change the behavior of the MPage when a refresh event is received.         |
+| `MPAGES_OVERRIDE_PRINT`                        | (planned)                           | Change the behavior of the MPage when a print event is received.           |
+| _Patient List Navigation_                      | (no support planned)                | &mdash;                                                                    |
+| &rdsh;`PCEdgeActivatePatArrows`                | (no support planned)                | Activates the pateint navigation buttons.                                  |
+| &rdsh;`PCEdgePatNavSetCallback`                | (no support planned)                | Set a handler callback func for when navigation arrows are pressed.        |
+| `PCUPDATEREFRESHTIME`                          | (no support planned)                | Update the refresh button to show how long ago the data was updated.       |
+| `XMLCclRequest`                                | `makeCclRequestAsync`               | Makes an AJAX call to a CCL end-point.                                     |
 
 ```
-6204|3623|{REPEAT|123456}{REPEAT|654321}{REPEAT|987654}|24|{2|127}|16
-```
-
-Read the above string to say:
-
-- For patient `6204`,
-- In encounter `3623`,
-- We will copy the following list orders by their `orderId`:
-  - 123456
-  - 654321
-  - 987654
-- With **PowerPlans** enabled,
-- Customizing the **Order List Profile** with **PowerOrder** functionality
-- Defaulting to the **Order Profile** view.
-
-**Placing two new orders:**
 
 ```
-"6204|3623|{ORDER|123456|0|0|[961514]|1}{ORDER|654321|0|0|[1029704|1029801|961514]|1}|24|{2|127}|16|1"
-```
-
-Read the above string to say:
-
-- For patient `6204`,
-- In encounter `3623`,
-- We will place new orders for the following list orders by their `orderId`:
-  - 123456
-    - Having a single `nomenclatureId` of `961514` (e.g. a single diagnosis)
-  - 654321
-    - Having multiple `nomenclatureId`'s of `1029704`, `1029801`, and `961514` (e.g multiple diagnoses)
-- With **PowerPlans** enabled,
-- Customizing the **Order List Profile** with **PowerOrder** functionality
-- Defaulting to the **Order Profile** view.
-- Placing orders **silently** (no confirmation dialog)
-
-When passed as the second argument to the `MPAGES_EVENT` function (first argument is the string `"ORDERS"`), this event string will instruct the Cerner Millennium application to silently place two orders, one with multiple `nomenclatureId`s and one with a single `nomenclatureId`, into the patient's order list.
-
-Example raw usage of the `MPAGES_EVENT` function with a manually constructed string:
-
-```html
-<a
-  href='javascript:MPAGES_EVENT("ORDERS","8316243|12575702|{ORDER|0|0|0|0|0}|0|{2|127}{3|127}|8")'
-  >Add a new order</a
->
-```
-
-### Breakdown of the `MPAGE_EVENT` string for the `ORDER` type
-
-An `MPAGE_EVENT` string takes the form:
-
-```
-personId|encounterId|orderList|customizeFlags|tabList|defaultDisplay|silentSignFlag
-```
-
-Where `orderList` is a series of braces-contained, pipe-delimited strings that takes the form:
-
-```
-{orderAction|orderId|synonymId|orderOrigination|orderSentenceId|nomenclatureId|signTimeInteractionFlag}
-```
-
-or where there are multiple `nomenclatureId`'s, will take the form:
-
-```
-{orderAction|orderId|synonymId|orderOrigination|orderSentenceId|[nomenclatureId1|nomenclatureId2|...|nomenclatureIdN]|signTimeInteractionFlag}
-```
-
-Where `tabList` is a single brace-contained, pip-delimited string that takes the form:
-
-```
-{tab|tabDisplayFlags}
-```
-
-### Definitions of `MPAGES_EVENT` variables for the `ORDER` type
-
-- `personId`: The `person_id` of the patient whose Modal Order Entry Window (MOEW) is to be displayed.
-- `encounterId`: The `encntr_id` of the patient whose MOEW is to be displayed.
-- `orderList`: The list of order actions and properties that define the data that is to be loaded into the MOEW.
-  - A set that must be enclosed by curly brackets `{` and `}`.
-  - If you want only to launch into the MOEW and not to add any new orders or perform any other order actions, an empty orderAction / orderProperties set of `{ORDER|0|0|0|0|0}` can be used.
-- `orderAction`: The type of action to be performed on an order.
-  - Must follow the `{"ORDER"|synonymId|orderOrigination|orderSentenceId|nomenclatureId|signTimeInteractionFlag}` signature.
-    - `"ORDER"` The prototype for placing a new order.
-  - Must follow the `{<ORDER_ACTION_TYPE>|orderId}` signature.
-    - `"ACTIVATE"` - The prototype for activating an existing future order.
-    - `"CANCEL DC"` The prototype for canceling / discontinuing an existing order.
-    - `"CANCEL REORD"` The prototype for canceling and reordering an existing order.
-    - `"CLEAR"` The prototype for clearing the future actions of an existing order.
-    - `"CONVERT_INPAT"` The prototype for converting a historical or prescription order into an inpatient order.
-    - `"CONVERT_RX"` The prototype for converting an existing non-prescription order to a prescription order.
-    - `"MODIFY"` The prototype for modifying an existing order.
-    - `"RENEW"` The prototype for renewing an existing non-prescription order.
-    - `"RENEW_RX"` The prototype for renewing an existing prescription order.
-    - `"REPEAT"` The prototype for copying an existing order.
-    - `"RESUME"` The prototype for resuming an existing suspended order.
-    - `"SUSPEND"` The prototype for suspending an existing order.
-  - Child Paramters:
-    - `orderId`: The `order_id` associated with an existing order.
-    - `synonymId`: The `synonym_id` to be associated with the new order. This can be thought of the identifier for a given order. E.g. _atorvastatin_.
-    - `orderOrigination`: The type of order to be associated with the new order. A value of represents a normal order.
-      - `1`: Prescription order.
-      - `5`: satellite order
-    - `orderSenteceId`: The optional `order_sentence_id` to be associated with the new order. This can be thought of as the value that specifies which variant of an order is placed. E.g. for _atovastatin_ you will likely have multiple order sentences to support dosing variants like _10 mg once daily_ vs _5_ mg once daily\_.
-    - `nomenclatureId`: The optional `nomenclature_id` to be associated with the new order. This is generally a value that will be linked to an ICD code or SNOMED code. Thus the need to support multiple `nomenclatureId`'s for any given order.
-    - `signTimeInterationFlag`: A Boolean flag to determine if interaction checking should only be performed at sign-time or not.
-- `customizeFlags`: A set of flags that can be used to define the style of the MOEW.
-  - `0`: no PowerPlans.
-  - `24`: enable PowerPlans.
-- `tabList`: The customization data for the different tab(s) of the MOEW.
-  - A set that must be enclosed by the `{` and `}` braces.
-  - Parameters within the sets are pipe-delimited.
-  - Child Parameters
-    - `tab`: The tab that is to be modified.
-      - `2`: customizations to the Order List profile.
-      - `3`: customizations to the Medication List profile.
-    - `tabDisplayFlags`: A set of flags that can be used to define the style of the tab being altered by 'tab'.
-      - `0`: no PowerOrders functionality.
-      - `127` For full PowerOrders functionality.
-- `defaultDisplay`: The view to display by default when launching into the MOEW.
-  - `8`: default to the order search.
-  - `16`: default to the order profile.
-  - `32`: default to the orders for signature.
-- `silentSignFlag`: A Boolean flag used to determine if the MOEW should sign orders silently. When this flag is set, and the required details on each new order are pre-populated, it causes the orders to be signed automatically without displaying the MOEW. Orders are signed automatically when existing orders are not already on the scratchpad and no other orderActions are present.
-  - `0`: do not sign orders silently.
-  - `1`: sign orders silently.
