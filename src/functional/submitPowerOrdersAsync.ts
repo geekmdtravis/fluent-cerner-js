@@ -7,8 +7,8 @@ import { destroyMOEWAsync } from './utils/destroyMOEWAsync';
 import { displayMOEWAsync } from './utils/displayMOEWAsync';
 import {
   SubmitPowerOrdersStatus,
-  getXMLOrdersMOEWAsync,
-} from './utils/getXMLOrdersMOEWAsync';
+  getOrdersPlacedAsync,
+} from './utils/getOrdersPlacedAsync';
 import { signOrdersAsync } from './utils/signOrdersAsync';
 
 /**
@@ -303,7 +303,7 @@ export const submitPowerOrdersAsync = async (
     }
 
     //Obtain the XML return information
-    const getXML = await getXMLOrdersMOEWAsync(dcof, m_hMOEW);
+    const getXML = await getOrdersPlacedAsync(dcof, m_hMOEW);
 
     //If not in PowerChart, state so and return
     if (getXML.inPowerChart === false) {

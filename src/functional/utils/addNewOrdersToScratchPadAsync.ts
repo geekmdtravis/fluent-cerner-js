@@ -8,17 +8,23 @@ import { StandaloneOrder } from '../submitPowerOrdersAsync';
  * @param {number} moewHandle - the handle to the MOEW
  * @param {Array<StandaloneOrder>} standaloneOrders -  An array of objects containg order synonym Ids, order origination flags and, optionally, sentence Ids, for standalone orders to be placed
  * @param {boolean} interactionChecking - A boolean value indicating whether or not order interaction checking should be performed (strongly recommended to be set to true)
- * @returns a `Promise` which resolves to a PowerChartReturn and string, indicating the result of whether or not standalone orders were successfully added
- * @throws `Error` if an unexpected error occurs or if the array provided is empty
+ * @resolves `PowerChartReturn & { result: AddNewOrdersToScratchpadResult }`
+ * @throws `Error` if the array provided is empty
  */
 export async function addNewOrdersToScratchpadAsync(
   dcof: DiscernObjectFactoryReturn,
   moewHandle: number,
   standaloneOrders: Array<StandaloneOrder>,
   interactionChecking: boolean
-): Promise<AddNewOrdersToScratchpadReturn> {
+): Promise<
+  PowerChartReturn & {
+    result: AddNewOrdersToScratchpadResult;
+  }
+> {
   //Prepare the default return data
-  let retData: AddNewOrdersToScratchpadReturn = {
+  let retData: PowerChartReturn & {
+    result: AddNewOrdersToScratchpadResult;
+  } = {
     inPowerChart: true,
     result: 'successfully added',
   };
@@ -88,10 +94,6 @@ export async function addNewOrdersToScratchpadAsync(
   // Return the retData object when complete
   return retData;
 }
-
-export type AddNewOrdersToScratchpadReturn = PowerChartReturn & {
-  result: AddNewOrdersToScratchpadResult;
-};
 
 export type AddNewOrdersToScratchpadResult =
   | 'successfully added'

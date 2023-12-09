@@ -1,6 +1,6 @@
 import { destroyMOEWAsync } from './destroyMOEWAsync';
 
-describe('destroyMOEWAsync()', () => {
+describe('destroyMOEWAsync', () => {
   it('runs outside of powerchart', async () => {
     try {
       await destroyMOEWAsync({} as DiscernObjectFactoryReturn, 0);

@@ -3,14 +3,16 @@ import { PowerChartReturn } from '..';
 import { outsideOfPowerChartError } from '.';
 
 /**
- * Retrieves the XML representation of the order information signed during the previous MOEW invocation.
+ * Retrieves the orders placed during the previous MOEW invocation.
  * @param {DiscernObjectFactoryReturn} dcof  - the reference to the DisernObjectFactory object
  * @param {number} moewHandle - the handle to the MOEW.
- * @returns a `Promise` which resolves to a PowerChartReturn and an array of orders placed, parsed XML, unparsed/raw XML, and an order attempt status string.
- * @throws `Error` if an unexpected error occurs.
+ * @resolves `DiscernObjectFactoryReturn` which is a complex object any any given user should
+ * take the opportunity to review it before using it. Of note, the most useful properties will be
+ * `inPowerChart`, which is a boolean indicating whether the user is currently in PowerChart, and
+ * `ordersPlaced`, and `status`.
  */
 
-export async function getXMLOrdersMOEWAsync(
+export async function getOrdersPlacedAsync(
   dcof: DiscernObjectFactoryReturn,
   moewHandle: number
 ): Promise<GetXMLReturn> {

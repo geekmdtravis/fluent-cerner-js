@@ -9,8 +9,7 @@ import { outsideOfPowerChartError } from '.';
  * @param {number} dwCustomizeFlag  - the bitmask that determines available MOEW options
  * @param {number} dwTabFlag  - the bitmask identifying the list being customized
  * @param {number} dwTabDisplayOptionsFlag  - the bitmask specificying which components display on the MOEW
- * @returns a `Promise` which resolves to a PowerChartReturn and an integer representing a handle to the MOEW instance. 0 indicates an invalid/unsuccessful call, which is logged as null.
- * @throws `Error` if an unexpected error occurs
+ * @resolves `PowerChartReturn & { moewHandle: number | null }`
  */
 
 export async function createMOEWAsync(
@@ -20,8 +19,14 @@ export async function createMOEWAsync(
   dwCustomizeFlag: number,
   dwTabFlag: number,
   dwTabDisplayOptionsFlag: number
-): Promise<CreateMOEWReturn> {
-  let retData: CreateMOEWReturn = {
+): Promise<
+  PowerChartReturn & {
+    moewHandle: number | null;
+  }
+> {
+  let retData: PowerChartReturn & {
+    moewHandle: number | null;
+  } = {
     inPowerChart: true,
     moewHandle: null,
   };
@@ -52,7 +57,3 @@ export async function createMOEWAsync(
   // Return the retData object when complete
   return retData;
 }
-
-export type CreateMOEWReturn = PowerChartReturn & {
-  moewHandle: number | null;
-};

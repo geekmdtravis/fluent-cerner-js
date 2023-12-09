@@ -1,6 +1,6 @@
 import { calculateMOEWBitmask } from './calculateMOEWBitmask';
 
-describe('calculateMOEWBitmask()', () => {
+describe('calculateMOEWBitmask', () => {
   it('accepts all parameters and yields expected flag values', async () => {
     const result = calculateMOEWBitmask('orders tab', [
       'sign later',

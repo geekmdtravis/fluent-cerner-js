@@ -1,6 +1,6 @@
 import { signOrdersAsync } from './signOrdersAsync';
 
-describe('signOrdersAsync()', () => {
+describe('signOrdersAsync', () => {
   it('runs outside of powerchart', async () => {
     try {
       await signOrdersAsync({} as DiscernObjectFactoryReturn, 1337);

@@ -6,18 +6,25 @@ import { PowerPlanOrder } from '../submitPowerOrdersAsync';
  * Attempts to add a PowerPlan and creates PowerPlan objects from the pathway catalog Ids. CreateMOEW() must be called first.
  * @param {DiscernObjectFactoryReturn} dcof  - the reference to the DisernObjectFactory object
  * @param {number} moewHandle - the handle to the MOEW.
- * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog Ids and, optionally, personalized plan Ids and diagnosis code Ids, for PowerPlan orders to be placed.
- * @returns a `Promise` which resolves to a PowerChartReturn and a boolean, indicating whether or not PowerPlan orders were successfully added
- * @throws `Error` if an unexpected error occurs or if no orders are provided
+ * @param {Array<PowerPlanOrder>} powerPlanOrders - An array of objects containg catalog Ids and, optionally,
+ * personalized plan Ids and diagnosis code Ids, for PowerPlan orders to be placed.
+ * @resolves `PowerChartReturn & { powerPlansAdded: boolean }`
+ * @throws `Error` if no orders are provided
  */
 
 export async function addPowerPlanWithDetailsAsync(
   dcof: DiscernObjectFactoryReturn,
   moewHandle: number,
   powerPlanOrders: Array<PowerPlanOrder>
-): Promise<AddPowerPlanWithDetailsReturn> {
+): Promise<
+  PowerChartReturn & {
+    powerPlansAdded: boolean;
+  }
+> {
   //Prepare the default return data
-  let retData: AddPowerPlanWithDetailsReturn = {
+  let retData: PowerChartReturn & {
+    powerPlansAdded: boolean;
+  } = {
     inPowerChart: true,
     powerPlansAdded: true,
   };
@@ -77,7 +84,3 @@ export async function addPowerPlanWithDetailsAsync(
   // Return the retData object when complete
   return retData;
 }
-
-export type AddPowerPlanWithDetailsReturn = PowerChartReturn & {
-  powerPlansAdded: boolean;
-};

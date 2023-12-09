@@ -1,6 +1,6 @@
 import { createMOEWAsync } from './createMOEWAsync';
 
-describe('createMOEWAsync()', () => {
+describe('createMOEWAsync', () => {
   afterEach(() => {
     Object.defineProperty(window, 'external', {
       writable: true,

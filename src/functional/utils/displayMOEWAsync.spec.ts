@@ -1,6 +1,6 @@
 import { displayMOEWAsync } from './displayMOEWAsync';
 
-describe('displayMOEWAsync()', () => {
+describe('displayMOEWAsync', () => {
   it('runs outside of powerchart', async () => {
     try {
       await displayMOEWAsync({} as DiscernObjectFactoryReturn, 0);

@@ -1,13 +1,5 @@
 /**
- * A string conforming to the MPAGES_EVENT  specification. This is the order
- * subset of the MPAGES_EVENT.  use the `orderStringIsValid` function to verify that a string
- * conforms to this specification.
- * @example `{ORDER|1|0|0|0|0}`
- */
-export type OrderSting = string;
-
-/**
- * A type for the options that can be passed to the makeMpageOrder function.
+ * A type for the options that can be passed to the `makeMpageOrder` function.
  * @action `launch moew` - Launches the MOEW.
  * @action `activate existing` - Activates an existing order.
  * @action `cancel-discontinue` - Cancels and discontinues an existing order.\n
@@ -154,15 +146,14 @@ export type OrderAction =
   | 'suspend';
 
 /**
- * A helper function consumed by submotOrdersAsync function.  Creates a new pipe-delimited
- * order string consumed by an MPAGES_EVENT call with the ORDERS directive.
+ * A helper function consumed by `submitOrdersAsync` function.  Creates a new pipe-delimited
+ * order string consumed by an `MPAGES_EVENT` call with the `ORDERS` directive.
  * @since 0.10.0-alpha.0
  * @param {OrderAction} action - The action to be performed on the order.
  * @param {number} id - The id of the order. This is the synonym id for new orders and the order id for existing orders.
  * @param {OrderStrOpts} opts - (optional) The options for the order.
  * @returns {string} - A pipe-delimited string which can be integrated into an MPage Event for one or more orders.
  * @throws {Error} - If the action is not a valid order action.
- *
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export const createOrderString = (

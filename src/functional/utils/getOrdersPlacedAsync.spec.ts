@@ -1,9 +1,9 @@
-import { getXMLOrdersMOEWAsync } from './getXMLOrdersMOEWAsync';
+import { getOrdersPlacedAsync } from './getOrdersPlacedAsync';
 
-describe('getXMLOrdersMOEWAsync()', () => {
+describe('getOrdersPlacedAsync', () => {
   it('runs outside of powerchart', async () => {
     try {
-      await getXMLOrdersMOEWAsync({} as DiscernObjectFactoryReturn, 1337);
+      await getOrdersPlacedAsync({} as DiscernObjectFactoryReturn, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(TypeError);
     }
@@ -19,7 +19,7 @@ describe('getXMLOrdersMOEWAsync()', () => {
       },
     });
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
-    const result = await getXMLOrdersMOEWAsync(dcof, 1337);
+    const result = await getOrdersPlacedAsync(dcof, 1337);
     expect(result.rawXML).toEqual('');
   });
 
@@ -36,7 +36,7 @@ describe('getXMLOrdersMOEWAsync()', () => {
     });
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
     try {
-      await getXMLOrdersMOEWAsync(dcof, 1337);
+      await getOrdersPlacedAsync(dcof, 1337);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
       expect(e as Error).toHaveProperty('message', 'This is a test error.');
@@ -53,7 +53,7 @@ describe('getXMLOrdersMOEWAsync()', () => {
       },
     });
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
-    const result = await getXMLOrdersMOEWAsync(dcof, 1337);
+    const result = await getOrdersPlacedAsync(dcof, 1337);
     expect(result.status).toEqual('xml parse error');
   });
 
@@ -67,7 +67,7 @@ describe('getXMLOrdersMOEWAsync()', () => {
       },
     });
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
-    const result = await getXMLOrdersMOEWAsync(dcof, 1337);
+    const result = await getOrdersPlacedAsync(dcof, 1337);
     expect(result.status).toEqual('invalid data returned');
   });
 
@@ -99,7 +99,7 @@ describe('getXMLOrdersMOEWAsync()', () => {
       },
     });
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');
-    const result = await getXMLOrdersMOEWAsync(dcof, 1337);
+    const result = await getOrdersPlacedAsync(dcof, 1337);
     expect(result.ordersPlaced).toEqual([
       {
         name: 'tamsulosin',
