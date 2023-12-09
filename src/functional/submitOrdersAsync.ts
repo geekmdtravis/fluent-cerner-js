@@ -76,13 +76,7 @@ export type Order = {
  * `` function to simplify building these pipe-delimited order strings.
  * @param opts - (optional) User defined options for the order submission event. The options allow for
  * changing the target tab, the view to be launched, and whether or not the orders should be signed silently.
- * @returns an object with several high value properties. The standard MPageEventReturn properties are present
- * with order `eventString` and a boolean flag set to notify the user if the attempt was made outside of
- * PowerChart, `inPowerChart`. In addition, the `status` of the order attempt is made available
- * (success | cancelled | failed | invalid data returned | xml parse error | dry run), the full JavaScript
- * Object representing the XML response string is available as `response`, and an array of the orders placed
- * as `ordersPlaced` with order `name`, `oid`, and `display` available for each. Note that the `oid` property
- * represents the actual order id for the newly placed order.
+ * @resolves `SubmitOrderAsyncReturn`
  * @throws if an unexpected error occurs that could not be handled.
  *
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
