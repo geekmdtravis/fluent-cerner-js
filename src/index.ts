@@ -1,52 +1,78 @@
+import { manageAppointmentAsync } from './manageAppointmentAsync';
+import { getValidEncountersAsync } from './getValidEncountersAsync';
 import {
-  addAddendumToDocumentAsync,
-  CclCallParam,
-  CclRequestResponse,
+  launchClinicalNoteAsync,
   ClinicalNoteOpts,
-  createNewDocumentAsync,
-  getValidEncountersAsync,
-  launchClinicalNoteAsync,
-  launchPatientEducationAsync,
-  launchPowerFormAsync,
-  launchPowerNoteAsync,
+} from './launchClinicalNoteAsync';
+import { launchPatientEducationAsync } from './launchPatientEducationAsync';
+import { launchPowerFormAsync } from './launchPowerFormAsync';
+import { launchPowerNoteAsync } from './launchPowerNoteAsync';
+import {
   makeCclRequestAsync,
-  manageAppointmentAsync,
-  openOrganizerTabAsync,
-  openPatientTabAsync,
-  OrderAction,
-  OrderStrOpts,
-  PowerFormOpts,
-  SubmitOrderAsyncOpts,
-  submitOrdersAsync,
-  submitPowerOrdersAsync,
-  XmlCclStatus,
-} from './functional';
+  CclCallParam,
+  XmlCclResult,
+  CclRequestResponse,
+} from './makeCclRequestAsync';
+import { openPatientTabAsync } from './openPatientTabAsync';
+import { openOrganizerTabAsync } from './openOrganizerTabAsync';
+import { OrderAction, OrderStrOpts } from './utils/createOrderString';
+import { submitOrdersAsync } from './submitOrdersAsync';
 
-export {
-  addAddendumToDocumentAsync,
-  createNewDocumentAsync,
-  getValidEncountersAsync,
-  launchClinicalNoteAsync,
-  launchPatientEducationAsync,
-  launchPowerFormAsync,
-  launchPowerNoteAsync,
-  makeCclRequestAsync,
-  manageAppointmentAsync,
-  openOrganizerTabAsync,
-  openPatientTabAsync,
-  submitOrdersAsync,
-  submitPowerOrdersAsync,
+import { SubmitOrderAsyncOpts } from './submitOrdersAsync';
+
+import { submitPowerOrdersAsync } from './submitPowerOrdersAsync';
+import { createNewDocumentAsync } from './createNewDocumentAsync';
+import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
+
+export type PowerChartReturn = {
+  inPowerChart: boolean;
 };
 
+/**
+ * A type which represents the object to be returned from the launchClinicalNote() function.
+ * @param {string} eventString - The string version of the MPageEvent
+ * @param {boolean} inPowerChart - Returns `true` if being run from inside of PowerChart and returns `false` otherwise.
+ **/
+export type MPageEventReturn = PowerChartReturn & {
+  eventString: string;
+};
+
+/**
+ * @param {string} eventString - string being provided as an argument to the Discern
+ * native function call.
+ * @param {boolean} inPowerChart - whether or not the function is being run from inside of
+ * PowerChart.
+ * @param {boolean} badInput - whether or not the input provided to the function is valid as
+ * reported by the Discern engine.
+ */
+export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
+
+// Export functions
+export {
+  addAddendumToDocumentAsync,
+  createNewDocumentAsync,
+  getValidEncountersAsync,
+  launchClinicalNoteAsync,
+  launchPatientEducationAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  manageAppointmentAsync,
+  openOrganizerTabAsync,
+  openPatientTabAsync,
+  submitPowerOrdersAsync,
+  submitOrdersAsync,
+};
+
+// Export types; cannot use the `export type` syntax.
 export {
   CclCallParam,
   CclRequestResponse,
   ClinicalNoteOpts,
   OrderAction,
   OrderStrOpts,
-  PowerFormOpts,
-  SubmitOrderAsyncOpts as SubmitOrderOpts,
-  XmlCclStatus,
+  SubmitOrderAsyncOpts,
+  XmlCclResult as XmlCclStatus,
 };
 
 declare global {
