@@ -1,6 +1,6 @@
 # fluent-cerner-js
 
-A modern API for interacting with the Cerner Millennium application. Modern Typescript/Javascript wrappers have been created to enhance the productivity of software engineers who are tasked with interacting with the Cerner Millennium application. This software is in it's alpha stage and should be used with caution. Additionally, it doesn't cover a full set of the Cerner Millennium application's functionality. It is a work in progress.
+A modern API for interacting with MPages in the Cerner Millennium application which have access to the Discern Native functions and COM objects. Modern `Typescript` wrapper functions were created without thoughtfullness to enhance the productivity of software engineers tasked with building out MPage solutions. This software is in it's alpha stage and should be used with caution. Additionally, it doesn't cover a full set of the Cerner Millennium application's functionality. It is a work in progress.
 
 | Environment | CI                                                                                                                             | Publish                                                                                                   |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
@@ -9,12 +9,53 @@ A modern API for interacting with the Cerner Millennium application. Modern Type
 
 ## Contributors
 
+If you'd like to become a contributor, please contact the primary author.
+
 - [Travis Nesbit, MD (geekmdtravis)](https://github.com/geekmdtravis/) - Primary Author
 - [Daniel "Danny" Lara, MD (dl2github)](https://github.com/dl2github)
 
 ## API In Action
 
-Please see `demo.ts` to see the API in action. To _run_ the demo, you will need to use `ts-node`.
+### Place Orders
+
+Placing orders through the `MPAGES_EVENT` fuction with the `ORDERS` directive, simplified. Just provided the patient ID, encounter ID, and an array of orders.
+
+```typescript
+const orders: Order[] = [
+  { action: 'new order', id: 32461245 },
+  { action: 'new order', id: 12341243 },
+];
+const { eventString } = await submitOrdersAsync(91294, 123424, orders);
+```
+
+### Make a CCL Query
+
+Make a requestion for a JSON object from a CCL end-point. Just pass the CCL program name (often referenced as the URL) and the parameters as an array of either strings or numbers.
+
+```typescript
+const {
+  data,
+  status,
+  result,
+} = await makeCclRequestAsync('1_GET_VITALS_DT_RNG', [
+  391414,
+  1234124,
+  '2022-01-01',
+  '2022-12-31',
+]);
+```
+
+### Open a Chart Level Tab
+
+Open a tab at the chart level. Just provide the patient ID, encounter ID, and the tab name.
+
+```typescript
+await openPatientTabAsync(12341, 197777, 'Orders');
+```
+
+### More
+
+There are many more funcionalties listed below.
 
 ## Utility Map
 
@@ -64,3 +105,7 @@ Please see `demo.ts` to see the API in action. To _run_ the demo, you will need 
 | &rdsh;`PCEdgePatNavSetCallback`                | (no support planned)                | Set a handler callback func for when navigation arrows are pressed.        |
 | `PCUPDATEREFRESHTIME`                          | (no support planned)                | Update the refresh button to show how long ago the data was updated.       |
 | `XMLCclRequest`                                | `makeCclRequestAsync`               | Makes an AJAX call to a CCL end-point.                                     |
+
+```
+
+```
