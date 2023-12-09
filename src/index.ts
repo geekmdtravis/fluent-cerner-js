@@ -1,28 +1,87 @@
-import { manageAppointmentAsync } from './manageAppointmentAsync';
+import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
+import { createNewDocumentAsync } from './createNewDocumentAsync';
 import { getValidEncountersAsync } from './getValidEncountersAsync';
 import {
-  launchClinicalNoteAsync,
   ClinicalNoteOpts,
+  InheretanceProps,
+  launchClinicalNoteAsync,
+  ViewOption,
 } from './launchClinicalNoteAsync';
+import { launchDischargeProcessAsync } from './launchDischargeProcessAsync';
 import { launchPatientEducationAsync } from './launchPatientEducationAsync';
 import { launchPowerFormAsync } from './launchPowerFormAsync';
 import { launchPowerNoteAsync } from './launchPowerNoteAsync';
 import {
-  makeCclRequestAsync,
   CclCallParam,
-  XmlCclResult,
   CclRequestResponse,
+  makeCclRequestAsync,
+  XmlCclResult,
+  XmlCclReadyState,
 } from './makeCclRequestAsync';
-import { openPatientTabAsync } from './openPatientTabAsync';
+import {
+  manageAppointmentAsync,
+  AppointmentAction,
+  AppointmentReturn,
+} from './manageAppointmentAsync';
+import {
+  OpenApplicationArgument,
+  openApplicationAsync,
+  OpenApplicationMode,
+} from './openApplicationAsync';
 import { openOrganizerTabAsync } from './openOrganizerTabAsync';
-import { OrderAction, OrderStrOpts } from './utils/createOrderString';
-import { submitOrdersAsync } from './submitOrdersAsync';
-
-import { SubmitOrderAsyncOpts } from './submitOrdersAsync';
-
+import { openPatientTabAsync } from './openPatientTabAsync';
+import { openWebsiteByUrlAsync } from './openWebsiteByUrlAsync';
+import {
+  submitOrdersAsync,
+  SubmitOrderAsyncOpts,
+  SubmitOrderAsyncReturn,
+  SubmitOrdersAsyncStatus,
+  OrderAction,
+  OrderStrOpts,
+  Order,
+} from './submitOrdersAsync';
 import { submitPowerOrdersAsync } from './submitPowerOrdersAsync';
-import { createNewDocumentAsync } from './createNewDocumentAsync';
-import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
+
+// Export functions
+export {
+  addAddendumToDocumentAsync,
+  createNewDocumentAsync,
+  getValidEncountersAsync,
+  launchClinicalNoteAsync,
+  launchDischargeProcessAsync,
+  launchPatientEducationAsync,
+  launchPowerFormAsync,
+  launchPowerNoteAsync,
+  makeCclRequestAsync,
+  manageAppointmentAsync,
+  openApplicationAsync,
+  openOrganizerTabAsync,
+  openPatientTabAsync,
+  openWebsiteByUrlAsync,
+  submitOrdersAsync,
+  submitPowerOrdersAsync,
+};
+
+// Export types; cannot use the `export type` syntax.
+export {
+  AppointmentAction,
+  AppointmentReturn,
+  CclCallParam,
+  CclRequestResponse,
+  ClinicalNoteOpts,
+  InheretanceProps,
+  OpenApplicationArgument,
+  OpenApplicationMode,
+  Order,
+  OrderAction,
+  OrderStrOpts,
+  SubmitOrderAsyncOpts,
+  SubmitOrderAsyncReturn,
+  SubmitOrdersAsyncStatus,
+  ViewOption,
+  XmlCclReadyState,
+  XmlCclResult,
+};
 
 export type PowerChartReturn = {
   inPowerChart: boolean;
@@ -46,34 +105,6 @@ export type MPageEventReturn = PowerChartReturn & {
  * reported by the Discern engine.
  */
 export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
-
-// Export functions
-export {
-  addAddendumToDocumentAsync,
-  createNewDocumentAsync,
-  getValidEncountersAsync,
-  launchClinicalNoteAsync,
-  launchPatientEducationAsync,
-  launchPowerFormAsync,
-  launchPowerNoteAsync,
-  makeCclRequestAsync,
-  manageAppointmentAsync,
-  openOrganizerTabAsync,
-  openPatientTabAsync,
-  submitPowerOrdersAsync,
-  submitOrdersAsync,
-};
-
-// Export types; cannot use the `export type` syntax.
-export {
-  CclCallParam,
-  CclRequestResponse,
-  ClinicalNoteOpts,
-  OrderAction,
-  OrderStrOpts,
-  SubmitOrderAsyncOpts,
-  XmlCclResult as XmlCclStatus,
-};
 
 declare global {
   /**

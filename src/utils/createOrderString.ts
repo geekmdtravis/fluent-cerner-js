@@ -1,3 +1,5 @@
+import { OrderAction, OrderStrOpts } from '../submitOrdersAsync';
+
 /**
  * A type for the options that can be passed to the `makeMpageOrder` function.
  * @action `launch moew` - Launches the MOEW.
@@ -32,21 +34,6 @@ type CompleteOrderAction =
   | 'copy existing'
   | 'resume'
   | 'suspend';
-
-/**
- * @param {Array<number>} nomenclatureIds - (optional) An array of nomenclature ids for the order.
- * @param {number} orderSentenceId - (optional) The order sentence id value for the order to activate.
- * @param {number} orderId - (optional) The order id value for the order to activate.
- * @param {NewOrderOpts}newOrderOpts - (optional) The options for the new order.
- *
- * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
- */
-export type OrderStrOpts = {
-  nomenclatureIds?: Array<number>;
-  orderSentenceId?: number;
-  interactionCheck?: 'on sign' | 'default';
-  origination?: 'satellite' | 'prescription' | 'normal';
-};
 
 const _createOrderString = (
   action: CompleteOrderAction,
@@ -111,39 +98,6 @@ const originationMap = new Map()
   .set('normal', '0');
 
 const interactionMap = new Map().set('on sign', '1').set('default', '0');
-
-/**
- * A type for the options that can be passed to the makeMpageOrder function.
- * @action `activate existing` - Activates an existing order.
- * @action `cancel-discontinue` - Cancels and discontinues an existing order.\n
- * @action `cancel-reorder` - Cancels and reorders an existing order.
- * @action `clear actions` - Clear actions of a future existing order.
- * @action `convert inpatient` - Converts a prescription order into an inpatient order.
- * @action `convert prescription` - Converts an inpatient order into a prescription.
- * @action `modify` - Modifies an existing future order.
- * @action `new order` - Creates a new order.
- * @action `renew` - Renews an existing non-prescription order.
- * @action `renew prescription` - Renews an existing prescription order.
- * @action `copy existing` - Copy an existing order.
- * @action `resume` - Resumes an existing order.
- * @action `suspend` - Suspends an existing order.
- *
- * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
- */
-export type OrderAction =
-  | 'activate existing'
-  | 'cancel-discontinue'
-  | 'cancel-reorder'
-  | 'clear actions'
-  | 'convert inpatient'
-  | 'convert prescription'
-  | 'modify'
-  | 'new order'
-  | 'renew'
-  | 'renew prescription'
-  | 'copy existing'
-  | 'resume'
-  | 'suspend';
 
 /**
  * A helper function consumed by `submitOrdersAsync` function.  Creates a new pipe-delimited

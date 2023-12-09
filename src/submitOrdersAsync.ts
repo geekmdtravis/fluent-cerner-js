@@ -1,5 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
-import { MPageEventReturn, OrderAction, OrderStrOpts } from '.';
+import { MPageEventReturn } from '.';
 import {
   outsideOfPowerChartError,
   warnAttemptedOrdersOutsideOfPowerChart,
@@ -16,6 +16,54 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
   .set('power orders', { tab: 2, display: 127 })
   .set('medications', { tab: 3, display: 0 })
   .set('power medications', { tab: 3, display: 127 });
+
+/**
+ * @param {Array<number>} nomenclatureIds - (optional) An array of nomenclature ids for the order.
+ * @param {number} orderSentenceId - (optional) The order sentence id value for the order to activate.
+ * @param {number} orderId - (optional) The order id value for the order to activate.
+ * @param {NewOrderOpts}newOrderOpts - (optional) The options for the new order.
+ *
+ * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
+ */
+export type OrderStrOpts = {
+  nomenclatureIds?: Array<number>;
+  orderSentenceId?: number;
+  interactionCheck?: 'on sign' | 'default';
+  origination?: 'satellite' | 'prescription' | 'normal';
+};
+
+/**
+ * A type for the options that can be passed to the makeMpageOrder function.
+ * @action `activate existing` - Activates an existing order.
+ * @action `cancel-discontinue` - Cancels and discontinues an existing order.\n
+ * @action `cancel-reorder` - Cancels and reorders an existing order.
+ * @action `clear actions` - Clear actions of a future existing order.
+ * @action `convert inpatient` - Converts a prescription order into an inpatient order.
+ * @action `convert prescription` - Converts an inpatient order into a prescription.
+ * @action `modify` - Modifies an existing future order.
+ * @action `new order` - Creates a new order.
+ * @action `renew` - Renews an existing non-prescription order.
+ * @action `renew prescription` - Renews an existing prescription order.
+ * @action `copy existing` - Copy an existing order.
+ * @action `resume` - Resumes an existing order.
+ * @action `suspend` - Suspends an existing order.
+ *
+ * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
+ */
+export type OrderAction =
+  | 'activate existing'
+  | 'cancel-discontinue'
+  | 'cancel-reorder'
+  | 'clear actions'
+  | 'convert inpatient'
+  | 'convert prescription'
+  | 'modify'
+  | 'new order'
+  | 'renew'
+  | 'renew prescription'
+  | 'copy existing'
+  | 'resume'
+  | 'suspend';
 
 /**
  * @action `targetTab` - (optional) Sets the tab to be displayed, with and without power orders.
@@ -174,6 +222,7 @@ export const submitOrdersAsync = async (
   return retVal;
 };
 
+// TODO: investigate if we need to export this through the main index.ts file
 /**
  * When an MPAGES_EVENT:ORDER call is made asynchronously, it returns a
  * `Promise` of an XML string. This type is the parsed XML string. Several bits
