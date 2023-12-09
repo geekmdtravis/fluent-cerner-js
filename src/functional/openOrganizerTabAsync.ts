@@ -14,14 +14,7 @@ import {
  * If no match is found, then sub-tab names will be searched and
  * navigation made to the first sub-tab that matches
  * the `tab` string.  If no matches are found, no navigation will occur.
- * @returns {Promise<ApplinkReturn>} - A promise that will resolve to an object with
- * the following properties: `eventString`, `badInput`, and `inPowerChart`. The properties
- * `eventString` and `inPowerChart` are inhereted from `MPageEventReturn`. The property
- * `badInput` is a boolean that indicates whether the tab name given in the `tab` parameter
- * was invalid. Given the underlying Cerner Discern implementation, we cannot
- * determine which parameter was invalid.
- * @throws If an unexpected error occurs while attempting to open the tab.
- *
+ * @resolves an `ApplinkReturn`
  * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
 export async function openOrganizerTabAsync(

@@ -10,14 +10,10 @@ import { outsideOfPowerChartError } from './utils';
  * Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this note will be launched. Cerner context variable: VIS_EncntrId.
- * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
- * and `inPowerChart` values. Of note, we cannot provide additional information about the
- * success or failure of the invocation because this information is not provided by the
- * underlying Discern native function call's return, which awlays returns `null` no matter
- * the outcome of the call.
  * @param {number} targetId - (optional) For a new form, this is the formId (pulled from DCP_FORMS_REF_ID).
  * For a completed form, this is the activityId (pulled from DCP_FORMS_ACTIVITY_ID). This parameter is
  * required for all targets except "new form search".
+ * @resolves `MPageEventReturn`
  * @throws if there is a type mismatch between the provided option for `target` and `targetId`,
  * or if an unexpected error has occured.
  *

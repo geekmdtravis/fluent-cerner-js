@@ -89,7 +89,7 @@ export type CclRequestResponse<T> = PowerChartReturn & {
  * @param params {Array<CclCallParam|string|number>} - an array of parameters to pass to the CCL program.
  * @param excludeMine {boolean} - (optional) determines whether or not to include the "MINE" parameter as the
  * first parameter in the CCL request's argument list.
- * @returns a `Promise` of type `CclRequestResponse<T>`.
+ * @resolves `CclRequestResponse<T>`.
  * @documentation - [XMLCclRequest](https://wiki.cerner.com/display/MPAGES/MPages+JavaScript+Reference#MPagesJavaScriptReference-XMLCclRequest)
  */
 export async function makeCclRequestAsync<T>(

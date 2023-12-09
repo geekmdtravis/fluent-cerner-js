@@ -54,7 +54,7 @@ describe('openOrganizerTab', () => {
     expect(badInput).toBe(true);
   });
   test('throws an error when the error type is not one expected to be generated as an "out-of-powerchart" error.', async () => {
-    Object.defineProperty(window, 'APPLINK', {
+    Object.defineProperty(window.external, 'APPLINK', {
       writable: true,
       value: jest
         .fn()
@@ -63,14 +63,10 @@ describe('openOrganizerTab', () => {
           b: string
         ): Promise<Error> {
           console.debug(`a: ${a}, b: ${b}`);
-          return Promise.reject(new Error('unexpected error'));
+          throw new Error('unexpected error');
         }),
     });
 
-    try {
-      await openOrganizerTabAsync('Tab Name');
-    } catch (e) {
-      expect((e as Error).message).toBe('unexpected error');
-    }
+    await expect(openOrganizerTabAsync('Tab Name')).rejects.toThrow(Error);
   });
 });

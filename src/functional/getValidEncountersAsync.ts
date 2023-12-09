@@ -4,8 +4,8 @@ import { outsideOfPowerChartError } from './utils';
 /**
  * Get a list of valid encounter ID's for a given patient.
  * @param {number} personId  - the patient ID to get valid encounters for
- * @returns a `Promise<{PowerChartReturn & { encounterIds: Array<number> }}>`.
- * If there are no valid encounters, the `encounterIds` array will be empty.
+ * @resolves `PowerChartReturn & {encounterIds: Array<number>}`. If there
+ * are no valid encounters, the `encounterIds` array will be empty.
  */
 export async function getValidEncountersAsync(
   personId: number

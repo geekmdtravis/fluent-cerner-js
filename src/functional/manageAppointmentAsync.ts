@@ -27,7 +27,6 @@ export type AppointmentReturn = PowerChartReturn & {
  * - `inPowerChart` - `true` if the action was successful, `false` otherwise.
  * @throws a `RangeError` if the provided appointment ID is less than 1.
  * @throws an `Error` if the action is invalid.
- * @throws an `Error` if an unexpected error occurs.
  */
 export async function manageAppointmentAsync(
   action: AppointmentAction,

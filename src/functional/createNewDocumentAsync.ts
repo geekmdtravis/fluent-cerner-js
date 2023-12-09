@@ -10,9 +10,7 @@ import { outsideOfPowerChartError } from './utils';
  * @param encounterId {number} - the encounter ID to launch the document in.
  * @param id {number} - the ID of the reference template or workflow to use to create the document.
  * @param noteTypeCd {number} - (optional) the note type code to use to create the document.
- * @resolves {PowerChartReturn & { success: boolean }} - a `Promise` which resolves to an object
- * containing a boolean indicating whether the user is in PowerChart and a boolean indicating
- * whether the action was successful.
+ * @resolves `PowerChartReturn & { success: boolean }`
  * @throws {Error} - an error is thrown if the method provided as an argument is not supported.
  */
 export async function createNewDocumentAsync(

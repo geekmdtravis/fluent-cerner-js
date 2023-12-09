@@ -13,11 +13,7 @@ import { outsideOfPowerChartError } from './utils';
  * the eventId of the note to be opened.
  * corresponds to an encounter pathway.
  * @param {number} eventId - (exclusive option to CKI) An event_id for an existing PowerNote to load.
- * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
- * and `inPowerChart` values. Of note, we cannot provide additional information about the
- * success or failure of the invocation because this information is not provided by the
- * underlying Discern native function call's return, which awlays returns `null` no matter
- * the outcome of the call.
+ * @resolves `MPageEventReturn`
  * @throws if there is a type mismatch between the provided option for `target` and `targetId`,
  * or if an unexpected error has occured.
  *

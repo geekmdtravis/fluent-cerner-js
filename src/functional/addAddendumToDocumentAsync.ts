@@ -8,7 +8,7 @@ import { outsideOfPowerChartError } from './utils';
  * @param {number} patientId  - the patient ID to launch the document for
  * @param {number} encounterId - the encounter ID to launch the document in
  * @param {number} eventId  - the event ID of the document to modify.
- * @resolves a `Promise<{PowerChartReturn & { success: boolean }}>`.
+ * @resolves `PowerChartReturn & { success: boolean }`.
  */
 
 export async function addAddendumToDocumentAsync(

@@ -3,7 +3,7 @@ import { outsideOfPowerChartError } from './utils';
 
 /**
  * Launch Discharge Process dialog for a given patient and encounter.
- * @returns a `Promise<PowerChartReturn>`.
+ * @resolves `PowerChartReturn`
  */
 export async function launchDischargeProcessAsync(): Promise<PowerChartReturn> {
   const retData: PowerChartReturn = {

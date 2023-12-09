@@ -5,7 +5,7 @@ import {
   ClinicalNoteOpts,
 } from './launchClinicalNoteAsync';
 import { launchPatientEducationAsync } from './launchPatientEducationAsync';
-import { launchPowerFormAsync, PowerFormOpts } from './launchPowerFormAsync';
+import { launchPowerFormAsync } from './launchPowerFormAsync';
 import { launchPowerNoteAsync } from './launchPowerNoteAsync';
 import {
   makeCclRequestAsync,
@@ -37,6 +37,14 @@ export type MPageEventReturn = PowerChartReturn & {
   eventString: string;
 };
 
+/**
+ * @param {string} eventString - string being provided as an argument to the Discern
+ * native function call.
+ * @param {boolean} inPowerChart - whether or not the function is being run from inside of
+ * PowerChart.
+ * @param {boolean} badInput - whether or not the input provided to the function is valid as
+ * reported by the Discern engine.
+ */
 export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 // Export functions
@@ -63,7 +71,6 @@ export {
   ClinicalNoteOpts,
   OrderAction,
   OrderStrOpts,
-  PowerFormOpts,
   SubmitOrderAsyncOpts,
   XmlCclResult as XmlCclStatus,
 };

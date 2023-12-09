@@ -6,7 +6,7 @@ import { outsideOfPowerChartError } from './utils';
  * @param patientId {number} - the patient ID to get valid encounters for.
  * @param encounterId  {number} - the encounter ID to get valid encounters for.
  * @param targetTab  {'instruction' | 'follow-up'} - the tab to target upon opening.
- * @returns a `Promise<PowerChartReturn>`.
+ * @resolves a `PowerChartReturn`.
  */
 export async function launchPatientEducationAsync(
   patientId: number,

@@ -10,7 +10,7 @@ describe('openWebsiteByUrlAsync', () => {
   });
   it("throws an error if the URL does not include 'http://' or 'https://'", async () => {
     await expect(openWebsiteByUrlAsync('www.google.com')).rejects.toThrow(
-      "openWebsiteByUrlAsync: URL must include 'http://' or 'https://'"
+      "openWebsiteByUrlAsync: URL must include the protocol 'http://' or 'https://'"
     );
   });
   it('does not throw an error if the URL includes http://', async () => {
