@@ -51,12 +51,12 @@ export async function openApplicationAsync(
 
   if (mode === 'by solution name' && !args) {
     throw new Error(
-      "openApplicationAsync: 'executable name' mode requires arguments"
+      "openApplicationAsync: 'by solution name' mode requires arguments"
     );
   }
   if (mode === 'by application object' && !args) {
     throw new Error(
-      "openApplicationAsync: 'application object' mode requires arguments"
+      "openApplicationAsync: 'by application object' mode requires arguments"
     );
   }
   const argString = generateOpenApplicationArgumentString(args || []);

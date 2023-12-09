@@ -11,35 +11,20 @@ describe('openApplicationAsync', () => {
   });
 
   it("should throw an error if mode is 'by solution name' and args is undefined", async () => {
-    try {
-      await openApplicationAsync('by solution name', 'target');
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-      expect(e).toHaveProperty(
-        'message',
-        "openApplicationAsync: 'executable name' mode requires arguments"
-      );
-    }
+    await expect(
+      openApplicationAsync('by solution name', 'target')
+    ).rejects.toThrow(Error);
   });
   it("should throw an error if mode is 'by application object' and args is undefined", async () => {
-    try {
-      await openApplicationAsync('by application object', 'target');
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-      expect(e).toHaveProperty(
-        'message',
-        "openApplicationAsync: 'application object' mode requires arguments"
-      );
-    }
+    await expect(
+      openApplicationAsync('by application object', 'target')
+    ).rejects.toThrow(Error);
   });
   it('should throw an error if mode is invalid', async () => {
-    try {
-      // @ts-ignore
-      await openApplicationAsync('invalid mode', 'target');
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-      expect(e).toHaveProperty('message', 'openApplicationAsync: invalid mode');
-    }
+    // @ts-ignore
+    await expect(openApplicationAsync('invalid', 'target')).rejects.toThrow(
+      Error
+    );
   });
   it("returns 'true' if the function is run from inside of PowerChart", async () => {
     Object.defineProperty(window, 'external', {
