@@ -5,12 +5,12 @@ import { outsideOfPowerChartError } from './utils';
  * DYNDOC Discern COM object. The document can be created using either
  * a reference template ID or a reference template ID and an optional note type code,
  * depending on the chosen method of 'by workflow' or 'by reference template'.
- * @param method {'by workflow' | 'by reference template'} - the method to use to create the document.
- * @param patientId {number} - the patient ID to launch the document for.
- * @param encounterId {number} - the encounter ID to launch the document in.
- * @param id {number} - the ID of the reference template or workflow to use to create the document.
- * @param noteTypeCd {number} - (optional) the note type code to use to create the document.
- * @resolves `PowerChartReturn & { success: boolean }`
+ * @param {'by workflow' | 'by reference template'} method  - the method to use to create the document.
+ * @param {number} patientId  - the patient ID to launch the document for.
+ * @param {number} encounterId - the encounter ID to launch the document in.
+ * @param {number} id - the ID of the reference template or workflow to use to create the document.
+ * @param {number} noteTypeCd - (optional) the note type code to use to create the document.
+ * @rejects `PowerChartReturn & { success: boolean }`
  * @throws {Error} - an error is thrown if the method provided as an argument is not supported.
  */
 export async function createNewDocumentAsync(
