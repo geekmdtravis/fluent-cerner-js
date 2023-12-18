@@ -7,12 +7,14 @@ import { openApplicationAsync } from './openApplicationAsync';
  * @param url The URL of the website to open
  * @resolves `ApplinkReturn`
  * @throws If the URL does not include 'http://' or 'https://'
- * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
 export async function openWebsiteByUrlAsync(
   url: string
 ): Promise<ApplinkReturn> {
-  if (!url.includes('http://') && !url.includes('https://')) {
+  if (
+    !url.toLowerCase().includes('http://') &&
+    !url.toLowerCase().includes('https://')
+  ) {
     throw new Error(
       "openWebsiteByUrlAsync: URL must include the protocol 'http://' or 'https://'"
     );

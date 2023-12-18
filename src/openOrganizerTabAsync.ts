@@ -15,7 +15,6 @@ import {
  * navigation made to the first sub-tab that matches
  * the `tab` string.  If no matches are found, no navigation will occur.
  * @resolves an `ApplinkReturn`
- * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
 export async function openOrganizerTabAsync(
   tab: string
