@@ -3,7 +3,6 @@ import { outsideOfPowerChartError } from './utils';
 
 /**
  * Available options for the Clinical Note view.
- * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  */
 export type ViewOption =
   | 'menu'
@@ -20,7 +19,6 @@ export type ViewOption =
  * preferences after. An invalid compName loads the clinical note with the default preferences.
  * @param {number} compSeq - 	The component sequence for the component-level preference of the tab to model
  * the preferences after. An invalid compSeq loads the clinical note with the default preferences.
- * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  */
 export type InheretanceProps = {
   viewName: string;
@@ -36,7 +34,6 @@ export type InheretanceProps = {
  * If not provided, defaults to `view-only` with no other options.
  * @param {InheretanceProps} inheritanceProps - (optional) The view and component names and sequences
  * to be used for the Clinical Notes window. If not provided, uses default preferences.
- * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
 export type ClinicalNoteOpts = {
   windowTitle?: string;
@@ -58,7 +55,6 @@ export type ClinicalNoteOpts = {
  * success or failure of the invocation because this information is not provided by the
  * underlying Discern native function call's return, which awlays returns `null` no matter
  * the outcome of the call.
- * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
 export const launchClinicalNoteAsync = async (
   patientId: number,

@@ -16,8 +16,6 @@ import { outsideOfPowerChartError } from './utils';
  * @resolves `MPageEventReturn`
  * @throws if there is a type mismatch between the provided option for `target` and `targetId`,
  * or if an unexpected error has occured.
- *
- * @documentation [MPAGES_EVENT - POWERFORM](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERFORM)
  **/
 export const launchPowerFormAsync = async (
   target: 'modify form' | 'new form' | 'new form search' | 'view form',

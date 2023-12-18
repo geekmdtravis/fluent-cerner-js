@@ -14,8 +14,6 @@ import { outsideOfPowerChartError } from './utils';
  * @resolves `MPageEventReturn`
  * @throws if there is a type mismatch between the provided option for `target` and `targetId`,
  * or if an unexpected error has occured.
- *
- * @documentation [MPAGES_EVENT - POWERNOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERNOTE)
  **/
 export const launchPowerNoteAsync = async (
   target: 'new' | 'existing',
