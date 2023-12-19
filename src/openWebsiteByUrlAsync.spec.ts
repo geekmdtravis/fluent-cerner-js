@@ -23,4 +23,14 @@ describe('openWebsiteByUrlAsync', () => {
       openWebsiteByUrlAsync('https://www.google.com')
     ).resolves.not.toThrow();
   });
+  it('does not throw an error if the URL has uppercase http://', async () => {
+    await expect(
+      openWebsiteByUrlAsync('HTTP://www.google.com')
+    ).resolves.not.toThrow();
+  });
+  it('does not throw an error if the URL has uppercase https://', async () => {
+    await expect(
+      openWebsiteByUrlAsync('HTTPS://www.google.com')
+    ).resolves.not.toThrow();
+  });
 });

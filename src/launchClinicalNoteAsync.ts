@@ -3,8 +3,6 @@ import { outsideOfPowerChartError } from './utils';
 
 /**
  * Available options for the Clinical Note view.
- *
- * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  */
 export type ViewOption =
   | 'menu'
@@ -14,8 +12,6 @@ export type ViewOption =
   | 'view-only';
 
 /**
- * Launches a clinical note in PowerChart inhereting the preferences of the component and view described below.
- * If any of the values is invalid, it will use the default values.
  * @param {string} viewName - The view name for the view-level preference of the tab to model the preferences after.
  * @param {number} viewSeq - The view sequence for the view-level preference of the tab to model the
  * preferences after. An invalid viewSeq loads the clinical note with the default preferences.
@@ -23,8 +19,6 @@ export type ViewOption =
  * preferences after. An invalid compName loads the clinical note with the default preferences.
  * @param {number} compSeq - 	The component sequence for the component-level preference of the tab to model
  * the preferences after. An invalid compSeq loads the clinical note with the default preferences.
- * @resolves `MPageEventReturn`
- * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  */
 export type InheretanceProps = {
   viewName: string;
@@ -34,20 +28,12 @@ export type InheretanceProps = {
 };
 
 /**
- * A type which represents the parameters to be be passed into the launchClinicalNote() function.
- * @param {number} personId - The identifier for the patient to whom the note belongs.
- * Cerner context variable: PAT_PersonId.
- * @param {number} encounterId - The identifier for the encounter belonging to the patient where
- * this note will be launched. Cerner context variable: VIS_EncntrId.
- * @param {Array<number>} eventIds - An array of `event_id`'s of the clinical note(s) to be displayed.
  * @param {string} windowTitle - The text to be displayed in the first section of the title for the
  * Clinical Notes window.
  * @param {Array<ViewOption>} viewOptionFlags - (optional) View options for the Clinical Notes window.
  * If not provided, defaults to `view-only` with no other options.
  * @param {InheretanceProps} inheritanceProps - (optional) The view and component names and sequences
  * to be used for the Clinical Notes window. If not provided, uses default preferences.
- *
- * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
 export type ClinicalNoteOpts = {
   windowTitle?: string;
@@ -56,20 +42,19 @@ export type ClinicalNoteOpts = {
 };
 
 /**
- * Launch a ClinicalNote in Cerner's PowerChart.
+ * Launches a clinical note in PowerChart inheriting the preferences of the component and view described below.
+ * If any of the values is invalid, it will use the default values.
  * @param {number} patientId - The identifier for the patient to whom the note belongs.
  * Cerner context variable: PAT_PersonId.
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this note will be launched. Cerner context variable: VIS_EncntrId.
  * @param {Array<number>} eventIds - An array of `event_id`'s of the clinical note(s) to be displayed.
- * @param {ClinicalNoteOpts} opts - (optional) The parameters passed, as specified in `ClinicalNoteOpts`
+ * @param {ClinicalNoteOpts} opts - (optional) optional configuration parameters.
  * @returns a `Promise` returning an `MPageEventReturn` object containing the `eventString`
  * and `inPowerChart` values. Of note, we cannot provide additional information about the
  * success or failure of the invocation because this information is not provided by the
  * underlying Discern native function call's return, which awlays returns `null` no matter
  * the outcome of the call.
- *
- * @documentation [MPAGES_EVENT - CLINICAL NOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+CLINICALNOTE)
  **/
 export const launchClinicalNoteAsync = async (
   patientId: number,

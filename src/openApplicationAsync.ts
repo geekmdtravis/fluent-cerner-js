@@ -29,7 +29,7 @@ export type OpenApplicationArgument = {
  * application.
  * @resolves `AppLinkReturn`
  * @throws If the mode is 'by solution name' or 'by application object' and the `args` parameter is undefined.
- * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
+ * @throws If the mode is unsupported (invalid).
  */
 export async function openApplicationAsync(
   mode: OpenApplicationMode,

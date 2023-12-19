@@ -19,8 +19,6 @@ import {
  * navigation made to the first sub-tab that matches
  * the `tab` string.  If no matches are found, no navigation will occur.
  * @resolves `ApplinkReturn`
- * @throws If an unexpected error occurs while attempting to open the tab.
- * @documentation [APPLINK](https://wiki.cerner.com/display/public/MPDEVWIKI/APPLINK)
  */
 export async function openPatientTabAsync(
   patientId: number,

@@ -11,13 +11,9 @@ import { outsideOfPowerChartError } from './utils';
  * @param {number | string} targetId - For a `new` note, this value should be a `string` representing the
  * CKI value for an encounter pathway. For an `existing` note, this value should be a `number` representing
  * the eventId of the note to be opened.
- * corresponds to an encounter pathway.
- * @param {number} eventId - (exclusive option to CKI) An event_id for an existing PowerNote to load.
  * @resolves `MPageEventReturn`
  * @throws if there is a type mismatch between the provided option for `target` and `targetId`,
  * or if an unexpected error has occured.
- *
- * @documentation [MPAGES_EVENT - POWERNOTE](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+POWERNOTE)
  **/
 export const launchPowerNoteAsync = async (
   target: 'new' | 'existing',

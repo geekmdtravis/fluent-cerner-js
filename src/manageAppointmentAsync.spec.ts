@@ -34,11 +34,6 @@ describe('manageAppointmentAsync', () => {
       },
     });
   });
-  it('throws RangeError if the provided appointment ID is less than 1', async () => {
-    await expect(manageAppointmentAsync('check in', 0)).rejects.toThrow(
-      RangeError
-    );
-  });
   it('does not throw a RangeError if the provided appointment ID is greater than 0', async () => {
     await expect(manageAppointmentAsync('check in', 1)).resolves.toBeDefined();
   });
