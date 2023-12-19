@@ -125,9 +125,6 @@ export type Order = {
  * @param opts - (optional) User defined options for the order submission event. The options allow for
  * changing the target tab, the view to be launched, and whether or not the orders should be signed silently.
  * @resolves `SubmitOrderAsyncReturn`
- * @throws if an unexpected error occurs that could not be handled.
- *
- * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export const submitOrdersAsync = async (
   patientId: number,

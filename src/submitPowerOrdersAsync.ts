@@ -34,7 +34,6 @@ import { signOrdersAsync } from './utils/signOrdersAsync';
  * @action `show related res` -  Configures the MOEW such that the related results control is displayed.
  * @action `show scratchpad` -  Configures the MOEW such that the scratchpad is displayed. Note that this is required if adding any orders (if parameters are provided).
  * @action `sign later` - Sign later functionality will be allowed from the MOEW.
- * @documentation [POWERORDERS - CREATEMOEW] (https://wiki.cerner.com/display/public/MPDEVWIKI/CreateMOEW)
  **/
 export type PowerOrdersMOEWFlags =
   | 'add rx to filter'
@@ -63,7 +62,6 @@ export type PowerOrdersMOEWFlags =
  * @param {number} synonymId - The synonym Id associated with the standalone order.
  * @param {'inpatient order' | 'prescription order'} origination - The origination of the order being placed.
  * @param {number} sentenceId - An optional order sentence Id for the order being placed.
- * @documentation [POWERORDERS - AddNewOrderToScratchpad] (https://wiki.cerner.com/pages/viewpage.action?spaceKey=MPDEVWIKI&title=AddNewOrderToScratchpad)
  **/
 export type StandaloneOrder = {
   synonymId: number;
@@ -76,7 +74,6 @@ export type StandaloneOrder = {
  * @param {number} pathwayCatalogId -The pathway catalog Id associated with the PowerPlan order.
  * @param {number} personalizedPlanId - An optional personalized plan Id.
  * @param {Array<number>} diagnosesSynonymIds - An optional array of diagnosis synonym Ids for the PowerPlan order to be associated with
- * @documentation [POWERORDERS - AddPowerPlanWithDetails] (https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
  **/
 export type PowerPlanOrder = {
   pathwayCatalogId: number;
@@ -88,7 +85,6 @@ export type PowerPlanOrder = {
  * PowerOrdersOrderOpts is a type which allows the user to choose settings (silent sign and interaction checking) that impact the manner in which order(s) are placed.
  * @param {boolean} signSilently - A boolean indicating whether or not a silent sign should be attempted.
  * @param {boolean} standaloneOrderInteractionChecking - A boolean indicating whether or not interaction checking (for standalone orders only) should be performed. *Strongly* recommended to be TRUE.
- * @documentation [POWERORDERS - AddPowerPlanWithDetails] (https://wiki.cerner.com/display/public/MPDEVWIKI/AddPowerPlanWithDetails)
  **/
 export type PowerOrdersOrderOpts = {
   signSilently: boolean;
@@ -113,9 +109,6 @@ export type PowerOrdersOrderOpts = {
  * attempt was made outside of PowerChart, the `status` of the order attempt, an object
  * representing the XML response string (converted to an array of the orders placed with order `name`,
  * `oid`, and `display` available for each), and the XML/response string itself (which is attempted to be parsed).
- * @throws an error if an unexpected error occurs that could not be handled appropriately.
- *
- * @documentation [POWERORDERS] (https://wiki.cerner.com/display/public/MPDEVWIKI/POWERORDERS)
  */
 export const submitPowerOrdersAsync = async (
   patientId: number,
@@ -276,17 +269,6 @@ export const submitPowerOrdersAsync = async (
         retData.status = 'dry run';
         return retData;
       }
-
-      /*
-      //NOTE: this section has been commented out due to inconsistent data return from PowerChart's DisplayMOEW() function within DOF.
-      //If the orders are not signed by the user for some reason, state so
-      if (displayMOEW.signed === false) {
-        retData.inPowerChart = true;
-        retData.ordersPlaced = null;
-        retData.status = 'cancelled, failed, or invalid parameters provided';
-        return retData;
-      }
-      */
     }
 
     //Try to sign orders silently (if chosen by user)
