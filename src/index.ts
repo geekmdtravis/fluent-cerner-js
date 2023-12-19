@@ -37,7 +37,7 @@ import {
   SubmitOrderAsyncReturn,
   SubmitOrdersAsyncStatus,
   OrderAction,
-  OrderStrOpts,
+  OrderOpts,
   Order,
 } from './submitOrdersAsync';
 import { submitPowerOrdersAsync } from './submitPowerOrdersAsync';
@@ -74,7 +74,7 @@ export {
   OpenApplicationMode,
   Order,
   OrderAction,
-  OrderStrOpts,
+  OrderOpts as OrderStrOpts,
   SubmitOrderAsyncOpts,
   SubmitOrderAsyncReturn,
   SubmitOrdersAsyncStatus,

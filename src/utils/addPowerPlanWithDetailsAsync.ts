@@ -39,21 +39,25 @@ export async function addPowerPlanWithDetailsAsync(
   // Convert the PowerPlan orders provided into the required XML string
   let powerPlanOrdersXML: string = '';
 
-  powerPlanOrders.forEach(powerPlanOrder => {
-    powerPlanOrdersXML += `<Plan><PathwayCatalogId>${
-      powerPlanOrder.pathwayCatalogId
-    }</PathwayCatalogId><PersonalizedPlanId>${
-      powerPlanOrder.personalizedPlanId ? powerPlanOrder.personalizedPlanId : ''
-    }</PersonalizedPlanId><Diagnoses>
+  powerPlanOrders.forEach(
+    ({
+      pathwayCatalogId: cid,
+      personalizedPlanId: pid,
+      diagnosisIds: dids,
+    }) => {
+      powerPlanOrdersXML += `<Plan><PathwayCatalogId>${cid}</PathwayCatalogId><PersonalizedPlanId>${
+        pid ? pid : ''
+      }</PersonalizedPlanId><Diagnoses>
     ${
-      powerPlanOrder.diagnosesSynonymIds
-        ? powerPlanOrder.diagnosesSynonymIds.map(diagnosisSynonymID => {
+      dids
+        ? dids.map(diagnosisSynonymID => {
             return '<DiagnosisId>' + diagnosisSynonymID + '</DiagnosisId>';
           })
         : ''
     }
     </Diagnoses></Plan>`;
-  });
+    }
+  );
 
   // Add <Plans> to beginning & end of PowerPlan XML
   powerPlanOrdersXML = '<Plans>' + powerPlanOrdersXML;

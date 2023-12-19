@@ -36,8 +36,8 @@ describe('submitPowerOrders()', () => {
     try {
       await submitPowerOrdersAsync(1, 1, orderArray);
     } catch (e) {
-      expect(e).toBeInstanceOf(SyntaxError);
-      expect(e as SyntaxError).toHaveProperty(
+      expect(e).toBeInstanceOf(Error);
+      expect(e as Error).toHaveProperty(
         'message',
         'At least one order to submit must be provided to this function.'
       );
@@ -524,7 +524,7 @@ describe('submitPowerOrders()', () => {
       {
         pathwayCatalogId: 1,
         personalizedPlanId: 2,
-        diagnosesSynonymIds: [3, 4],
+        diagnosisIds: [3, 4],
       },
     ];
     const result = await submitPowerOrdersAsync(1, 1, orderArray);
@@ -667,7 +667,7 @@ describe('submitPowerOrders()', () => {
     ];
     const result = await submitPowerOrdersAsync(1, 1, orderArray, {
       signSilently: true,
-      standaloneOrderInteractionChecking: true,
+      interactionChecking: true,
     });
 
     const expectedObj: SubmitPowerOrdersReturn = {
@@ -699,7 +699,7 @@ describe('submitPowerOrders()', () => {
     try {
       await submitPowerOrdersAsync(1, 1, orderArray, {
         signSilently: true,
-        standaloneOrderInteractionChecking: true,
+        interactionChecking: true,
       });
     } catch (e) {
       expect((e as Error).message).toBe(

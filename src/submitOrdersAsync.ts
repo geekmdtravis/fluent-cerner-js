@@ -22,10 +22,8 @@ const tabsMap = new Map<string, { tab: number; display: number }>()
  * @param {number} orderSentenceId - (optional) The order sentence id value for the order to activate.
  * @param {number} orderId - (optional) The order id value for the order to activate.
  * @param {NewOrderOpts}newOrderOpts - (optional) The options for the new order.
- *
- * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
-export type OrderStrOpts = {
+export type OrderOpts = {
   nomenclatureIds?: Array<number>;
   orderSentenceId?: number;
   interactionCheck?: 'on sign' | 'default';
@@ -47,8 +45,6 @@ export type OrderStrOpts = {
  * @action `copy existing` - Copy an existing order.
  * @action `resume` - Resumes an existing order.
  * @action `suspend` - Suspends an existing order.
- *
- * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  */
 export type OrderAction =
   | 'activate existing'
@@ -77,7 +73,6 @@ export type OrderAction =
  * by default. If it's not possible for the system to complete a sileng sign directive,
  * the MOEW will pop up.
  * @action `dryRun` - (optional) If set to true, will not submit the order.
- * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
  * @warning Our internal testing suggests there is a _PowerChart_ bug relating to the use of power
  * orders. When making MPAGES_EVENT calls (which we do in this library through `submitOrders`)
  * in series with power orders enabled, the result was that some MPAGES_EVENT calls failed to be invoked.
@@ -108,7 +103,7 @@ export type SubmitOrderAsyncReturn = MPageEventReturn & {
 export type Order = {
   id: number;
   action: OrderAction;
-  opts?: OrderStrOpts;
+  opts?: OrderOpts;
 };
 
 /**

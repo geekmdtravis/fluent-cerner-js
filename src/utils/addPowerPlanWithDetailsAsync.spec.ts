@@ -66,7 +66,7 @@ describe('addPowerPlanWithDetailsAsync', () => {
       {
         pathwayCatalogId: 1337,
         personalizedPlanId: 31337,
-        diagnosesSynonymIds: [12],
+        diagnosisIds: [12],
       },
     ];
     const dcof = await window.external.DiscernObjectFactory('POWERORDERS');

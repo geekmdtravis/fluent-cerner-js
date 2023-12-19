@@ -1,4 +1,4 @@
-import { OrderAction, OrderStrOpts } from '../submitOrdersAsync';
+import { OrderAction, OrderOpts } from '../submitOrdersAsync';
 
 /**
  * A type for the options that can be passed to the `makeMpageOrder` function.
@@ -38,7 +38,7 @@ type CompleteOrderAction =
 const _createOrderString = (
   action: CompleteOrderAction,
   id?: number,
-  opts?: OrderStrOpts
+  opts?: OrderOpts
 ): string => {
   const { orderSentenceId, nomenclatureIds, origination, interactionCheck } =
     opts || {};
@@ -105,7 +105,7 @@ const interactionMap = new Map().set('on sign', '1').set('default', '0');
  * @since 0.10.0-alpha.0
  * @param {OrderAction} action - The action to be performed on the order.
  * @param {number} id - The id of the order. This is the synonym id for new orders and the order id for existing orders.
- * @param {OrderStrOpts} opts - (optional) The options for the order.
+ * @param {OrderOpts} opts - (optional) The options for the order.
  * @returns {string} - A pipe-delimited string which can be integrated into an MPage Event for one or more orders.
  * @throws {Error} - If the action is not a valid order action.
  * @documentation [MPAGES_EVENT - ORDER](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
@@ -113,7 +113,7 @@ const interactionMap = new Map().set('on sign', '1').set('default', '0');
 export const createOrderString = (
   action: OrderAction,
   id: number,
-  opts?: OrderStrOpts
+  opts?: OrderOpts
 ) => _createOrderString(action, id, opts);
 
 /**
