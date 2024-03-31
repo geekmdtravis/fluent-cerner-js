@@ -108,13 +108,13 @@ export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 declare global {
   /**
-   * Interface for the Cerner Windows COM Object for an XMLCclRequest.
+   * Class for the Cerner Windows COM Object for an XMLCclRequest.
    * Useful for development but not intended for production use. Use of
    * this method in that context requires the following meta tag in the
    * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
    * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/XMLCCLREQUEST)
    */
-  interface XMLCclRequest {
+  class XMLCclRequest {
     options: Object;
     readyState: number;
     responseText: string;
@@ -140,6 +140,9 @@ declare global {
     open(method: string, url: string, async?: boolean): void;
     send(data: string): void;
     setRequestHeader: (name: string, value: string) => void;
+    cleanup: () => void;
+
+    constructor(); // Allow using the `new` keyword
   }
 
   /**
@@ -346,7 +349,7 @@ declare global {
      * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
      * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/XMLCCLREQUEST)
      */
-    XMLCclRequest: () => Promise<XMLCclRequest>;
+    XMLCclRequest: () => XMLCclRequest;
     /**
      * Interface for the Cerner Discern native function which provides the function
      * responsible for opening an application, chart tab, or organization level tab.
