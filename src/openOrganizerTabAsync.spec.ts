@@ -16,45 +16,41 @@ describe('openOrganizerTab', () => {
     expect(eventString).toBe(`/ORGANIZERTAB=^TAB NAME^`);
   });
   test('badInput returns false if response is anything other than null', async () => {
-    Object.defineProperty(window, 'external', {
+    Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: {
-        APPLINK: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<null | ''> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve => resolve(''));
-          }),
-      },
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<null | ''> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve => resolve(''));
+        }),
     });
 
     const { badInput } = await openOrganizerTabAsync('Tab Name');
     expect(badInput).toBe(false);
   });
   test('badInput returns true if response is null', async () => {
-    Object.defineProperty(window, 'external', {
+    Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: {
-        APPLINK: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<null | ''> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve => resolve(null));
-          }),
-      },
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<null | ''> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve => resolve(null));
+        }),
     });
 
     const { badInput } = await openOrganizerTabAsync('Tab Name');
     expect(badInput).toBe(true);
   });
   test('throws an error when the error type is not one expected to be generated as an "out-of-powerchart" error.', async () => {
-    Object.defineProperty(window.external, 'APPLINK', {
+    Object.defineProperty(window, 'APPLINK', {
       writable: true,
       value: jest
         .fn()

@@ -21,38 +21,34 @@ describe('openPatientTab', () => {
     expect(eventString).toBe(`/PERSONID=0 /ENCNTRID=1 /FIRSTTAB=^TAB NAME+^`);
   });
   test('badInput returns false if response is anything other than null', async () => {
-    Object.defineProperty(window, 'external', {
+    Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: {
-        APPLINK: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<null | ''> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve => resolve(''));
-          }),
-      },
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<null | ''> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve => resolve(''));
+        }),
     });
 
     const { badInput } = await openPatientTabAsync(0, 1, 'Tab Name');
     expect(badInput).toBe(false);
   });
   test('badInput returns true if response is null', async () => {
-    Object.defineProperty(window, 'external', {
+    Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: {
-        APPLINK: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<null | ''> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve => resolve(null));
-          }),
-      },
+      value: jest
+        .fn()
+        .mockImplementation(async function(
+          a: string,
+          b: string
+        ): Promise<null | ''> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise(resolve => resolve(null));
+        }),
     });
 
     const { badInput } = await openPatientTabAsync(0, 1, 'Tab Name');
