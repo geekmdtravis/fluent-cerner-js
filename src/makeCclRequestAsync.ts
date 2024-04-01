@@ -18,22 +18,25 @@ export type CclCallParam = {
  * A text-based representation of the ready state of an XmlCclRequest.
  */
 export type XmlCclReadyState =
-  | 'uninitialized'
-  | 'loading'
-  | 'loaded'
+  | 'completed'
   | 'interactive'
-  | 'completed';
+  | 'loaded'
+  | 'loading'
+  | 'uninitialized'
+  | 'unknown';
 
 /**
  * A text-based representation of the status of an XmlCclRequest.
  */
 export type XmlCclResult =
-  | 'success'
-  | 'method not allowed'
+  | 'im a teapot'
+  | 'internal server exception'
   | 'invalid state'
-  | 'non-fatal error'
   | 'memory error'
-  | 'internal server exception';
+  | 'method not allowed'
+  | 'non-fatal error'
+  | 'success'
+  | 'unknown';
 
 /**
  * A type which represents the full set of data returned from an XmlCclRequest
@@ -56,9 +59,12 @@ export type XmlCclResult =
  *
  * A description of the `CclRequestResponse` properties is as follows:
  * @param {number} code - The status code of the request. The values are
- * 200 (success), 405 (method not allowed), 409 (invalid state), 492 (non-fatal error),
- * 493 (memory error), and 500 (internal server exception). There may be other
- * values not listed by the Cerner documentation.
+ * 200 (success), 405 (method not allowed), 409 (invalid state), 418 (im a teapot),
+ * 492 (non-fatal error), 493 (memory error), and 500 (internal server exception).
+ * There may be other values not listed by the Cerner documentation. The status code
+ * 418 (im a teapot) is a playful way to demonstrate that the request was made outside
+ * of the Cerner PowerChart application. This is not a real status code, but is based on
+ * the [codified joke in the HTTP specification](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418).
  * @param {XmlCclResult} result - The text representation of the status code. The values
  * are "success", "method not allowed", "invalid state", "non-fatal error", "memory error",
  * and "internal server exception". There may be other values not listed by the Cerner
@@ -71,10 +77,10 @@ export type XmlCclResult =
  * @param {XMLCclRequest} __request - The full request object.
  */
 export type CclRequestResponse<T> = PowerChartReturn & {
-  code?: number;
-  result?: XmlCclResult;
-  status?: XmlCclReadyState;
-  details?: string;
+  code: number;
+  result: XmlCclResult;
+  status: XmlCclReadyState;
+  details: string;
   data?: T;
   __request?: XMLCclRequest;
 };
@@ -104,6 +110,15 @@ export async function makeCclRequestAsync<T>(
     throw new Error('The CCL program name cannot be empty.');
 
   return new Promise<CclRequestResponse<T>>((resolve, reject) => {
+    const res: CclRequestResponse<T> = {
+      inPowerChart: true,
+      code: 418,
+      result: 'im a teapot',
+      status: 'uninitialized',
+      details: '',
+      data: undefined,
+      __request: undefined,
+    };
     try {
       const req = window.external.XMLCclRequest();
 
@@ -114,15 +129,13 @@ export async function makeCclRequestAsync<T>(
 
         const successfulRequest = req.status >= 200 && req.status < 300;
         if (successfulRequest) {
-          const res: CclRequestResponse<T> = {
-            inPowerChart: true,
-            code: req.status,
-            result: statusCodeMap.get(req.status),
-            status: readyStateMap.get(req.readyState),
-            details: req.statusText,
-            data: parsedResponseText<T>(req.responseText),
-            __request: req,
-          };
+          res.inPowerChart = true;
+          res.code = req.status;
+          res.result = statusCodeMap.get(req.status) || 'unknown';
+          res.status = readyStateMap.get(req.readyState) || 'unknown';
+          res.details = req.statusText;
+          res.data = parsedResponseText<T>(req.responseText);
+          res.__request = req;
           resolve(res);
         } else {
           reject(
@@ -141,7 +154,8 @@ export async function makeCclRequestAsync<T>(
       req.send(formattedParams(params, excludeMine));
     } catch (e) {
       if (outsideOfPowerChartError(e)) {
-        resolve({ inPowerChart: false });
+        res.inPowerChart = false;
+        resolve(res);
       } else {
         reject(e);
       }
@@ -220,6 +234,7 @@ const statusCodeMap: Map<number, XmlCclResult> = new Map();
 statusCodeMap.set(200, 'success');
 statusCodeMap.set(405, 'method not allowed');
 statusCodeMap.set(409, 'invalid state');
+statusCodeMap.set(418, 'im a teapot');
 statusCodeMap.set(492, 'non-fatal error');
 statusCodeMap.set(493, 'memory error');
 statusCodeMap.set(500, 'internal server exception');
