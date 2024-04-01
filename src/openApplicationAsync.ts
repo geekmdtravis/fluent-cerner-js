@@ -63,11 +63,7 @@ export async function openApplicationAsync(
   retVal.eventString = argString;
 
   try {
-    const response = await window.external.APPLINK(
-      modeValue,
-      target,
-      argString
-    );
+    const response = await window.APPLINK(modeValue, target, argString);
 
     retVal.badInput = response === null ? true : false;
   } catch (e) {

@@ -2,11 +2,9 @@ import { openApplicationAsync } from './openApplicationAsync';
 
 describe('openApplicationAsync', () => {
   beforeEach(() => {
-    Object.defineProperty(window, 'external', {
+    Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: {
-        APPLINK: undefined,
-      },
+      value: undefined,
     });
   });
 
@@ -27,18 +25,16 @@ describe('openApplicationAsync', () => {
     );
   });
   it("returns 'true' if the function is run from inside of PowerChart", async () => {
-    Object.defineProperty(window, 'external', {
+    Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: {
-        APPLINK: jest
-          .fn()
-          .mockImplementation(
-            (mode: 0 | 1 | 100, target: string, args: string) => {
-              console.debug('APPLINK', mode, target, args);
-              return Promise.resolve(null);
-            }
-          ),
-      },
+      value: jest
+        .fn()
+        .mockImplementation(
+          (mode: 0 | 1 | 100, target: string, args: string) => {
+            console.debug('APPLINK', mode, target, args);
+            return Promise.resolve(null);
+          }
+        ),
     });
     const { inPowerChart } = await openApplicationAsync(
       'by solution name',

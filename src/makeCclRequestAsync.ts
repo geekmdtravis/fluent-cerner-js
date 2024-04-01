@@ -90,37 +90,63 @@ export type CclRequestResponse<T> = PowerChartReturn & {
  * @param excludeMine {boolean} - (optional) determines whether or not to include the "MINE" parameter as the
  * first parameter in the CCL request's argument list.
  * @resolves `CclRequestResponse<T>`.
+ * @rejects {Error} if the `prg` parameter is an empty string.
+ * @rejects {Error} if the request fails for any reason.
  */
+// For more information on the XMLCclRequest object, see the Cerner PowerChart
+// documentation at https://wiki.cerner.com/pages/releaseview.action?spaceKey=MPDEVWIKI&title=XMLCCLREQUEST#Browsers--827740610
 export async function makeCclRequestAsync<T>(
   prg: string,
   params: Array<CclCallParam | string | number> = [],
   excludeMine?: boolean
 ): Promise<CclRequestResponse<T>> {
-  let res: CclRequestResponse<T> = {
-    inPowerChart: true,
-  };
+  if (prg.trim() === '')
+    throw new Error('The CCL program name cannot be empty.');
 
-  try {
-    const req = await window.external.XMLCclRequest();
-    req.open('GET', prg);
-    req.send(formattedParams(params, excludeMine));
-    req.onreadystatechange = function() {
-      res.code = req.status;
-      res.result = statusCodeMap.get(req.status);
-      res.status = readyStateMap.get(req.readyState);
-      res.details = req.statusText;
-      res.data = parsedResponseText<T>(req.responseText);
-      res.__request = req;
-    };
-  } catch (e) {
-    if (outsideOfPowerChartError(e)) {
-      res.inPowerChart = false;
-    } else {
-      throw e;
+  return new Promise<CclRequestResponse<T>>((resolve, reject) => {
+    try {
+      const req = window.external.XMLCclRequest();
+
+      req.onreadystatechange = () => {
+        const requestComplete = req.readyState === 4;
+
+        if (!requestComplete) return;
+
+        const successfulRequest = req.status >= 200 && req.status < 300;
+        if (successfulRequest) {
+          const res: CclRequestResponse<T> = {
+            inPowerChart: true,
+            code: req.status,
+            result: statusCodeMap.get(req.status),
+            status: readyStateMap.get(req.readyState),
+            details: req.statusText,
+            data: parsedResponseText<T>(req.responseText),
+            __request: req,
+          };
+          resolve(res);
+        } else {
+          reject(
+            new Error(
+              `Request failed with status: ${req.status} and status text: ${req.statusText}`
+            )
+          );
+        }
+      };
+
+      req.onerror = () => {
+        reject(new Error('XMLCclRequest encountered a network error.'));
+      };
+
+      req.open('GET', `${prg}`);
+      req.send(formattedParams(params, excludeMine));
+    } catch (e) {
+      if (outsideOfPowerChartError(e)) {
+        resolve({ inPowerChart: false });
+      } else {
+        reject(e);
+      }
     }
-  }
-
-  return res;
+  });
 }
 
 /**

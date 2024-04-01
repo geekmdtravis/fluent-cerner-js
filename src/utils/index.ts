@@ -6,14 +6,10 @@
  */
 export function outsideOfPowerChartError(e: unknown) {
   return (
-    (e instanceof TypeError &&
-      e.message === 'window.external.MPAGES_EVENT is not a function') ||
-    (e instanceof TypeError &&
-      e.message === 'window.external.XMLCclRequest is not a function') ||
-    (e instanceof TypeError &&
-      e.message === 'window.external.APPLINK is not a function') ||
-    (e instanceof TypeError &&
-      e.message === 'window.external.DiscernObjectFactory is not a function')
+    e instanceof TypeError &&
+    /(MPAGES_EVENT|XMLCclRequest|APPLINK|DiscernObjectFactory) is not a function/i.test(
+      e.message
+    )
   );
 }
 
