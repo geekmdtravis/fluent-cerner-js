@@ -192,7 +192,7 @@ const MyComponent = ({ user }) => {
 
 ## Resources
 
-- [MPage Developer Guide - MPAGE_EVENT Orders](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT-ORDERS)
+- [MPage Developer Guide - MPAGE_EVENT Orders](https://wiki.cerner.com/display/public/MPDEVWIKI/MPAGES_EVENT+-+ORDERS)
 
 ## Anatomy of an `MPAGE_EVENT` String for the `ORDER` type.
 
