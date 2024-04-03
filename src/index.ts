@@ -1,3 +1,10 @@
+import {
+  CclCallParam,
+  CclRequestResponse,
+  makeCclRequestAsync,
+  XmlCclResult,
+  XmlCclReadyState,
+} from 'easy-ccl-request';
 import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
 import { createNewDocumentAsync } from './createNewDocumentAsync';
 import { getValidEncountersAsync } from './getValidEncountersAsync';
@@ -11,13 +18,6 @@ import { launchDischargeProcessAsync } from './launchDischargeProcessAsync';
 import { launchPatientEducationAsync } from './launchPatientEducationAsync';
 import { launchPowerFormAsync } from './launchPowerFormAsync';
 import { launchPowerNoteAsync } from './launchPowerNoteAsync';
-import {
-  CclCallParam,
-  CclRequestResponse,
-  makeCclRequestAsync,
-  XmlCclResult,
-  XmlCclReadyState,
-} from './makeCclRequestAsync';
 import {
   manageAppointmentAsync,
   AppointmentAction,
@@ -107,44 +107,6 @@ export type MPageEventReturn = PowerChartReturn & {
 export type ApplinkReturn = MPageEventReturn & { badInput: boolean };
 
 declare global {
-  /**
-   * Class for the Cerner Windows COM Object for an XMLCclRequest.
-   * Useful for development but not intended for production use. Use of
-   * this method in that context requires the following meta tag in the
-   * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
-   * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/XMLCCLREQUEST)
-   */
-  class XMLCclRequest {
-    options: Object;
-    readyState: number;
-    responseText: string;
-    status: number;
-    statusText: string;
-    sendFlag: boolean;
-    errorFlag: boolean;
-    responseBody: string;
-    responseXML: string;
-    async: boolean;
-    requestBinding: string;
-    requestText: string;
-    blobIn: string;
-    url: string;
-    method: string;
-    requestHeaders: Object;
-    requestLen: number;
-    onreadystatechange: () => void;
-    onerror: () => void;
-    abort: () => void;
-    getAllResponseHeaders: () => Array<string>;
-    getResponseHeader: (header: string) => string;
-    open(method: string, url: string, async?: boolean): void;
-    send(data: string): void;
-    setRequestHeader: (name: string, value: string) => void;
-    cleanup: () => void;
-
-    constructor(); // Allow using the `new` keyword
-  }
-
   /**
    * A type which ensures that only valid DiscernCOMObjects can be
    * passed to the DiscernObjectFactory constructor.
@@ -358,14 +320,6 @@ declare global {
     DiscernObjectFactory: (
       comObject: DiscernCOMObjects
     ) => Promise<DiscernObjectFactoryReturn>;
-    /**
-     * Funtion that returns a Cerner Windows COM object for an XMLCclRequest.
-     * Useful for development but not intended for production use. Use of
-     * this method in that context requires the following meta tag in the
-     * head of the HTML document: `<META content='XMLCCLREQUEST' name='discern'>`
-     * [More Info](https://wiki.cerner.com/display/public/MPDEVWIKI/XMLCCLREQUEST)
-     */
-    XMLCclRequest: () => XMLCclRequest;
     /**
      * Interface for the Cerner Discern native function which provides the function
      * responsible for engaging in special Cerneer _conversation events_ within the

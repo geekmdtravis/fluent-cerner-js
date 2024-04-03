@@ -23,7 +23,6 @@
     "analyze": "size-limit --why",
     "demo": "npx node demo.js"
   },
-  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -60,6 +59,9 @@
   },
   "dependencies": {
     "fast-xml-parser": "4.2.6"
+  },
+  "peerDependencies": {
+    "easy-ccl-request": "^1.0.0"
   },
   "jest": {
     "verbose": true,

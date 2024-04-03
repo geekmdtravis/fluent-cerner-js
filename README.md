@@ -45,6 +45,8 @@ const {
 ]);
 ```
 
+**Note**: This project exposes the function `makeCclRequestAsync` through [`easy-ccl-request`](https://github.com/geekmdtravis/easy-ccl-request) and is a _peer dependency_. This function is used to make AJAX calls to CCL end-points. If you choose to use this function, you will need to install the peer dependency. This decision was made since `makeCclRequestAsync` is being leveraged in a number of different packages and I wanted to offer it as a stand-alone package without bringing in the entire `fluent-cerner-js` package, which itself is dependent on a limited set of dependencies. Please see the _package.json_ file for the current version of `easy-ccl-request` to see the supported versions.
+
 ### Open a Chart Level Tab
 
 Open a tab at the chart level. Just provide the patient ID, encounter ID, and the tab name.
