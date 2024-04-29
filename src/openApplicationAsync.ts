@@ -19,7 +19,8 @@ export type OpenApplicationArgument = {
  * - 'by solution name' - Open an application by the name of the solution.
  * - 'by application object' - Open an application by the name of the application object.
  * - 'by file' - Open an application by the name of the file.
- * - 'by url' - Open an application by the name of the URL.
+ * - 'by url' - Open an we website in your **local** browser. This requires that your Citrix instance
+ * be setup to handle server-to-client redirection.
  * - 'by executable' - Open an application by the name of the executable.
  * @param {string} target - The target of the application to open. The target can be
  * a solution name, application object name, file name, URL, or executable name.

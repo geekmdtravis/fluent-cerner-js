@@ -2,7 +2,10 @@ import { ApplinkReturn } from '.';
 import { openApplicationAsync } from './openApplicationAsync';
 
 /**
- * Attempts to open a website in a new tab in the PowerChart application.
+ * Attempts to open a website in your **local** web browser. This
+ * requires that your Citrix instance be setup to handle server-to-client redirection.
+ * This is quite useful as a means of accesing websites that may not be accessible
+ * from within the Citrix environment, e.g. those in your local network/intranet.
  * Uses the function from this library `openApplicationAsync`.
  * @param url The URL of the website to open
  * @resolves `ApplinkReturn`
