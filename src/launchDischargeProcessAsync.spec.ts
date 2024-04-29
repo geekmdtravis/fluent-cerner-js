@@ -10,7 +10,7 @@ describe('launchDischargeProcessAsync', () => {
     });
   });
   it('returns inPowerChart as false when outside of PowerChart', async () => {
-    const { inPowerChart } = await launchDischargeProcessAsync();
+    const { inPowerChart } = await launchDischargeProcessAsync(1, 1, 1);
     expect(inPowerChart).toBe(false);
   });
   it('returns inPowerChart as true when inside of PowerChart', async () => {
@@ -22,7 +22,7 @@ describe('launchDischargeProcessAsync', () => {
         })),
       },
     });
-    const { inPowerChart } = await launchDischargeProcessAsync();
+    const { inPowerChart } = await launchDischargeProcessAsync(1, 1, 1);
     expect(inPowerChart).toBe(true);
   });
 });

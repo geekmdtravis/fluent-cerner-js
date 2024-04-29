@@ -308,6 +308,24 @@ declare global {
     ): Promise<null>;
     // TODO: update return type and JSDOc
     LaunchDischargeDialog(): Promise<null>;
+    /**
+     * A parameter to set the patient context for the Discern COM object.
+     * At the time of writing this, the only discernable use for this is the
+     * `DISCHARGEPROCESS` object.
+     */
+    person_id: number;
+    /**
+     * A parameter to set the encounter context for the Discern COM object.
+     * At the time of writing this, the only discernable use for this is the
+     * `DISCHARGEPROCESS` object.
+     */
+    encounter_id: number;
+    /**
+     * A parameter to set the user context for the Discern COM object.
+     * At the time of writing this, the only discernable use for this is the
+     * `DISCHARGEPROCESS` object.
+     */
+    user_id: number;
   };
 
   interface External {
