@@ -1,5 +1,5 @@
 {
-  "version": "0.9.0-alpha.0",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -8,30 +8,21 @@
     "src"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=14",
+    "yarn": "please-use-npm"
   },
   "scripts": {
-    "ver:a:patch": "npm version prepatch --preid=alpha",
-    "ver:a:minor": "npm version preminor --preid=alpha",
-    "ver:a:major": "npm version premajor --preid=alpha",
-    "ver:b:patch": "npm version prepatch --preid=beta",
-    "ver:b:minor": "npm version preminor --preid=beta",
-    "ver:b:major": "npm version premajor --preid=beta",
-    "ver:rc:patch": "npm version prepatch --preid=rc",
-    "ver:rc:minor": "npm version preminor --preid=rc",
-    "ver:rc:major": "npm version premajor --preid=rc",
-    "ver:stable:patch": "npm version patch",
-    "ver:stable:minor": "npm version minor",
-    "ver:stable:major": "npm version major",
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test",
+    "test": "tsdx test --silent",
+    "test:watch": "tsdx test --watch --silent",
+    "test:watchall": "tsdx test --watchAll --silent",
     "lint": "tsdx lint src",
     "prepare": "tsdx build",
     "size": "size-limit",
-    "analyze": "size-limit --why"
+    "analyze": "size-limit --why",
+    "demo": "npx node demo.js"
   },
-  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -57,14 +48,31 @@
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^7.0.5",
-    "@size-limit/webpack": "^7.0.5",
-    "@size-limit/webpack-why": "^7.0.5",
-    "husky": "^7.0.4",
-    "size-limit": "^7.0.5",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1",
-    "typescript": "^4.5.4"
+    "@size-limit/preset-small-lib": "7.0.5",
+    "@size-limit/webpack": "7.0.5",
+    "@size-limit/webpack-why": "7.0.5",
+    "easy-ccl-request": "1.0.0",
+    "husky": "7.0.4",
+    "size-limit": "7.0.5",
+    "tsdx": "0.14.1",
+    "tslib": "2.3.1",
+    "typescript": "4.5.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "fast-xml-parser": "4.2.6"
+  },
+  "peerDependencies": {
+    "easy-ccl-request": "^1.0.0"
+  },
+  "jest": {
+    "verbose": true,
+    "silent": true,
+    "collectCoverage": true,
+    "testPathIgnorePatterns": [
+      "index.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "index.ts"
+    ]
+  }
 }
