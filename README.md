@@ -108,35 +108,3 @@ There are many more funcionalties listed below.
 | `PCUPDATEREFRESHTIME`                          | (no support planned)                | Update the refresh button to show how long ago the data was updated.       |
 | `XMLCclRequest`                                | `makeCclRequestAsync`               | Makes an AJAX call to a CCL end-point.                                     |
 
-
-```tsx
-import { makeCclRequest, CclCallParam, CclOpts } from 'fluent-cerner-js';
-import { MyCustomResponse } from '../types';
-// Other imports omitted in this example for clarity
-
-const MyComponent = ({ user }) => {
-  const [data, setData] = useState<MyCustomResponse>({});
-
-  const handleButtonClick = () => {
-    const userPidParam: CclCallParam = { type: 'number', param: user.pid };
-
-    const opts: CclOpts = {
-      prg: 'MY_CUSTOM_PRG_FILENAME',
-      params: [userPidParam],
-    };
-
-    makeCclRequest<MyCustomResponse>(opts)
-      .then(data => setData(data))
-      .catch(error => addErrorToast(error));
-  };
-
-  return (
-    <div>
-      <h2>My Custom Component</h2>
-      <p>Welcome, {user.name}</p>
-      <button onClick={handleButtonClick}>Click Me to Get Data</button>
-    </div>
-  );
-};
-```
-
