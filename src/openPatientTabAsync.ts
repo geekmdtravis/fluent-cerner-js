@@ -18,12 +18,17 @@ import {
  * If no match is found, then sub-tab names will be searched and
  * navigation made to the first sub-tab that matches
  * the `tab` string.  If no matches are found, no navigation will occur.
+ * @param quickOpen A boolean indicating whether the application should attempt to open
+ * a quick add box, if supported, such as the Add Order dialog box in the Orders applet.
+ * Not all applications support this feature and it will be ignored if the application does not support it.
+ * The default value is `false`.
  * @resolves `ApplinkReturn`
  */
 export async function openPatientTabAsync(
   patientId: number,
   encounterId: number,
-  tab: string
+  tab: string,
+  quickOpen?: boolean
 ): Promise<ApplinkReturn> {
   const args: Array<OpenApplicationArgument> = [
     {
@@ -37,6 +42,7 @@ export async function openPatientTabAsync(
     {
       argument: 'FIRSTTAB',
       value: tab,
+      quickOpen,
     },
   ];
 
