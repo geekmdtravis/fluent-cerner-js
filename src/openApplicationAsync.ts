@@ -11,6 +11,7 @@ export type OpenApplicationMode =
 export type OpenApplicationArgument = {
   argument: string;
   value: string | number;
+  quickOpen?: boolean;
 };
 
 /**
@@ -25,9 +26,11 @@ export type OpenApplicationArgument = {
  * @param {string} target - The target of the application to open. The target can be
  * a solution name, application object name, file name, URL, or executable name.
  * @param {Array<OpenApplicationArgument>} [args] - An array of arguments to pass to the application.
- * Arguments contain the properties: `argument` and `value`. The `argument` property is the name of the
+ * Arguments contain the properties: `argument`, `value`, and `quickOpen`. The `argument` property is the name of the
  * argument to pass to the application. The `value` property is the value of the argument to pass to the
- * application.
+ * application. The `quickOpen` property is a boolean indicating whether the application should attempt to open
+ * a dialog box, such as the Add Order dialog box in the Orders applet, if supported. Not all applications support
+ * this feature and it will be ignored if the application does not support it. The default value is `false`.
  * @resolves `AppLinkReturn`
  * @throws If the mode is 'by solution name' or 'by application object' and the `args` parameter is undefined.
  * @throws If the mode is unsupported (invalid).
@@ -77,16 +80,25 @@ export async function openApplicationAsync(
   return retVal;
 }
 
+/**
+ * Generates an argument string for the `APPLINK` function using structured data.
+ *
+ * @param args An array of arguments to pass to the application.
+ *
+ * @returns A string representing the arguments to pass to the `APPLINK` function.
+ */
 export function generateOpenApplicationArgumentString(
   args: Array<OpenApplicationArgument>
 ) {
   return args
-    .map(({ argument: arg, value }) => {
+    .map(({ argument: arg, value, quickOpen: qo }) => {
       const isOrgLevel = /organizertab/i.test(arg);
       const isTab = /firsttab/i.test(arg) || /organizertab/i.test(arg);
-      return `/${arg}=${isTab ? '^' : ''}${value}${
-        isTab && !isOrgLevel ? '+' : ''
-      }${isTab ? '^' : ''}`;
+      const quickOpen = qo;
+      const quickOpenStr = quickOpen && isTab && !isOrgLevel ? '+' : '';
+      const surroundStr = isTab ? '^' : '';
+
+      return `/${arg}=${surroundStr}${value}${quickOpenStr}${surroundStr}`;
     })
     .join(' ')
     .toUpperCase();
