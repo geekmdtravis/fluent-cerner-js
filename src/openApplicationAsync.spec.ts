@@ -1,4 +1,8 @@
-import { openApplicationAsync } from './openApplicationAsync';
+import {
+  generateOpenApplicationArgumentString,
+  OpenApplicationArgument,
+  openApplicationAsync,
+} from './openApplicationAsync';
 
 describe('openApplicationAsync', () => {
   beforeEach(() => {
@@ -50,5 +54,69 @@ describe('openApplicationAsync', () => {
       [{ argument: 'arg', value: 'value' }]
     );
     expect(inPowerChart).toBe(false);
+  });
+});
+
+describe('generateOpenApplicationArgumentString', () => {
+  it('Generates a correct argument string', () => {
+    const args: Array<OpenApplicationArgument> = [
+      {
+        argument: 'PERSONID',
+        value: 1,
+      },
+      {
+        argument: 'ENCNTRID',
+        value: 123,
+      },
+      {
+        argument: 'FIRSTTAB',
+        value: 'Orders',
+      },
+    ];
+
+    const argString = generateOpenApplicationArgumentString(args);
+    expect(argString).toBe('/PERSONID=1 /ENCNTRID=123 /FIRSTTAB=^ORDERS^');
+  });
+  it('Generates a correct argument string with quick open', () => {
+    const args: Array<OpenApplicationArgument> = [
+      {
+        argument: 'PERSONID',
+        value: 1,
+      },
+      {
+        argument: 'ENCNTRID',
+        value: 123,
+      },
+      {
+        argument: 'FIRSTTAB',
+        value: 'Orders',
+        quickOpen: true,
+      },
+    ];
+
+    const argString = generateOpenApplicationArgumentString(args);
+    expect(argString).toBe('/PERSONID=1 /ENCNTRID=123 /FIRSTTAB=^ORDERS+^');
+  });
+  it('Tabs string is surrounded by ^', () => {
+    const args: Array<OpenApplicationArgument> = [
+      {
+        argument: 'FIRSTTAB',
+        value: 'Orders',
+      },
+    ];
+
+    const argString = generateOpenApplicationArgumentString(args);
+    expect(argString).toBe('/FIRSTTAB=^ORDERS^');
+  });
+  it('Non-tab string is not surrounded by ^', () => {
+    const args: Array<OpenApplicationArgument> = [
+      {
+        argument: 'PowerChart.exe',
+        value: 'Random',
+      },
+    ];
+
+    const argString = generateOpenApplicationArgumentString(args);
+    expect(argString).toBe('/POWERCHART.EXE=RANDOM');
   });
 });
