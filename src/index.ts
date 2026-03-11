@@ -349,6 +349,6 @@ declare global {
     MPAGES_EVENT: (
       type: 'ALLERGY' | 'POWERFORM' | 'POWERNOTE' | 'ORDERS' | 'CLINICALNOTE',
       args: string
-    ) => Promise<object | void>;
+    ) => Promise<string | number | object | void>;
   }
 }
