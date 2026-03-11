@@ -66,7 +66,7 @@ describe('submitPowerOrders()', () => {
   });
 
   it('throws an error an order in the order array is not of the correct type', async () => {
-    const orderArray: any = [
+    const orderArray: object[] = [
       {
         test: 'yes',
       },

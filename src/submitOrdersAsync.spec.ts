@@ -281,7 +281,7 @@ describe('submitOrders', () => {
           .mockImplementation(async function(
             a: string,
             b: string
-          ): Promise<Object> {
+          ): Promise<object> {
             console.debug(`a: ${a}, b: ${b}`);
             return new Promise(resolve => resolve({}));
           }),
