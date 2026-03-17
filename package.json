@@ -57,7 +57,7 @@
     "fast-xml-parser": "^5.5.6"
   },
   "peerDependencies": {
-    "easy-ccl-request": "^1.0.0"
+    "easy-ccl-request": "1.1.0-0"
   },
   "overrides": {
     "vite": {
