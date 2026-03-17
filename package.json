@@ -54,7 +54,7 @@
     "vitest": "^2.1.0"
   },
   "dependencies": {
-    "fast-xml-parser": "^4.5.4"
+    "fast-xml-parser": "^5.5.6"
   },
   "peerDependencies": {
     "easy-ccl-request": "^1.0.0"
