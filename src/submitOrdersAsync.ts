@@ -164,7 +164,10 @@ export const submitOrdersAsync = async (
   }
 
   try {
-    const response = await window.external.MPAGES_EVENT('ORDERS', eventString);
+    const response: string = (await window.external.MPAGES_EVENT(
+      'ORDERS',
+      eventString
+    )) as string;
 
     // 'null' must be checked for explicitly, as it is a valid response
     // '!response' will return true for null, undefined, and empty string.
@@ -191,7 +194,7 @@ export const submitOrdersAsync = async (
           if (!(parsed.Orders.Order instanceof Array)) {
             parsed.Orders.Order = [parsed.Orders.Order];
           }
-          retVal.ordersPlaced = parsed.Orders.Order.map(o => ({
+          retVal.ordersPlaced = parsed.Orders.Order.map((o) => ({
             name: o.OrderedAsMnemonic,
             oid: o.OrderId,
             display: o.ClinDisplayLine,

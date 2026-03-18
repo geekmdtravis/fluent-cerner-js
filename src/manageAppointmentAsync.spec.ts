@@ -76,7 +76,7 @@ describe('manageAppointmentAsync', () => {
     expect(success).toBe(true);
   });
   it('throws an Error when the provided action is not supported', async () => {
-    // @ts-ignore
+    // @ts-expect-error - intentionally passing unsupported action
     await expect(manageAppointmentAsync('foo', 1)).rejects.toThrow(Error);
   });
   it('returns the success property as false when CheckInAppointment returns 0', async () => {

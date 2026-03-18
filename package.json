@@ -1,32 +1,40 @@
 {
-  "version": "1.0.0",
+  "name": "fluent-cerner-js",
+  "version": "1.1.0",
   "license": "MIT",
-  "main": "dist/index.js",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
   "files": [
     "dist",
     "src"
   ],
   "engines": {
-    "node": ">=14",
+    "node": ">=22",
     "yarn": "please-use-npm"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test --silent",
-    "test:watch": "tsdx test --watch --silent",
-    "test:watchall": "tsdx test --watchAll --silent",
-    "lint": "tsdx lint src",
-    "prepare": "tsdx build",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src",
+    "prepare": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "demo": "npx node demo.js"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
   },
   "prettier": {
     "printWidth": 80,
@@ -34,35 +42,34 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "fluent-cerner-js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geekmdtravis/fluent-cerner-js.git"
+  },
+  "publishConfig": {
+    "provenance": true
+  },
   "author": "geekmdtravis",
-  "module": "dist/fluent-cerner-js.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/fluent-cerner-js.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/fluent-cerner-js.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "7.0.5",
-    "@size-limit/webpack": "7.0.5",
-    "@size-limit/webpack-why": "7.0.5",
-    "easy-ccl-request": "1.0.0",
-    "husky": "7.0.4",
-    "size-limit": "7.0.5",
-    "tsdx": "0.14.1",
-    "tslib": "2.3.1",
-    "typescript": "4.5.4"
+    "@typescript-eslint/eslint-plugin": "8.57.0",
+    "@typescript-eslint/parser": "8.57.0",
+    "eslint": "10.0.3",
+    "jsdom": "^25.0.0",
+    "tslib": "^2.8.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
   },
   "dependencies": {
-    "fast-xml-parser": "4.2.6"
+    "fast-xml-parser": "^5.5.6"
   },
   "peerDependencies": {
-    "easy-ccl-request": "^1.0.0"
+    "easy-ccl-request": "^1.1.0"
+  },
+  "overrides": {
+    "vite": {
+      "esbuild": "^0.25.0"
+    }
   },
   "jest": {
     "verbose": true,

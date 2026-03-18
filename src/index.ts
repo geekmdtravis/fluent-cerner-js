@@ -1,38 +1,38 @@
-import {
+import { makeCclRequestAsync } from 'easy-ccl-request';
+import type {
   CclCallParam,
   CclRequestResponse,
-  makeCclRequestAsync,
   XmlCclResult,
   XmlCclReadyState,
 } from 'easy-ccl-request';
 import { addAddendumToDocumentAsync } from './addAddendumToDocumentAsync';
 import { createNewDocumentAsync } from './createNewDocumentAsync';
 import { getValidEncountersAsync } from './getValidEncountersAsync';
-import {
+import { launchClinicalNoteAsync } from './launchClinicalNoteAsync';
+import type {
   ClinicalNoteOpts,
   InheretanceProps,
-  launchClinicalNoteAsync,
   ViewOption,
 } from './launchClinicalNoteAsync';
 import { launchDischargeProcessAsync } from './launchDischargeProcessAsync';
 import { launchPatientEducationAsync } from './launchPatientEducationAsync';
 import { launchPowerFormAsync } from './launchPowerFormAsync';
 import { launchPowerNoteAsync } from './launchPowerNoteAsync';
-import {
-  manageAppointmentAsync,
+import { manageAppointmentAsync } from './manageAppointmentAsync';
+import type {
   AppointmentAction,
   AppointmentReturn,
 } from './manageAppointmentAsync';
-import {
+import { openApplicationAsync } from './openApplicationAsync';
+import type {
   OpenApplicationArgument,
-  openApplicationAsync,
   OpenApplicationMode,
 } from './openApplicationAsync';
 import { openOrganizerTabAsync } from './openOrganizerTabAsync';
 import { openPatientTabAsync } from './openPatientTabAsync';
 import { openWebsiteByUrlAsync } from './openWebsiteByUrlAsync';
-import {
-  submitOrdersAsync,
+import { submitOrdersAsync } from './submitOrdersAsync';
+import type {
   SubmitOrderAsyncOpts,
   SubmitOrderAsyncReturn,
   SubmitOrdersAsyncStatus,
@@ -62,8 +62,8 @@ export {
   submitPowerOrdersAsync,
 };
 
-// Export types; cannot use the `export type` syntax.
-export {
+// Export types
+export type {
   AppointmentAction,
   AppointmentReturn,
   CclCallParam,
@@ -349,6 +349,6 @@ declare global {
     MPAGES_EVENT: (
       type: 'ALLERGY' | 'POWERFORM' | 'POWERNOTE' | 'ORDERS' | 'CLINICALNOTE',
       args: string
-    ) => Promise<any>;
+    ) => Promise<string | number | object | void>;
   }
 }
