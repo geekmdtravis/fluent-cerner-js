@@ -140,7 +140,7 @@ describe('createNewDocumentAsync', () => {
       },
     });
     await expect(
-      // @ts-ignore
+      // @ts-expect-error - intentionally passing unsupported workflow type
       createNewDocumentAsync('unsupported', 1, 1, 1)
     ).rejects.toThrow('createNewDocumentAsync: unsupported is not supported');
   });

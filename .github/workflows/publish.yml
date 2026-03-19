@@ -5,15 +5,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: fluent-cerner-js
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 14
-          registry-url: https://registry.npmjs.org/
-      - run: npm install
-      - run: npm run build
-      - run: npm run test
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          node-version: 22
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm run test
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+      - name: Publish
+        run: npm publish --provenance --access public

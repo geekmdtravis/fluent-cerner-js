@@ -23,7 +23,7 @@ describe('openApplicationAsync', () => {
     ).rejects.toThrow(Error);
   });
   it('should throw an error if mode is invalid', async () => {
-    // @ts-ignore
+    // @ts-expect-error - intentionally passing invalid mode
     await expect(openApplicationAsync('invalid', 'target')).rejects.toThrow(
       Error
     );

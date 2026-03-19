@@ -41,7 +41,7 @@ describe('getValidEncountersAsync', () => {
         })),
       },
     });
-    const consoleWarn = spyOn(console, 'warn');
+    const consoleWarn = jest.spyOn(console, 'warn');
     const { inPowerChart, encounterIds } = await getValidEncountersAsync(1);
     expect(inPowerChart).toBe(true);
     expect(encounterIds).toEqual([1, 2, 3]);
