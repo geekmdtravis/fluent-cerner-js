@@ -98,10 +98,9 @@ export function generateOpenApplicationArgumentString(
       const quickOpenStr = quickOpen && isTab && !isOrgLevel ? '+' : '';
       const surroundStr = isTab ? '^' : '';
 
-      return `/${arg}=${surroundStr}${value}${quickOpenStr}${surroundStr}`;
+      return `/${arg.toUpperCase()}=${surroundStr}${value}${quickOpenStr}${surroundStr}`;
     })
-    .join(' ')
-    .toUpperCase();
+    .join(' ');
 }
 
 const modeMap = new Map<OpenApplicationMode, 0 | 1 | 100>();
