@@ -75,7 +75,7 @@ describe('generateOpenApplicationArgumentString', () => {
     ];
 
     const argString = generateOpenApplicationArgumentString(args);
-    expect(argString).toBe('/PERSONID=1 /ENCNTRID=123 /FIRSTTAB=^ORDERS^');
+    expect(argString).toBe('/PERSONID=1 /ENCNTRID=123 /FIRSTTAB=^Orders^');
   });
   it('Generates a correct argument string with quick open', () => {
     const args: Array<OpenApplicationArgument> = [
@@ -95,7 +95,7 @@ describe('generateOpenApplicationArgumentString', () => {
     ];
 
     const argString = generateOpenApplicationArgumentString(args);
-    expect(argString).toBe('/PERSONID=1 /ENCNTRID=123 /FIRSTTAB=^ORDERS+^');
+    expect(argString).toBe('/PERSONID=1 /ENCNTRID=123 /FIRSTTAB=^Orders+^');
   });
   it('Tabs string is surrounded by ^', () => {
     const args: Array<OpenApplicationArgument> = [
@@ -106,7 +106,7 @@ describe('generateOpenApplicationArgumentString', () => {
     ];
 
     const argString = generateOpenApplicationArgumentString(args);
-    expect(argString).toBe('/FIRSTTAB=^ORDERS^');
+    expect(argString).toBe('/FIRSTTAB=^Orders^');
   });
   it('Non-tab string is not surrounded by ^', () => {
     const args: Array<OpenApplicationArgument> = [
@@ -117,6 +117,6 @@ describe('generateOpenApplicationArgumentString', () => {
     ];
 
     const argString = generateOpenApplicationArgumentString(args);
-    expect(argString).toBe('/POWERCHART.EXE=RANDOM');
+    expect(argString).toBe('/POWERCHART.EXE=Random');
   });
 });
