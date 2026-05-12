@@ -1,0 +1,11 @@
+# Force LF line endings for all text files across all platforms.
+# Prevents Windows CRLF checkouts from breaking `prettier --check` in CI.
+* text=auto eol=lf
+
+# Binary files (no line-ending normalization)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
