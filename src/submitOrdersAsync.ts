@@ -98,6 +98,7 @@ export type SubmitOrderAsyncReturn = MPageEventReturn & {
   status: SubmitOrdersAsyncStatus;
   response: MpagesEventOrdersReturnXML | null;
   ordersPlaced: Array<{ name: string; oid: number; display: string }> | null;
+  rawResponse: string | null;
 };
 
 export type Order = {
@@ -156,6 +157,7 @@ export const submitOrdersAsync = async (
     status: 'success',
     response: null,
     ordersPlaced: null,
+    rawResponse: null,
   };
 
   if (dryRun) {
@@ -168,6 +170,9 @@ export const submitOrdersAsync = async (
       'ORDERS',
       eventString
     )) as string;
+
+    // Store the raw response on the return value for debugging purposes.
+    retVal.rawResponse = response;
 
     // 'null' must be checked for explicitly, as it is a valid response
     // '!response' will return true for null, undefined, and empty string.

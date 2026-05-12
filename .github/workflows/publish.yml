@@ -6,6 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: fluent-cerner-js
+    env:
+      HUSKY: 0
     permissions:
       id-token: write
       contents: read
@@ -19,10 +21,16 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm install
-      - name: Build
-        run: npm run build
+      - name: Format check
+        run: npm run format:check
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
       - name: Test
         run: npm run test
+      - name: Build
+        run: npm run build
       - name: Upgrade npm
         run: npm install -g npm@latest
       - name: Publish

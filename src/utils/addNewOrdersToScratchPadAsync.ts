@@ -39,7 +39,7 @@ export async function addNewOrdersToScratchpadAsync(
   // Convert the standalone orders provided into the required XML string
   let standaloneOrdersXML: string = '';
 
-  standaloneOrders.forEach(standaloneOrder => {
+  standaloneOrders.forEach((standaloneOrder) => {
     standaloneOrdersXML += `<Order><EOrderOriginationFlag>${
       standaloneOrder.origination === 'inpatient order' ? 0 : 1
     }</EOrderOriginationFlag><SynonymId>${standaloneOrder.synonymId}</SynonymId>

@@ -50,7 +50,7 @@ export async function addPowerPlanWithDetailsAsync(
       }</PersonalizedPlanId><Diagnoses>
     ${
       dids
-        ? dids.map(diagnosisSynonymID => {
+        ? dids.map((diagnosisSynonymID) => {
             return '<DiagnosisId>' + diagnosisSynonymID + '</DiagnosisId>';
           })
         : ''

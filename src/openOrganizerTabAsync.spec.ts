@@ -13,20 +13,18 @@ describe('openOrganizerTab', () => {
   });
   test('returns an appropriately formatted eventString', async () => {
     const { eventString } = await openOrganizerTabAsync('Tab Name');
-    expect(eventString).toBe(`/ORGANIZERTAB=^TAB NAME^`);
+    expect(eventString).toBe(`/ORGANIZERTAB=^Tab Name^`);
   });
   test('badInput returns false if response is anything other than null', async () => {
     Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null | ''> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(''));
-        }),
+      value: jest.fn().mockImplementation(async function (
+        a: string,
+        b: string
+      ): Promise<null | ''> {
+        console.debug(`a: ${a}, b: ${b}`);
+        return new Promise((resolve) => resolve(''));
+      }),
     });
 
     const { badInput } = await openOrganizerTabAsync('Tab Name');
@@ -35,15 +33,13 @@ describe('openOrganizerTab', () => {
   test('badInput returns true if response is null', async () => {
     Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null | ''> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(null));
-        }),
+      value: jest.fn().mockImplementation(async function (
+        a: string,
+        b: string
+      ): Promise<null | ''> {
+        console.debug(`a: ${a}, b: ${b}`);
+        return new Promise((resolve) => resolve(null));
+      }),
     });
 
     const { badInput } = await openOrganizerTabAsync('Tab Name');
@@ -52,15 +48,13 @@ describe('openOrganizerTab', () => {
   test('throws an error when the error type is not one expected to be generated as an "out-of-powerchart" error.', async () => {
     Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<Error> {
-          console.debug(`a: ${a}, b: ${b}`);
-          throw new Error('unexpected error');
-        }),
+      value: jest.fn().mockImplementation(async function (
+        a: string,
+        b: string
+      ): Promise<Error> {
+        console.debug(`a: ${a}, b: ${b}`);
+        throw new Error('unexpected error');
+      }),
     });
 
     await expect(openOrganizerTabAsync('Tab Name')).rejects.toThrow(Error);

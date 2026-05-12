@@ -152,15 +152,13 @@ describe('submitOrders', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        MPAGES_EVENT: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<string> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve =>
-              resolve(`<?xml version="1.0"?>
+        MPAGES_EVENT: jest.fn().mockImplementation(async function (
+          a: string,
+          b: string
+        ): Promise<string> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise((resolve) =>
+            resolve(`<?xml version="1.0"?>
               <?xml-stylesheet type='text/xml' href='dom.xsl'?>
               <Orders>
               <OrderVersion>1</OrderVersion>
@@ -176,8 +174,8 @@ describe('submitOrders', () => {
               <ClinDisplayLine type="string">0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT</ClinDisplayLine>
               </Order>
               </Orders>`)
-            );
-          }),
+          );
+        }),
       },
     });
 
@@ -203,15 +201,13 @@ describe('submitOrders', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        MPAGES_EVENT: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<string> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve =>
-              resolve(`<?xml version="1.0"?>
+        MPAGES_EVENT: jest.fn().mockImplementation(async function (
+          a: string,
+          b: string
+        ): Promise<string> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise((resolve) =>
+            resolve(`<?xml version="1.0"?>
               <?xml-stylesheet type='text/xml' href='dom.xsl'?>
               <Orders>
               <OrderVersion>1</OrderVersion>
@@ -238,8 +234,8 @@ describe('submitOrders', () => {
               <ClinDisplayLine type="string">0.4 mg, Oral, Cap, Daily, Administration Type NA, Automatic Refill, Order Duration: 30 day, First Dose: 07/23/23 07:00 PDT, Stop Date: 08/22/23 06:59 PDT, 07/23/23 07:00 PDT</ClinDisplayLine>
               </Order>
               </Orders>`)
-            );
-          }),
+          );
+        }),
       },
     });
 
@@ -276,15 +272,13 @@ describe('submitOrders', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        MPAGE_EVENT: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<object> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve => resolve({}));
-          }),
+        MPAGE_EVENT: jest.fn().mockImplementation(async function (
+          a: string,
+          b: string
+        ): Promise<object> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise((resolve) => resolve({}));
+        }),
       },
     });
     const { status } = await submitOrdersAsync(1, 2, [order]);
@@ -295,15 +289,13 @@ describe('submitOrders', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        MPAGES_EVENT: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<string> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve => resolve(''));
-          }),
+        MPAGES_EVENT: jest.fn().mockImplementation(async function (
+          a: string,
+          b: string
+        ): Promise<string> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise((resolve) => resolve(''));
+        }),
       },
     });
     const { status } = await submitOrdersAsync(1, 2, [order]);
@@ -314,15 +306,13 @@ describe('submitOrders', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        MPAGES_EVENT: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<string> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve => resolve('<xml>'));
-          }),
+        MPAGES_EVENT: jest.fn().mockImplementation(async function (
+          a: string,
+          b: string
+        ): Promise<string> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise((resolve) => resolve('<xml>'));
+        }),
       },
     });
     const { status } = await submitOrdersAsync(1, 2, [order]);
@@ -333,15 +323,13 @@ describe('submitOrders', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        MPAGES_EVENT: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<null> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return new Promise(resolve => resolve(null));
-          }),
+        MPAGES_EVENT: jest.fn().mockImplementation(async function (
+          a: string,
+          b: string
+        ): Promise<null> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return new Promise((resolve) => resolve(null));
+        }),
       },
     });
     const { status } = await submitOrdersAsync(1, 2, [order]);
@@ -352,15 +340,13 @@ describe('submitOrders', () => {
   test('throws an error when the error type is not one expected to be generated as an "out-of-powerchart" error.', async () => {
     Object.defineProperty(window.external, 'MPAGES_EVENT', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<Error> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return Promise.reject(new Error('unexpected error'));
-        }),
+      value: jest.fn().mockImplementation(async function (
+        a: string,
+        b: string
+      ): Promise<Error> {
+        console.debug(`a: ${a}, b: ${b}`);
+        return Promise.reject(new Error('unexpected error'));
+      }),
     });
 
     try {

@@ -5,6 +5,8 @@ jobs:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
+    env:
+      HUSKY: 0
     strategy:
       matrix:
         node: ['22.x', '24.x']
@@ -22,8 +24,14 @@ jobs:
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1.11.2
 
+      - name: Format check
+        run: npm run format:check
+
       - name: Lint
         run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
 
       - name: Test
         run: npm run test --ci --coverage --maxWorkers=2

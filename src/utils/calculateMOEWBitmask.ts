@@ -95,7 +95,7 @@ export const calculateMOEWBitmask = (
   }
 
   // Calculate the other two parameters (dwCustomizeFlag and dwTabDisplayOptionsFlag) that are also ultimately needed for CreateMOEW()
-  cernerFlags.forEach(option => {
+  cernerFlags.forEach((option) => {
     switch (option) {
       // Calculate the dwCustomizeFlagParamater
       case 'sign later':

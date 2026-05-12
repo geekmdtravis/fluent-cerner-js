@@ -48,7 +48,7 @@ export async function getOrdersPlacedAsync(
       if (!(parsed.Orders.Order instanceof Array)) {
         parsed.Orders.Order = [parsed.Orders.Order];
       }
-      retData.ordersPlaced = parsed.Orders.Order.map(o => ({
+      retData.ordersPlaced = parsed.Orders.Order.map((o) => ({
         name: o.OrderedAsMnemonic,
         oid: o.OrderId,
         display: o.ClinDisplayLine,

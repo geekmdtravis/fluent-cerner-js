@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm list *)",
+      "Bash(npm view *)",
+      "Bash(awk -F: '{sum+=$2} END {print \"Total test blocks: \" sum}')"
+    ]
+  }
+}
