@@ -75,8 +75,10 @@ export const launchClinicalNoteAsync = async (
 
   params.push(`[${eventIds.join('|')}]`);
   params.push(
-    `${windowTitle ||
-      `Clinical Note for patient with PID ${patientId} on encounter with EID ${encounterId}`}`
+    `${
+      windowTitle ||
+      `Clinical Note for patient with PID ${patientId} on encounter with EID ${encounterId}`
+    }`
   );
   params.push(`${calculateViewOptionFlag(_viewOptsFlags)}`);
   params.push(`${viewName || ''}`);
@@ -101,7 +103,7 @@ export const launchClinicalNoteAsync = async (
 
 function calculateViewOptionFlag(viewOptionFlags: Array<ViewOption>): number {
   let total = 0;
-  viewOptionFlags.forEach(flag => {
+  viewOptionFlags.forEach((flag) => {
     if (flag === 'menu') total += 1;
     if (flag === 'buttons') total += 2;
     if (flag === 'toolbar') total += 4;

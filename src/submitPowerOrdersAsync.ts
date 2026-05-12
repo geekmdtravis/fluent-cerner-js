@@ -127,11 +127,8 @@ export const submitPowerOrdersAsync = async (
 
   // Get required bitmask values for later use in the CreateMOEW function
   // TODO: determine if this should be moved, and maybe simply integrated directly into the CreateMOEW function
-  const {
-    dwCustomizeFlag,
-    dwTabFlag,
-    dwTabDisplayOptionsFlag,
-  } = calculateMOEWBitmask(targetTab || 'orders tab', moewFlags);
+  const { dwCustomizeFlag, dwTabFlag, dwTabDisplayOptionsFlag } =
+    calculateMOEWBitmask(targetTab || 'orders tab', moewFlags);
 
   let retData: SubmitPowerOrdersReturn = {
     inPowerChart: true,
@@ -148,7 +145,7 @@ export const submitPowerOrdersAsync = async (
   let powerPlanOrders: Array<PowerPlanOrder> = [];
   let standaloneOrders: Array<StandaloneOrder> = [];
 
-  orders.forEach(order => {
+  orders.forEach((order) => {
     if (isPowerPlanOrder(order)) {
       powerPlanOrders.push(order as PowerPlanOrder);
     } else if (isStandaloneOrder(order)) {

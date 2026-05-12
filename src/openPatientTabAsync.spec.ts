@@ -23,15 +23,13 @@ describe('openPatientTab', () => {
   test('badInput returns false if response is anything other than null', async () => {
     Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null | ''> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(''));
-        }),
+      value: jest.fn().mockImplementation(async function (
+        a: string,
+        b: string
+      ): Promise<null | ''> {
+        console.debug(`a: ${a}, b: ${b}`);
+        return new Promise((resolve) => resolve(''));
+      }),
     });
 
     const { badInput } = await openPatientTabAsync(0, 1, 'Tab Name');
@@ -40,15 +38,13 @@ describe('openPatientTab', () => {
   test('badInput returns true if response is null', async () => {
     Object.defineProperty(window, 'APPLINK', {
       writable: true,
-      value: jest
-        .fn()
-        .mockImplementation(async function(
-          a: string,
-          b: string
-        ): Promise<null | ''> {
-          console.debug(`a: ${a}, b: ${b}`);
-          return new Promise(resolve => resolve(null));
-        }),
+      value: jest.fn().mockImplementation(async function (
+        a: string,
+        b: string
+      ): Promise<null | ''> {
+        console.debug(`a: ${a}, b: ${b}`);
+        return new Promise((resolve) => resolve(null));
+      }),
     });
 
     const { badInput } = await openPatientTabAsync(0, 1, 'Tab Name');
@@ -58,15 +54,13 @@ describe('openPatientTab', () => {
     Object.defineProperty(window, 'external', {
       writable: true,
       value: {
-        APPLINK: jest
-          .fn()
-          .mockImplementation(async function(
-            a: string,
-            b: string
-          ): Promise<Error> {
-            console.debug(`a: ${a}, b: ${b}`);
-            return Promise.reject(new Error('unexpected error'));
-          }),
+        APPLINK: jest.fn().mockImplementation(async function (
+          a: string,
+          b: string
+        ): Promise<Error> {
+          console.debug(`a: ${a}, b: ${b}`);
+          return Promise.reject(new Error('unexpected error'));
+        }),
       },
     });
 

@@ -72,7 +72,11 @@ describe('submitPowerOrders()', () => {
       },
     ];
     try {
-      await submitPowerOrdersAsync(1, 1, orderArray);
+      await submitPowerOrdersAsync(
+        1,
+        1,
+        orderArray as unknown as Parameters<typeof submitPowerOrdersAsync>[2]
+      );
     } catch (e) {
       expect(e).toBeInstanceOf(SyntaxError);
       expect(e as SyntaxError).toHaveProperty(

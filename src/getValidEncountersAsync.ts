@@ -22,7 +22,7 @@ export async function getValidEncountersAsync(
     const response = await dcof.GetValidEncounters(personId);
     const eidStr = response.trim();
     if (eidStr === '') return retData;
-    eidStr.split(',').forEach(e => {
+    eidStr.split(',').forEach((e) => {
       const eid = parseFloat(e);
       if (isNaN(eid)) {
         console.warn(
