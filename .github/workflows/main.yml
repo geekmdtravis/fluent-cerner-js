@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+          cache: 'npm'
 
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1.11.2
