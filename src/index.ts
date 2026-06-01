@@ -15,6 +15,8 @@ import type {
   ViewOption,
 } from './launchClinicalNoteAsync';
 import { launchDischargeProcessAsync } from './launchDischargeProcessAsync';
+import { launchMOEWAsync } from './launchMOEWAsync';
+import type { LaunchMOEWAsyncOpts } from './launchMOEWAsync';
 import { launchPatientEducationAsync } from './launchPatientEducationAsync';
 import { launchPowerFormAsync } from './launchPowerFormAsync';
 import { launchPowerNoteAsync } from './launchPowerNoteAsync';
@@ -49,6 +51,7 @@ export {
   getValidEncountersAsync,
   launchClinicalNoteAsync,
   launchDischargeProcessAsync,
+  launchMOEWAsync,
   launchPatientEducationAsync,
   launchPowerFormAsync,
   launchPowerNoteAsync,
@@ -70,6 +73,7 @@ export type {
   CclRequestResponse,
   ClinicalNoteOpts,
   InheretanceProps,
+  LaunchMOEWAsyncOpts,
   OpenApplicationArgument,
   OpenApplicationMode,
   Order,

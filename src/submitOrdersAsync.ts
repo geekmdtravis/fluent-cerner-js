@@ -4,7 +4,10 @@ import {
   outsideOfPowerChartError,
   warnAttemptedOrdersOutsideOfPowerChart,
 } from './utils';
-import { createOrderString } from './utils/createOrderString';
+import {
+  LAUNCH_MOEW_ORDER_STRING,
+  createOrderString,
+} from './utils/createOrderString';
 
 const launchViewMap = new Map()
   .set('search', 8)
@@ -116,8 +119,8 @@ export type Order = {
  * @param {number} encounterId - The identifier for the encounter belonging to the patient where
  * this note will be launched. Cerner context variable: VIS_EncntrId.
  * @param orders - The orders to be submitted. Orders are given in the form of a a series of pipe-delimited
- * parameters as specified in the `MPAGES_EVENT` documentation (below). Use the `fluent-cerner-js` library's
- * `` function to simplify building these pipe-delimited order strings.
+ * parameters as specified in the `MPAGES_EVENT` documentation (below). Use an empty array to launch the MOEW
+ * without adding orders.
  * @param opts - (optional) User defined options for the order submission event. The options allow for
  * changing the target tab, the view to be launched, and whether or not the orders should be signed silently.
  * @resolves `SubmitOrderAsyncReturn`
@@ -134,11 +137,14 @@ export const submitOrdersAsync = async (
   const enablePowerPlans =
     targetTab === 'power orders' || targetTab === 'power medications';
 
-  const s = orders.map(({ action, id, opts }) =>
-    createOrderString(action, id, opts)
-  );
+  const orderList =
+    orders.length === 0
+      ? LAUNCH_MOEW_ORDER_STRING
+      : orders
+          .map(({ action, id, opts }) => createOrderString(action, id, opts))
+          .join('');
 
-  let params: Array<string> = [`${patientId}`, `${encounterId}`, s.join('')];
+  let params: Array<string> = [`${patientId}`, `${encounterId}`, orderList];
 
   params.push(enablePowerPlans ? '24' : '0');
 

@@ -45,6 +45,16 @@ describe('submitOrders', () => {
     );
     expect(foundOrdersString).toBe(true);
   });
+  test('an empty order array uses the documented launch-only MOEW order token', async () => {
+    const opts: SubmitOrderAsyncOpts = {
+      targetTab: 'power orders',
+      launchView: 'search',
+      dryRun: true,
+    };
+    const { eventString } = await submitOrdersAsync(1, 2, [], opts);
+    const expectedString = '1|2|{ORDER|0|0|0|0|0}|24|{2|127}|8|0';
+    expect(eventString).toBe(expectedString);
+  });
   test('`pid` and `eid` are correct in value and in location in the `eventString`', async () => {
     const { eventString } = await submitOrdersAsync(1, 2, [order]);
     const pidAndEidAtHead = eventString.startsWith('1|2');
