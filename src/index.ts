@@ -43,6 +43,14 @@ import type {
   Order,
 } from './submitOrdersAsync';
 import { submitPowerOrdersAsync } from './submitPowerOrdersAsync';
+import type {
+  PowerOrdersMOEWFlags,
+  PowerPlanOrder,
+  StandaloneOrder,
+  SubmissionOpts,
+  SubmitPowerOrdersReturn,
+} from './submitPowerOrdersAsync';
+import type { SubmitPowerOrdersStatus } from './utils/getOrdersPlacedAsync';
 
 // Export functions
 export {
@@ -79,9 +87,15 @@ export type {
   Order,
   OrderAction,
   OrderOpts as OrderStrOpts,
+  PowerOrdersMOEWFlags,
+  PowerPlanOrder,
+  StandaloneOrder,
+  SubmissionOpts,
   SubmitOrderAsyncOpts,
   SubmitOrderAsyncReturn,
   SubmitOrdersAsyncStatus,
+  SubmitPowerOrdersReturn,
+  SubmitPowerOrdersStatus,
   ViewOption,
   XmlCclReadyState,
   XmlCclResult,
